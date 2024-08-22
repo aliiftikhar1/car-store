@@ -6,6 +6,7 @@ import RightSide from '@/app/user/components/RightSide';
 import LeftSide from '@/app/user/components/LeftSide';
 import CouponHeader from '@/app/user/components/CouponHeader';
 import FaqComponent from '@/app/user/components/FaqComponent';
+import CustomerRootLayout from '@/app/user/layout';
 
 const CompanyDetail = () => {
   const params = useParams();
@@ -73,6 +74,7 @@ const CompanyDetail = () => {
   }
 
   return (
+    <CustomerRootLayout>
     <div className="min-h-screen bg-gray-100 p-6">
       <CouponHeader company={company} />
       <div className="container mx-auto flex flex-col md:flex-row gap-6">
@@ -87,6 +89,7 @@ const CompanyDetail = () => {
         <FaqComponent faqs={faqs} />
       </div>
     </div>
+    </CustomerRootLayout>
   );
 };
 

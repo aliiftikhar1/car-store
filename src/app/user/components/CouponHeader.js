@@ -10,7 +10,7 @@ const CouponHeader = ({ company }) => {
 
   return (
     <div className="bg-purple-600 mb-20 p-6 text-white justify-center flex items-center h-36 w-screen">
-      <div className="absolute left-64 h-36 w-36 flex justify-center items-center top-20 bg-white rounded-full ">
+      <div className="absolute left-64 h-36 w-36 flex justify-center items-center top-44 bg-white rounded-full ">
         <img
           src={`https://couponri.com/uploads/${company.comp_logo}`} // Use the company's logo
           alt={company.com_title}

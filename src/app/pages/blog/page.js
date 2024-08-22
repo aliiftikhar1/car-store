@@ -15,8 +15,9 @@ export default function Blog() {
 
   return (
     <CustomerRootLayout>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
         <main className="container mx-auto px-4 py-8">
+          <h1 className='text-4xl font-bold text-center mb-8'>Blog Page</h1>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <FeaturedPost post={featuredPost} />
@@ -313,7 +314,7 @@ const relatedPosts = [
 const blogPosts = [
   {
     image: "/blog/1.jpg",
-    date: "August 15, 2024",
+    date: "August",
     category: "Fashion Trends",
     title: "10 Must-Have Pieces for Your Fall Wardrobe",
     excerpt: "As the leaves start to change, it's time to update your wardrobe. Discover the essential pieces that will keep you stylish and comfortable this fall season.",

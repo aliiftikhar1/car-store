@@ -12,8 +12,10 @@ const CategoryPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('/api/category'); // Adjust the endpoint as needed
-        setCategories(response.data);
+        const response = await fetch('/api/category');
+      const result = await response.json();
+      console.log("Commpany: ",result);
+        setCategories(result);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -29,7 +31,7 @@ const CategoryPage = () => {
 
   return (
     <CustomerRootLayout>
-      <div className="bg-white w-full h-screen">
+      <div className="bg-gray-50 w-full h-screen ">
         <Box sx={{ padding: 3 }}>
           <Typography variant="h4" fontWeight="bold"  gutterBottom align="center" padding="5px">
             Choose a Category for Promo Code
