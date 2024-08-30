@@ -1,7 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Backdrop, CircularProgress } from "@mui/material";
-
+import React, { useState, useEffect, useRef } from "react";
 import {
   Table,
   TableBody,
@@ -23,20 +21,28 @@ import {
   Typography,
   TextField,
   IconButton,
+  Grid,
+  Backdrop,
+  CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { useTable, useGlobalFilter, useSortBy, usePagination } from "react-table";
+import JoditEditor from "jodit-react";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useTable, useGlobalFilter, useSortBy, usePagination } from "react-table";
 
 export const getApiBaseUrl = () => {
   return process.env.BASE_URL;
 };
 
 const AddCompanies = () => {
+  const editor = useRef(null);
   const [companies, setCompanies] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
@@ -47,7 +53,6 @@ const AddCompanies = () => {
   const [snackbarSubmit, setSnackbarSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [load, setLoad] = useState(false);
-  const [categoryMap, setCategoryMap] = useState([])
   const [deleteSuccessSnackbar, setDeleteSuccessSnackbar] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     open: false,
@@ -65,7 +70,7 @@ const AddCompanies = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/company/${deleteConfirmation.id}`,
+        `/api/company/${deleteConfirmation.id}`,
         {
           method: "DELETE",
         }
@@ -108,6 +113,8 @@ const AddCompanies = () => {
       comp_website: "",
       comp_rating: "",
       com_details: "",
+      company_details: "", // Resetting the new fields
+      other_details: "",   // Resetting the new fields
     });
   };
 
@@ -122,6 +129,8 @@ const AddCompanies = () => {
     comp_website: "",
     comp_rating: "",
     com_details: "",
+    company_details: "", // New field for company details
+    other_details: "",   // New field for other details
   });
 
   const handleInputChange = (e) => {
@@ -156,108 +165,10 @@ const AddCompanies = () => {
         throw new Error(result.error || 'Failed to upload image');
       }
 
-      return result.image_url;
+      return result.image_url; // Assuming the API returns the image URL in this field
     } catch (error) {
       console.error("Error uploading image:", error);
       throw new Error("Image upload failed");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoad(true);
-    setModel(false);
-    setLoading(true);
-
-    if (
-      !formData.com_title ||
-      !formData.comp_logo ||
-      !formData.comp_category ||
-      !formData.comp_description ||
-      !formData.comp_email ||
-      !formData.comp_phone ||
-      !formData.comp_website ||
-      !formData.comp_rating ||
-      !formData.com_details
-    ) {
-      setSnackbarSubmit(true);
-      setTimeout(() => {
-        setSnackbarSubmit(false);
-      }, 5000);
-      setLoad(false);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const imageBase64 = await convertToBase64(formData.comp_logo);
-      const uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
-
-      const companyToSubmit = {
-        com_title: formData.com_title,
-        comp_logo: uploadedImageUrl,
-        comp_category: parseInt(formData.comp_category),
-        comp_description: formData.comp_description,
-        comp_phone: formData.comp_phone,
-        comp_email: formData.comp_email,
-        comp_website: formData.comp_website,
-        comp_rating: formData.comp_rating,
-        com_details: formData.com_details,
-      };
-
-      await axios.post(`http://localhost:3000/api/company`, companyToSubmit);
-      toast.success("Company has been added successfully!");
-      setLoad(false);
-      setLoading(false);
-      modelClose();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error occurred while sending data to the API", error);
-      setLoad(false);
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = async (e) => {
-    e.preventDefault();
-    setLoad(true);
-    setLoading(true);
-
-    try {
-      let uploadedImageUrl = editingCompany.comp_logo;
-
-      if (editingCompany.comp_logo instanceof File) {
-        const imageBase64 = await convertToBase64(editingCompany.comp_logo);
-        uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
-      }
-
-      const companyToUpdate = {
-        com_title: editingCompany.com_title,
-        comp_logo: uploadedImageUrl,
-        comp_category: parseInt(editingCompany.comp_category),
-        comp_description: editingCompany.comp_description,
-        comp_phone: editingCompany.comp_phone,
-        comp_email: editingCompany.comp_email,
-        comp_website: editingCompany.comp_website,
-        comp_rating: editingCompany.comp_rating,
-        com_details: editingCompany.com_details,
-      };
-
-      await axios.put(
-        `http://localhost:3000/api/company/${editingCompany.id}`,
-        companyToUpdate
-      );
-
-      toast.success("Company has been updated successfully!");
-      setLoad(false);
-      setLoading(false);
-      handleClose();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error occurred while updating the data:", error);
-      toast.error("Failed to update the company");
-      setLoad(false);
-      setLoading(false);
     }
   };
 
@@ -275,18 +186,87 @@ const AddCompanies = () => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoad(true);
+    setLoading(true); // Show loading overlay
+
+    if (!formData.com_title || !formData.comp_logo || !formData.comp_category) {
+      setSnackbarSubmit(true);
+      setTimeout(() => {
+        setSnackbarSubmit(false);
+      }, 5000);
+      setLoad(false);
+      setLoading(false); // Hide loading overlay
+      return;
+    }
+
+    try {
+      const imageBase64 = await convertToBase64(formData.comp_logo);
+      const uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
+
+      const companyToSubmit = {
+        ...formData,
+        comp_logo: uploadedImageUrl,
+      };
+
+      await axios.post(`/api/company`, companyToSubmit);
+      toast.success("Company has been added successfully!");
+      setLoad(false);
+      setLoading(false); // Hide loading overlay
+      modelClose();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error occurred during submission", error);
+      setLoad(false);
+      setLoading(false); // Hide loading overlay
+    }
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setLoad(true);
+    setLoading(true); // Show loading overlay
+
+    try {
+      let uploadedImageUrl = editingCompany.comp_logo;
+
+      if (editingCompany.comp_logo instanceof File) {
+        const imageBase64 = await convertToBase64(editingCompany.comp_logo);
+        uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
+      }
+
+      const companyToUpdate = {
+        ...editingCompany,
+        comp_logo: uploadedImageUrl,
+      };
+
+      await axios.put(`/api/company/${editingCompany.id}`, companyToUpdate);
+      toast.success("Company has been updated successfully!");
+      setLoad(false);
+      setLoading(false); // Hide loading overlay
+      handleClose();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error occurred while updating the data:", error);
+      toast.error("Failed to update the company");
+      setLoad(false);
+      setLoading(false); // Hide loading overlay
+    }
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (editingCompany) {
         setEditingCompany({
           ...editingCompany,
-          comp_logo: file,
+          comp_logo: file, // Ensure this is a File object
         });
       } else {
         setFormData({
           ...formData,
-          comp_logo: file,
+          comp_logo: file, // Ensure this is a File object
         });
       }
     }
@@ -309,31 +289,22 @@ const AddCompanies = () => {
           fetch(`/api/category`),
           fetch(`/api/company`),
         ]);
-  
+
         if (!categoriesResponse.ok || !companiesResponse.ok) {
           throw new Error("Failed to fetch data");
         }
-  
+
         const categoriesData = await categoriesResponse.json();
         const companiesData = await companiesResponse.json();
-  
+
         setCategories(categoriesData);
         setCompanies(companiesData);
-  
-        // Create a map of category IDs to names
-        const categoryMap = categoriesData.reduce((acc, category) => {
-          acc[category.id] = category.category_name;
-          return acc;
-        }, {});
-  
-        setCategoryMap(categoryMap); // Save this map in state
       } catch (error) {
         setError("Error fetching data: " + error.message);
       }
     };
     fetchCategoriesAndCompanies();
   }, []);
-  
 
   const columns = React.useMemo(
     () => [
@@ -349,21 +320,20 @@ const AddCompanies = () => {
         Header: "Category",
         accessor: "comp_category",
         Cell: ({ value }) => {
-          return categoryMap[value] || "Unknown"; // Use the category map to get the name
+          const category = categories.find((c) => c.id === value);
+          return category ? category.category_name : "Unknown";
         },
       },
       {
         Header: "Logo",
         accessor: "comp_logo",
-        Cell: ({ value }) => {
-          return (
-            <img
-              src={`https://couponri.com/uploads/${value.trim()}`}
-              alt="Company Logo"
-              style={{ maxWidth: "50px", maxHeight: "50px" }}
-            />
-          );
-        },
+        Cell: ({ value }) => (
+          <img
+            src={`https://couponri.com/uploads/${value.trim()}`}
+            alt="Company Logo"
+            style={{ maxWidth: "50px", maxHeight: "50px" }}
+          />
+        ),
       },
       {
         Header: "Description",
@@ -403,10 +373,8 @@ const AddCompanies = () => {
         ),
       },
     ],
-    [categoryMap]
+    [categories]
   );
-
-  
 
   const {
     getTableProps,
@@ -434,6 +402,13 @@ const AddCompanies = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading} // Show backdrop when loading is true
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       <Box
         display="flex"
         justifyContent="space-between"
@@ -546,7 +521,6 @@ const AddCompanies = () => {
               <Grid item xs={12}>
                 <TextField
                   label="Company Name"
-                  type="text"
                   name="com_title"
                   value={formData.com_title}
                   onChange={handleInputChange}
@@ -555,25 +529,24 @@ const AddCompanies = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  label="Category"
-                  name="comp_category"
-                  select
-                  value={formData.comp_category}
-                  onChange={handleInputChange}
-                  fullWidth
-                  variant="outlined"
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.category_name}
-                    </option>
-                  ))}
-                </TextField>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    name="comp_category"
+                    value={formData.comp_category}
+                    onChange={handleInputChange}
+                    label="Category"
+                  >
+                    <MenuItem value="">
+                      <em>Select Category</em>
+                    </MenuItem>
+                    {categories.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.category_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -626,15 +599,50 @@ const AddCompanies = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  label="Details"
-                  name="com_details"
-                  value={formData.com_details}
-                  fullWidth
-                  onChange={handleInputChange}
-                  variant="outlined"
+                <h3 style={{ marginBottom: "10px", color: "#333" }}>
+                  Company Details
+                </h3>
+                <JoditEditor
+                  ref={editor}
+                  value={formData.company_details}
+                  tabIndex={1}
+                  onBlur={(newContent) =>
+                    setFormData({
+                      ...formData,
+                      company_details: newContent,
+                    })
+                  }
+                  onChange={(newContent) =>
+                    setFormData({
+                      ...formData,
+                      company_details: newContent,
+                    })
+                  }
                 />
               </Grid>
+              <Grid item xs={12} style={{ marginTop: "20px" }}>
+                <h3 style={{ marginBottom: "10px", color: "#333" }}>
+                  Other Details
+                </h3>
+                <JoditEditor
+                  ref={editor}
+                  value={formData.other_details}
+                  tabIndex={1}
+                  onBlur={(newContent) =>
+                    setFormData({
+                      ...formData,
+                      other_details: newContent,
+                    })
+                  }
+                  onChange={(newContent) =>
+                    setFormData({
+                      ...formData,
+                      other_details: newContent,
+                    })
+                  }
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <Typography variant="body2" color="textSecondary">
                   Upload Image:
@@ -643,12 +651,7 @@ const AddCompanies = () => {
                   type="file"
                   accept="image/*"
                   name="imgurl"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      comp_logo: e.target.files[0], // Store File object
-                    })
-                  }
+                  onChange={handleImageChange}
                   style={{ display: "block", marginTop: "10px" }}
                 />
                 {formData.comp_logo && (
@@ -728,30 +731,29 @@ const AddCompanies = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    label="Category"
-                    name="comp_category"
-                    select
-                    value={editingCompany.comp_category}
-                    onChange={(e) =>
-                      setEditingCompany({
-                        ...editingCompany,
-                        comp_category: e.target.value,
-                      })
-                    }
-                    fullWidth
-                    variant="outlined"
-                    SelectProps={{
-                      native: true,
-                    }}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.category_name}
-                      </option>
-                    ))}
-                  </TextField>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      name="comp_category"
+                      value={editingCompany.comp_category}
+                      onChange={(e) =>
+                        setEditingCompany({
+                          ...editingCompany,
+                          comp_category: e.target.value,
+                        })
+                      }
+                      label="Category"
+                    >
+                      <MenuItem value="">
+                        <em>Select Category</em>
+                      </MenuItem>
+                      {categories.map((category) => (
+                        <MenuItem key={category.id} value={category.id}>
+                          {category.category_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -829,20 +831,70 @@ const AddCompanies = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    label="Details"
-                    name="com_details"
-                    value={editingCompany.com_details}
-                    fullWidth
-                    onChange={(e) =>
-                      setEditingCompany({
-                        ...editingCompany,
-                        com_details: e.target.value,
-                      })
+                  <h3 style={{ marginBottom: "10px", color: "#333" }}>
+                    Company Details
+                  </h3>
+                  <JoditEditor
+                    ref={editor}
+                    value={editingCompany ? editingCompany.company_details : formData.company_details}
+                    tabIndex={1}
+                    onBlur={(newContent) =>
+                      editingCompany
+                        ? setEditingCompany({
+                            ...editingCompany,
+                            company_details: newContent,
+                          })
+                        : setFormData({
+                            ...formData,
+                            company_details: newContent,
+                          })
                     }
-                    variant="outlined"
+                    onChange={(newContent) =>
+                      editingCompany
+                        ? setEditingCompany({
+                            ...editingCompany,
+                            company_details: newContent,
+                          })
+                        : setFormData({
+                            ...formData,
+                            company_details: newContent,
+                          })
+                    }
                   />
                 </Grid>
+                <Grid item xs={12} style={{ marginTop: "20px" }}>
+                  <h3 style={{ marginBottom: "10px", color: "#333" }}>
+                    Other Details
+                  </h3>
+                  <JoditEditor
+                    ref={editor}
+                    value={editingCompany ? editingCompany.other_details : formData.other_details}
+                    tabIndex={1}
+                    onBlur={(newContent) =>
+                      editingCompany
+                        ? setEditingCompany({
+                            ...editingCompany,
+                            other_details: newContent,
+                          })
+                        : setFormData({
+                            ...formData,
+                            other_details: newContent,
+                          })
+                    }
+                    onChange={(newContent) =>
+                      editingCompany
+                        ? setEditingCompany({
+                            ...editingCompany,
+                            other_details: newContent,
+                          })
+                        : setFormData({
+                            ...formData,
+                            other_details: newContent,
+                          })
+                    }
+                  />
+                </Grid>
+
                 <Grid item xs={12}>
                   <Typography variant="body2" color="textSecondary">
                     Upload Image:
@@ -945,12 +997,6 @@ const AddCompanies = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {loading && (
-        <Backdrop open={loading} sx={{ zIndex: 9999, color: "#fff" }}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      )}
     </Box>
   );
 };

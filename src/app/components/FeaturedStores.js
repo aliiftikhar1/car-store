@@ -38,25 +38,17 @@ const FeaturedStores = () => {
   return (
     <div className="py-12 bg-gray-50">
       <h2 className="text-3xl font-bold text-center mb-8">All Companies</h2>
-      <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 px-24">
+      <div className="container mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-4 sm:px-6 lg:px-8">
         {companies.map((company) => (
-          <div key={company.id} className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out">
+          <a href={`/pages/onecompany/${company.id}`}>
+          <div key={company.id} className="bg-white border border-gray-200 shadow-sm p-4 overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out">
             <img
               src={`https://couponri.com/uploads/${company.comp_logo}`} // Replace with the correct path to the images
               alt={company.com_title}
-              className="w-full h-48 object-stretch"
+              className="w-full h-40 sm:h-48 object-cover"
             />
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-3">{company.com_title}</h3>
-              <p className="text-gray-600 mb-4">{company.comp_description || 'No description available.'}</p>
-              <a
-                href={`/pages/onecompany/${company.id}`} // Adjust this URL to your offers page
-                className="inline-block px-4 py-2 bg-orange-400 text-white font-bold rounded-md hover:bg-orange-500 transition-colors duration-200"
-              >
-                View Offers
-              </a>
-            </div>
           </div>
+          </a>
         ))}
       </div>
     </div>

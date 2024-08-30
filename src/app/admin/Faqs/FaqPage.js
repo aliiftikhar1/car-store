@@ -3,18 +3,26 @@ import { useState, useEffect } from 'react';
 
 export default function FaqPage() {
   const [questions, setQuestions] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({ comp_id: '', question: '', answer: '' });
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
     fetchQuestions();
+    fetchCompanies();
   }, []);
 
   const fetchQuestions = async () => {
     const res = await fetch('/api/faqs');
     const data = await res.json();
     setQuestions(data);
+  };
+
+  const fetchCompanies = async () => {
+    const res = await fetch('/api/company');
+    const data = await res.json();
+    setCompanies(data);
   };
 
   const handleSubmit = async (e) => {
@@ -58,14 +66,20 @@ export default function FaqPage() {
       <h1 className="text-3xl font-bold text-gray-800 mb-6">FAQ Management</h1>
       <form onSubmit={handleSubmit} className="mb-8 bg-white p-6 rounded-lg shadow-md">
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Company ID</label>
-          <input
-            type="text"
+          <label className="block text-gray-700 font-semibold mb-2">Select Company</label>
+          <select
             value={formData.comp_id}
             onChange={(e) => setFormData({ ...formData, comp_id: e.target.value })}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter Company ID"
-          />
+            required
+          >
+            <option value="">Select a company</option>
+            {companies.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.com_title}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">Question</label>
@@ -75,6 +89,7 @@ export default function FaqPage() {
             onChange={(e) => setFormData({ ...formData, question: e.target.value })}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter Question"
+            required
           />
         </div>
         <div className="mb-4">
@@ -85,6 +100,7 @@ export default function FaqPage() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter Answer"
             rows="3"
+            required
           />
         </div>
         <button

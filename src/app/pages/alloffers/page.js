@@ -73,7 +73,7 @@ const OffersPage = () => {
 
   return (
     <CustomerRootLayout>
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-white p-6">
         <h1 className="text-4xl font-bold text-center text-black mb-8">Available Offers</h1>
         <div className="container mx-auto grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-20">
           {offers.map((offer) => (
@@ -115,12 +115,24 @@ const OffersPage = () => {
                 </div>
                 <div className='flex justify-between items-center'>
                 <span className="block text-gray-500 text-sm">Expiry: {new Date(offer.offer_expiry).toLocaleDateString()}</span>
-                <button
-                  onClick={() => handleShowPopup(offer)}
-                  className="mt-3 bg-purple-600 text-white w-40 h-10 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-purple-700"
-                >
-                  Show Details
-                </button>
+                {offer.offer_type === 'Code' && (
+  <button
+    onClick={() => handleShowPopup(offer)}
+    className="bg-[#06089B] text-white w-40 h-10 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200 mt-2"
+  >
+    Show Code
+  </button>
+)}
+
+{offer.offer_type === 'Offer' && (
+  <button
+    onClick={() => handleShowPopup(offer)}
+    className="mt-3 bg-blue-800 text-white w-40 h-10 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700"
+  >
+    Get Offer
+  </button>
+)}
+
                 </div>
               </div>
             </div>

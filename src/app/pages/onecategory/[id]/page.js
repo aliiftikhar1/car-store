@@ -2,38 +2,35 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { FaArrowRight } from 'react-icons/fa'; // Importing the arrow icon from react-icons
+import { FaArrowRight } from 'react-icons/fa';
 import CustomerRootLayout from '@/app/user/layout';
 
 const CompanyCard = ({ company, topDiscount }) => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition-shadow duration-300 relative">
       <div className="flex justify-end items-center mb-4">
-        {/* <span className="bg-blue-900 text-white text-xs font-bold rounded-full px-2 py-1">
-          SITEWIDE
-        </span> */}
         <span className="bg-white text-gray-900 text-xs font-bold rounded-full px-2 py-1 shadow-lg">
           {topDiscount !== 'Not Available' ? `${topDiscount}% OFF` : topDiscount}
         </span>
       </div>
       <div className='h-[150px]'>
-      <img
-        src={`https://couponri.com/uploads/${company.comp_logo}`}
-        alt={company.com_title}
-        className="w-full h-full object-stretch mb-4"
-      />
+        <img
+          src={`https://couponri.com/uploads/${company.comp_logo}`}
+          alt={company.com_title}
+          className="w-full h-full object-stretch mb-4"
+        />
       </div>
       <div className='h-full'>
-      <h3 className="text-sm font-semibold text-gray-700">{company.com_title}</h3>
-      <p className="text-sm text-gray-600 mb-2">
-        {company.comp_description || 'No description available.'}
-      </p>
-      <a
-        href={`/pages/onecompany/${company.id}`}
-        className="inline-block px-4 py-2 bg-teal-500 text-white text-xs font-bold rounded-md hover:bg-teal-600 transition-colors duration-200 mt-2"
-      >
-        View Details
-      </a>
+        <h3 className="text-sm font-semibold text-gray-700">{company.com_title}</h3>
+        <p className="text-sm text-gray-600 mb-2">
+          {company.comp_description || 'No description available.'}
+        </p>
+        <a
+          href={`/pages/onecompany/${company.id}`}
+          className="bg-[#06089B] text-white w-full h-10 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-200 mt-2"
+        >
+          View Details
+        </a>
       </div>
     </div>
   );
@@ -44,6 +41,7 @@ const CategoryDetail = () => {
   const router = useRouter();
   const [companies, setCompanies] = useState([]);
   const [topDiscounts, setTopDiscounts] = useState({});
+  const [category, setCategory] = useState(null); // For storing the category details
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,22 +49,25 @@ const CategoryDetail = () => {
   useEffect(() => {
     const fetchCategoriesAndOffers = async () => {
       try {
-        const [categoriesResponse, companiesResponse, offersResponse] = await Promise.all([
+        const [categoriesResponse, companiesResponse, categoryResponse, offersResponse] = await Promise.all([
           fetch('/api/category'),
           fetch('/api/onecategorycompanies/' + params.id),
+          fetch(`/api/category/${params.id}`), // Fetch the specific category details
           fetch('/api/offers')
         ]);
 
-        if (!categoriesResponse.ok || !companiesResponse.ok || !offersResponse.ok) {
+        if (!categoriesResponse.ok || !companiesResponse.ok || !categoryResponse.ok || !offersResponse.ok) {
           throw new Error('Failed to fetch data');
         }
 
         const categoriesData = await categoriesResponse.json();
         const companiesData = await companiesResponse.json();
+        const categoryData = await categoryResponse.json(); // Parse the specific category details
         const offersData = await offersResponse.json();
 
         setCategories(categoriesData);
         setCompanies(companiesData);
+        setCategory(categoryData); // Set the specific category details
 
         // Calculate top discounts
         const discounts = {};
@@ -143,7 +144,14 @@ const CategoryDetail = () => {
         {/* Main content for companies */}
         <div className="flex-1 p-6">
           <div className="my-8">
-            <h1 className="text-center text-5xl font-bold text-teal-700">Companies</h1>
+            <h1 className="text-center text-4xl font-bold text-[#06089B]">
+              {category ? `${category.category_name} Stores` : 'Category Store'}
+            </h1>
+            {category && (
+              <p className="text-center text-lg text-gray-600 mt-4">
+                {category.category_description || 'No description available.'}
+              </p>
+            )}
           </div>
           <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {companies.map((company) => (

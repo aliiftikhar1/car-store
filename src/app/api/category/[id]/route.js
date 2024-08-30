@@ -28,7 +28,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const { category_name, category_image } = data;
+    const { category_name, category_image, category_description, category_status } = data;
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
@@ -40,6 +40,8 @@ export async function PUT(request, { params }) {
       data: {
         category_name,
         category_image,
+        category_description,
+        category_status,
         updated_at: new Date(),
       },
     });

@@ -46,7 +46,7 @@ const OfferCard = ({ offer, company }) => {
     <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between border-b border-gray-200 relative">
       <div className="flex items-center space-x-4">
         <div className="flex flex-col items-center">
-          <span className="text-purple-600 text-2xl font-bold">{discountPercentage}%</span>
+          <span className="text-blue-600 text-2xl font-bold">{discountPercentage}%</span>
           <span className="text-gray-600 text-sm">OFF</span>
           <span className="bg-orange-400 text-white text-xs font-bold rounded px-2 py-1 mt-2">Code</span>
         </div>
@@ -54,7 +54,7 @@ const OfferCard = ({ offer, company }) => {
           <h3 className="text-xl font-semibold mb-1">{offer.offer_title}</h3>
           <p className="text-gray-600 mb-2">{offer.offer_description}</p>
           <p className="text-sm text-gray-500 flex items-center">
-            <FaCheckCircle className="text-purple-600 mr-1" /> Verified coupon
+            <FaCheckCircle className="text-blue-600 mr-1" /> Verified coupon
           </p>
         </div>
       </div>
@@ -62,7 +62,7 @@ const OfferCard = ({ offer, company }) => {
         {!showCode && (
           <button
             onClick={handleShowCode}
-            className="bg-purple-600 text-white w-40 h-10 text-sm font-semibold px-4 py-2 rounded hover:bg-purple-700 transition-transform duration-300"
+            className="bg-[#07069F] text-white w-40 h-10 text-sm font-semibold px-4 py-2 rounded hover:bg-blue-700 transition-transform duration-300"
             style={{
               position: 'absolute',
               bottom: '8px',
@@ -74,7 +74,7 @@ const OfferCard = ({ offer, company }) => {
           </button>
         )}
         <button
-          className="text-sm font-semibold px-4 py-2 rounded border-2 border-dotted border-purple-600 bg-white text-gray-800"
+          className="text-sm font-semibold px-4 py-2 rounded border-2 border-dotted border-blue-600 bg-white text-gray-800"
           style={{
             position: 'absolute',
             bottom: '8px',
@@ -98,7 +98,7 @@ const OfferCard = ({ offer, company }) => {
             </button>
             <img
               src={`https://couponri.com/uploads/${company.comp_logo}`}
-              alt={company.com_title}
+              alt={company.comp_title}
               className="h-16 mx-auto mb-4"
             />
             <h3 className="text-xl font-semibold mb-2 text-center">{offer.offer_title}</h3>

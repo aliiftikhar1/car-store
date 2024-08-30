@@ -23,6 +23,10 @@ import {
   Typography,
   TextField,
   IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useTable, useGlobalFilter, useSortBy, usePagination } from "react-table";
@@ -98,6 +102,8 @@ const AddCategories = () => {
     setFormData({
       id: "",
       category_name: "",
+      category_description: "",
+      category_status: "",
       category_image: "",
     });
   };
@@ -105,6 +111,8 @@ const AddCategories = () => {
   const [formData, setFormData] = useState({
     id: "",
     category_name: "",
+    category_description: "",
+    category_status: "",
     category_image: "",
   });
 
@@ -133,26 +141,27 @@ const AddCategories = () => {
         },
         body: JSON.stringify({ image: imageBase64 }),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(result.error || 'Failed to upload image');
       }
-
+  
       return result.image_url; // Assuming the API returns the image URL in this field
     } catch (error) {
       console.error("Error uploading image:", error);
       throw new Error("Image upload failed");
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoad(true);
     setLoading(true); // Show loading overlay
   
-    if (!formData.category_name || !formData.category_image) {
+    if (!formData.category_name || !formData.category_image || !formData.category_status) {
       setSnackbarSubmit(true);
       setTimeout(() => {
         setSnackbarSubmit(false);
@@ -163,14 +172,22 @@ const AddCategories = () => {
     }
   
     try {
+      console.log("Converting image to Base64...");
       const imageBase64 = await convertToBase64(formData.category_image);
+      console.log("Image converted to Base64:", imageBase64);
+  
+      console.log("Uploading image...");
       const uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
+      console.log("Image uploaded. URL:", uploadedImageUrl);
   
       const categoryToSubmit = {
         category_name: formData.category_name,
+        category_description: formData.category_description,
+        category_status: formData.category_status,
         category_image: uploadedImageUrl,
       };
   
+      console.log("Submitting category:", categoryToSubmit);
       await axios.post(`http://localhost:3000/api/category`, categoryToSubmit);
       toast.success("Category has been added successfully!");
       setLoad(false);
@@ -178,11 +195,12 @@ const AddCategories = () => {
       modelClose();
       window.location.reload();
     } catch (error) {
-      console.error("Error occurred while sending data to the API", error);
+      console.error("Error occurred during submission", error);
       setLoad(false);
       setLoading(false); // Hide loading overlay
     }
   };
+  
   
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -200,11 +218,13 @@ const AddCategories = () => {
   
       const categoryToUpdate = {
         category_name: editingCategory.category_name,
+        category_description: editingCategory.category_description,
+        category_status: editingCategory.category_status,
         category_image: uploadedImageUrl,
       };
   
       await axios.put(
-        `http://localhost:3000/api/category/${editingCategory.id}`,
+        `/api/category/${editingCategory.id}`,
         categoryToUpdate
       );
   
@@ -229,13 +249,14 @@ const AddCategories = () => {
         reject(new Error("Provided value is not a file or blob"));
         return;
       }
-
+  
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
   };
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -282,6 +303,14 @@ const AddCategories = () => {
       {
         Header: "Category Name",
         accessor: "category_name",
+      },
+      {
+        Header: "Description",
+        accessor: "category_description",
+      },
+      {
+        Header: "Status",
+        accessor: "category_status",
       },
       {
         Header: "Image",
@@ -476,6 +505,32 @@ const AddCategories = () => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <TextField
+                  label="Category Description"
+                  type="text"
+                  name="category_description"
+                  value={formData.category_description}
+                  onChange={handleInputChange}
+                  fullWidth
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    name="category_status"
+                    value={formData.category_status}
+                    onChange={handleInputChange}
+                    label="Status"
+                  >
+                    <MenuItem value="Top">Top</MenuItem>
+                    <MenuItem value="Best Selling">Best Selling</MenuItem>
+                    <MenuItem value="Normal">Normal</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
                 <Typography variant="body2" color="textSecondary">
                   Upload Image:
                 </Typography>
@@ -566,6 +621,41 @@ const AddCategories = () => {
                     }
                     variant="outlined"
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Category Description"
+                    name="category_description"
+                    value={editingCategory.category_description}
+                    fullWidth
+                    onChange={(e) =>
+                      setEditingCategory({
+                        ...editingCategory,
+                        category_description: e.target.value,
+                      })
+                    }
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      name="category_status"
+                      value={editingCategory.category_status}
+                      onChange={(e) =>
+                        setEditingCategory({
+                          ...editingCategory,
+                          category_status: e.target.value,
+                        })
+                      }
+                      label="Status"
+                    >
+                      <MenuItem value="Top">Top</MenuItem>
+                      <MenuItem value="Best Selling">Best Selling</MenuItem>
+                      <MenuItem value="Normal">Normal</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="body2" color="textSecondary">

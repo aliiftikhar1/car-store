@@ -7,6 +7,8 @@ import LeftSide from '@/app/user/components/LeftSide';
 import CouponHeader from '@/app/user/components/CouponHeader';
 import FaqComponent from '@/app/user/components/FaqComponent';
 import CustomerRootLayout from '@/app/user/layout';
+import OffersTable from '@/app/user/components/CouponTable';
+import SimilarStores from '@/app/user/components/SImilarStores';
 
 const CompanyDetail = () => {
   const params = useParams();
@@ -85,6 +87,8 @@ const CompanyDetail = () => {
           <RightSide offers={offers} company={company} />
         </div>
       </div>
+      <OffersTable offers={offers} company={company} />
+      <SimilarStores company={company}/>
       <div className="mt-8 bg-white p-6 shadow-md rounded-lg">
         <FaqComponent faqs={faqs} />
       </div>

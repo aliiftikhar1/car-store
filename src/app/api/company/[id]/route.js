@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 
+// PUT: Update a company by ID
 export async function PUT(request, { params }) {
   const { id } = params;
   try {
@@ -15,53 +16,56 @@ export async function PUT(request, { params }) {
       comp_website,
       comp_rating,
       com_details,
+      company_details,
+      other_details,
     } = data;
+    console.log(data);
 
-    // Check if the image is a new file
-    let uploadedImageUrl = comp_logo;
+    // // Check if the image is a new file
+    // let uploadedImageUrl = comp_logo;
 
-    if (comp_logo.startsWith("data:image")) {
-      const uploadImageToExternalAPI = async (imageBase64) => {
-        try {
-          const response = await fetch('https://couponri.com/uploadImage.php', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ image: imageBase64 }),
-          });
+    // if (comp_logo) {
+    //   const uploadImageToExternalAPI = async (imageBase64) => {
+    //     try {
+    //       const response = await fetch('https://couponri.com/uploadImage.php', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ image: imageBase64 }),
+    //       });
 
-          const result = await response.json();
+    //       const result = await response.json();
 
-          if (!response.ok) {
-            throw new Error(result.error || 'Failed to upload image');
-          }
+    //       if (!response.ok) {
+    //         throw new Error(result.error || 'Failed to upload image');
+    //       }
 
-          return result.image_url; // Assuming the API returns the image URL in this field
-        } catch (error) {
-          console.error("Error uploading image:", error);
-          throw new Error("Image upload failed");
-        }
-      };
+    //       return result.image_url; // Assuming the API returns the image URL in this field
+    //     } catch (error) {
+    //       console.error("Error uploading image:", error);
+    //       throw new Error("Image upload failed");
+    //     }
+    //   };
 
-      // Convert image to base64 and upload it
-      const imageBase64 = comp_logo.replace(/^data:image\/\w+;base64,/, "");
-      uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
-    }
+    //   const imageBase64 = comp_logo.replace(/^data:image\/\w+;base64,/, "");
+    //   uploadedImageUrl = await uploadImageToExternalAPI(imageBase64);
+    // }
 
-    // Update company data in the database
     const updatedCompany = await prisma.company.update({
       where: { id: parseInt(id, 10) },
       data: {
         com_title,
-        comp_logo: uploadedImageUrl,
-        comp_category: parseInt(comp_category, 10), // Ensure category is an integer
+        comp_logo,
+        comp_category,
         comp_description,
         comp_phone,
         comp_email,
         comp_website,
         comp_rating,
         com_details,
+        comp_details:company_details,
+        comp_other_details:other_details,
         updated_at: new Date(),
       },
     });
@@ -73,6 +77,7 @@ export async function PUT(request, { params }) {
   }
 }
 
+// DELETE: Delete a company by ID
 export async function DELETE(request, { params }) {
   const { id } = params;
   try {
@@ -87,22 +92,21 @@ export async function DELETE(request, { params }) {
   }
 }
 
+// GET: Retrieve a single company by ID
 export async function GET(request, { params }) {
   const { id } = params;
-  console.log(id);
   try {
-    const companies = await prisma.company.findUnique({
-      where: { id: parseInt(id) },
+    const company = await prisma.company.findUnique({
+      where: { id: parseInt(id, 10) },
     });
 
-    if (companies.length === 0) {
-      return NextResponse.json({ message: "No companies found for this category" }, { status: 404 });
+    if (!company) {
+      return NextResponse.json({ message: "Company not found" }, { status: 404 });
     }
 
-    console.log("company : ",companies)
-    return NextResponse.json(companies);
+    return NextResponse.json(company);
   } catch (error) {
-    console.error("Error Fetching Companies:", error);
+    console.error("Error Fetching Company:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }

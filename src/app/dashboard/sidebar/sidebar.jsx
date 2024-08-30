@@ -77,6 +77,22 @@ const Sidebar = ({ setActiveComponent }) => {
             </a>
           </li>
           <li>
+            <a href="/admin/Category_Coupon">
+              <button className="flex items-center p-2 hover:bg-blue-700 rounded">
+                <FaTags className="h-5 w-5" />
+                <span className="ml-2">Category Coupon</span>
+              </button>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/Blogs">
+              <button className="flex items-center p-2 hover:bg-blue-700 rounded">
+                <FaTags className="h-5 w-5" />
+                <span className="ml-2">Blogs</span>
+              </button>
+            </a>
+          </li>
+          <li>
             <a href="/admin/Faqs">
               <button className="flex items-center p-2 hover:bg-blue-700 rounded">
                 <FaCogs className="h-5 w-5" />

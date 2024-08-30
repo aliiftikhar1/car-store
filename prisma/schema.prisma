@@ -18,29 +18,47 @@ model Company {
   id               Int      @id @default(autoincrement())
   com_title        String
   comp_logo        String
-  comp_category    Int // This is the foreign key referencing the Category
+  comp_category    Int      
   comp_description String   @db.Text
   comp_phone       String
   comp_email       String
   comp_website     String
   comp_rating      String
   com_details      String   @db.Text
-  created_at       DateTime
-  updated_at       DateTime
+  comp_details  String?   @db.Text   
+  comp_other_details    String?   @db.Text  
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
 }
+
+
 
 model Category {
   id             Int      @id @default(autoincrement())
   category_name  String
+  category_description String?
+  category_status String?
   category_image String
   created_at     DateTime
   updated_at     DateTime
 }
 
+model Blog{
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
 model Offer {
   id                Int      @id @default(autoincrement())
   comp_id           Int
   offer_type        String
+  offer_status      String?
   offer_title       String
   offer_code        String
   offer_description String
@@ -53,6 +71,15 @@ model Offer {
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   
+}
+
+model Category_Coupon{
+  id                Int      @id @default(autoincrement())
+  name            String
+  offer           String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
 }
 
 model Faqs {

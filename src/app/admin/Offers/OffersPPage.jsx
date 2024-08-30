@@ -31,7 +31,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-toastify";
 import axios from "axios";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 // Dynamically import the editor since it might use 'self' or 'window'
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
@@ -40,17 +40,15 @@ const OffersPPage = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [sizes, setSizes] = useState([]);
-  const [companies, setCompanies] = useState([]);  // Add state to store companies
+  const [companies, setCompanies] = useState([]);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
-  const [model, setModel] = React.useState(false);
-  const handleModel = () => setModel(true);
+  const [model, setModel] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const  [load,setLoad]=useState('')
   const [snackbarSubmit, setSnackbarSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [load, setLoad] = useState(false);
   const [deleteSuccessSnackbar, setDeleteSuccessSnackbar] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     open: false,
@@ -63,19 +61,16 @@ const OffersPPage = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(
-        `/api/offers/${deleteConfirmation.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-  
+      const response = await fetch(`/api/offers/${deleteConfirmation.id}`, {
+        method: "DELETE",
+      });
+
       if (response.ok) {
         setDeleteSuccessSnackbar(true);
         setTimeout(() => {
           setDeleteSuccessSnackbar(false);
         }, 5000);
-  
+
         const updatedCategories = sizes.filter(
           (category) => category.id !== deleteConfirmation.id
         );
@@ -90,13 +85,13 @@ const OffersPPage = () => {
     }
   };
 
-  
   const modelClose = () => {
     setModel(false);
     setFormData({
       id: "",
       comp_id: "",
       offer_type: "",
+      offer_status: "Normal", // Default value
       offer_title: "",
       offer_code: "",
       offer_description: "",
@@ -105,10 +100,10 @@ const OffersPPage = () => {
       offer_users: "",
       offer_expiry: "",
       offer_isverify: "",
-      offer_details: ""
+      offer_details: "",
     });
   };
-  
+
   const handleDelete = (row) => {
     if (row && row.id) {
       setDeleteConfirmation({ open: true, id: row.id });
@@ -119,7 +114,7 @@ const OffersPPage = () => {
 
   useEffect(() => {
     fetchData();
-    fetchCompanies();  // Fetch companies when the component loads
+    fetchCompanies(); // Fetch companies when the component loads
   }, []);
 
   const fetchData = async () => {
@@ -130,6 +125,10 @@ const OffersPPage = () => {
       console.error("Error fetching offers: ", error);
     }
   };
+  const handleModel = () => {
+    setModel(true);
+  };
+  
 
   const fetchCompanies = async () => {
     try {
@@ -143,7 +142,8 @@ const OffersPPage = () => {
   const [formData, setFormData] = useState({
     id: "",
     comp_id: "",
-    offer_type: "Code",  // Set a default value if needed
+    offer_type: "Code", // Set a default value if needed
+    offer_status: "Normal", // Set a default value
     offer_title: "",
     offer_code: "",
     offer_description: "",
@@ -152,19 +152,19 @@ const OffersPPage = () => {
     offer_users: "",
     offer_expiry: "",
     offer_isverify: "",
-    offer_details:""
+    offer_details: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
 
     if (editingCategory) {
-      setEditingCategory(prevData => ({
+      setEditingCategory((prevData) => ({
         ...prevData,
         [name]: value,
       }));
@@ -176,53 +176,60 @@ const OffersPPage = () => {
     setLoad(true);
 
     const requiredFields = [
-        'comp_id',
-        'offer_type',
-        'offer_title',
-        'offer_code',
-        'offer_description',
-        'offer_link1',
-        'offer_link2',
-        'offer_users',
-        'offer_expiry',
-        'offer_isverify'
+      "comp_id",
+      "offer_type",
+      "offer_status",
+      "offer_title",
+      "offer_code",
+      "offer_description",
+      "offer_link1",
+      "offer_link2",
+      "offer_users",
+      "offer_expiry",
+      "offer_isverify",
     ];
 
-    const isFormValid = requiredFields.every(field => formData[field] && formData[field].trim() !== '');
+    const isFormValid = requiredFields.every(
+      (field) => formData[field] && formData[field].trim() !== ""
+    );
 
     if (!isFormValid) {
-        setSnackbarSubmit(true);
-        setTimeout(() => {
-            setSnackbarSubmit(false);
-        }, 5000);
-        setLoad(false);
-        return;
+      setSnackbarSubmit(true);
+      setTimeout(() => {
+        setSnackbarSubmit(false);
+      }, 5000);
+      setLoad(false);
+      return;
     }
 
     try {
-        const submitData = {
-            ...formData,
-            comp_id: parseInt(formData.comp_id),
-        };
+      const submitData = {
+        ...formData,
+        comp_id: parseInt(formData.comp_id),
+      };
 
-        const result = await axios.post("/api/offers", submitData);
-        toast.success("Record Has Been added Successfully!");
-        setLoad(false);
-        modelClose();
-        window.location.reload();
+      const result = await axios.post("/api/offers", submitData);
+      toast.success("Record Has Been added Successfully!");
+      setLoad(false);
+      modelClose();
+      window.location.reload();
     } catch (error) {
-        console.error("Error occurred while sending data to the API", error.response || error);
-        setLoad(false);
+      console.error(
+        "Error occurred while sending data to the API",
+        error.response || error
+      );
+      setLoad(false);
     }
   };
 
   const handleEdit = async (e) => {
     e.preventDefault();
     setLoad(true);
-  
+
     if (
       !editingCategory.comp_id ||
       !editingCategory.offer_type ||
+      !editingCategory.offer_status ||
       !editingCategory.offer_title ||
       !editingCategory.offer_code ||
       !editingCategory.offer_description ||
@@ -239,7 +246,7 @@ const OffersPPage = () => {
       setLoad(false);
       return;
     }
-  
+
     try {
       const submitData = {
         ...editingCategory,
@@ -250,13 +257,16 @@ const OffersPPage = () => {
         `/api/offers/${editingCategory.id}`,
         submitData
       );
-  
+
       toast.success("Record has been updated successfully!");
       setLoad(false);
       handleClose();
       window.location.reload();
     } catch (error) {
-      console.error("Error occurred while updating the data:", error.response || error);
+      console.error(
+        "Error occurred while updating the data:",
+        error.response || error
+      );
       toast.error("Failed to update the record");
       setLoad(false);
     }
@@ -268,6 +278,7 @@ const OffersPPage = () => {
       id: sizes.id,
       comp_id: sizes.comp_id,
       offer_type: sizes.offer_type,
+      offer_status: sizes.offer_status || "Normal", // Default to "Normal" if undefined
       offer_title: sizes.offer_title,
       offer_code: sizes.offer_code,
       offer_description: sizes.offer_description,
@@ -283,7 +294,6 @@ const OffersPPage = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setImageFile(null);
     setEditingCategory(null);
   };
 
@@ -297,7 +307,7 @@ const OffersPPage = () => {
         Header: "Company",
         accessor: "comp_id",
         Cell: ({ value }) => {
-          const company = companies.find(c => c.id === value);
+          const company = companies.find((c) => c.id === value);
           return company ? company.com_title : "Unknown";
         },
       },
@@ -308,6 +318,10 @@ const OffersPPage = () => {
       {
         Header: "Offer Type",
         accessor: "offer_type",
+      },
+      {
+        Header: "Offer Status",
+        accessor: "offer_status", // Added Offer Status column
       },
       {
         Header: "Offer Code",
@@ -463,7 +477,9 @@ const OffersPPage = () => {
               name="comp_id"
               style={{ marginTop: "20px", width: "100%", padding: "10px" }}
             >
-              <option key={0} value="">Select Company</option>
+              <option key={0} value="">
+                Select Company
+              </option>
               {companies.map((company) => (
                 <option key={company.id} value={company.id}>
                   {company.com_title}
@@ -474,12 +490,25 @@ const OffersPPage = () => {
             <h3 style={{ marginTop: "20px", width: "100%" }}>Offer Type</h3>
             <select
               name="offer_type"
-              value={formData.offer_type}  // Ensure this binds to formData.offer_type
+              value={formData.offer_type} // Ensure this binds to formData.offer_type
               onChange={handleInputChange}
               style={{ marginTop: "10px", width: "100%", padding: "10px" }}
             >
               <option value="Code">Code</option>
               <option value="Offer">Offer</option>
+            </select>
+
+            <h3 style={{ marginTop: "20px", width: "100%" }}>Offer Status</h3>
+            <select
+              name="offer_status"
+              value={formData.offer_status} // Bind to formData.offer_status
+              onChange={handleInputChange}
+              style={{ marginTop: "10px", width: "100%", padding: "10px" }}
+            >
+              <option value="Normal">Normal</option>
+              <option value="Hot">Hot</option>
+              <option value="Trending">Trending</option>
+              <option value="Best Selling">Best Selling</option>
             </select>
 
             <TextField
@@ -545,9 +574,7 @@ const OffersPPage = () => {
               fullWidth
               style={{ marginTop: "20px", width: "100%", marginBottom: "10px" }}
             />
-            <h3 style={{ marginTop: "20px", width: "330px" }}>
-              Is Verify
-            </h3>
+            <h3 style={{ marginTop: "20px", width: "330px" }}>Is Verify</h3>
             <select
               name="offer_isverify"
               value={formData.offer_isverify}
@@ -568,21 +595,22 @@ const OffersPPage = () => {
                   ...formData,
                   offer_details: newContent,
                 })
-              } 
+              }
             />
             <DialogActions>
-              <Button
-                type="submit"
-                disabled={load}
-                variant="contained"
-                className="font=[18px] flex content-center items-center justify-center px-8 py-2 font-normal"
-                style={{
-                  backgroundColor: "#E3B505",
-                  color: "black",
-                }}
-              >
-                {`${load ? "Loading...." : "Save"}`}
-              </Button>
+            <Button
+  type="submit"
+  disabled={loading}
+  variant="contained"
+  className="font=[18px] flex content-center items-center justify-center px-8 py-2 font-normal"
+  style={{
+    backgroundColor: "#E3B505",
+    color: "black",
+  }}
+>
+  {`${loading ? "Loading...." : "Save"}`}
+</Button>
+
             </DialogActions>
           </form>
         </DialogContent>
@@ -632,6 +660,21 @@ const OffersPPage = () => {
                 onChange={handleInputChange}
                 style={{ marginTop: "20px" }}
               />
+              <TextField
+                label="Offer Status"
+                name="offer_status"
+                value={editingCategory.offer_status}
+                fullWidth
+                onChange={handleInputChange}
+                style={{ marginTop: "20px" }}
+                select // Use a select element for dropdown
+                SelectProps={{ native: true }}
+              >
+                <option value="Normal">Normal</option>
+                <option value="Hot">Hot</option>
+                <option value="Trending">Trending</option>
+                <option value="Best Selling">Best Selling</option>
+              </TextField>
               <TextField
                 label="Offer Title"
                 name="offer_title"

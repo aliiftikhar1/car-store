@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 });
 
+// POST: Create a new company
 export async function POST(request) {
   try {
     const data = await request.json();
@@ -16,21 +18,24 @@ export async function POST(request) {
       comp_email, 
       comp_website, 
       comp_rating, 
-      com_details 
+      com_details, 
+      company_details,  // New field
+      other_details     // New field
     } = data;
 
-    // Assuming comp_logo is the URL of the uploaded image from your external API
     const newCompany = await prisma.company.create({
       data: {
         com_title,
         comp_logo,
-        comp_category: parseInt(comp_category, 10), // Ensure category is an integer
+        comp_category: parseInt(comp_category, 10),
         comp_description,
         comp_phone,
         comp_email,
         comp_website,
         comp_rating,
         com_details,
+        comp_details:company_details,
+        comp_other_details:other_details,
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -43,11 +48,10 @@ export async function POST(request) {
   }
 }
 
-
+// GET: Retrieve all companies
 export async function GET() {
   try {
-    const companies = await prisma.company.findMany({
-    });
+    const companies = await prisma.company.findMany();
     return NextResponse.json(companies);
   } catch (error) {
     console.error("Error Fetching Companies:", error);

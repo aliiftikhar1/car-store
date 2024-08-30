@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function CustomerRootLayout({ children }) {
   return (
     <html lang="en">
-    <body className=" bg-black">
+    <body className=" bg-white">
       {/* {children} */}
       {/* <UserProvider> */}
 

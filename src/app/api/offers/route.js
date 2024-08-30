@@ -9,12 +9,13 @@ export async function POST(request) {
     const data = await request.json();
 
     console.log("data",data);
-    const { comp_id, offer_type ,offer_title,offer_code,offer_description,offer_link1,offer_link2,offer_expiry,offer_isverify,offer_users,offer_details } = data;
+    const { comp_id, offer_type ,offer_title,offer_status,offer_code,offer_description,offer_link1,offer_link2,offer_expiry,offer_isverify,offer_users,offer_details } = data;
     const newOffer = await prisma.Offer.create({
       data: {
         comp_id: comp_id,
         offer_type: offer_type,
         offer_title: offer_title,
+        offer_status: offer_status,
         offer_code: offer_code,
         offer_description: offer_description,
         offer_link1: offer_link1,
@@ -38,6 +39,7 @@ export async function POST(request) {
 export async function GET() {
   try {
     const Offers_= await prisma.Offer.findMany();
+    console.log(Offers_);
     return NextResponse.json(Offers_);
   } catch (error) {
     console.log("Error getting Offer  :", error);

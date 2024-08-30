@@ -31,7 +31,7 @@ const CategoryPage = () => {
 
   return (
     <CustomerRootLayout>
-      <div className="bg-gray-50 w-full h-screen ">
+      <div className="bg-white w-full h-screen ">
         <Box sx={{ padding: 3 }}>
           <Typography variant="h4" fontWeight="bold"  gutterBottom align="center" padding="5px">
             Choose a Category for Promo Code
@@ -53,7 +53,7 @@ const CategoryPage = () => {
                     justifyContent: 'space-between',
                     transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out',
                     borderRadius: '20px',  // More rounded corners
-                    border: '2px solid gray', // Initial border
+                    border: '2px solid transparent', // Initial border
                     margin: '5px', // Margin around the card
                     '&:hover': {
                       transform: 'translateY(-8px)',

@@ -25,12 +25,12 @@ const CouponCard = ({ company, topDiscount }) => {
       <div className="text-lg font-semibold text-gray-800 mb-4">{company.com_title}</div>
       <div className="text-sm text-gray-600 mb-4">{company.comp_description}</div>
       <div className="flex items-center text-sm text-gray-700 font-semibold mb-4">
-        <CheckCircleIcon className="h-5 w-5 text-purple-600 mr-2" /> {/* Updated icon */}
+        <CheckCircleIcon className="h-5 w-5 text-blue-600 mr-2" /> {/* Updated icon */}
         <span>verified coupon</span>
       </div>
       <button
         onClick={handleButtonClick}
-        className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 text-sm font-bold"
+        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 text-sm font-bold"
       >
         Coupon Code
       </button>

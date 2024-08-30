@@ -7,7 +7,7 @@ const prisma = new PrismaClient({
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { category_name, category_image } = data;
+    const { category_name, category_image, category_description, category_status } = data;
 
     // Validate required fields
     if (!category_name || !category_image) {
@@ -18,6 +18,8 @@ export async function POST(request) {
     const newCategory = await prisma.category.create({
       data: {
         category_name,
+        category_description,
+        category_status,
         category_image,
         created_at: new Date(),
         updated_at: new Date(),
