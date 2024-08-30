@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error']
-});
+import prisma from "@/app/lib/prisma";
 
 // POST: Create a new company
 export async function POST(request) {

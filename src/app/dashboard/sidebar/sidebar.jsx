@@ -1,6 +1,5 @@
 "use client";
 import { useState } from 'react';
-import Image from 'next/image';
 import Cookies from 'js-cookie';
 import { 
   FaUsers, 
@@ -8,7 +7,10 @@ import {
   FaChevronDown, 
   FaCube, 
   FaTags, 
-  FaCogs, 
+  FaBlog, 
+  FaCog, 
+  FaQuestionCircle, 
+  FaPercent,
 } from 'react-icons/fa';
 
 const menuItems = [
@@ -18,7 +20,7 @@ const menuItems = [
       {
         title: "Settings",
         path: "/dashboard/settings",
-        icon: <FaCogs />,
+        icon: <FaCog />,
       },
     ],
   },
@@ -71,7 +73,7 @@ const Sidebar = ({ setActiveComponent }) => {
           <li>
             <a href="/admin/Offers">
               <button className="flex items-center p-2 hover:bg-blue-700 rounded">
-                <FaTags className="h-5 w-5" />
+                <FaPercent className="h-5 w-5" />
                 <span className="ml-2">Offers</span>
               </button>
             </a>
@@ -87,7 +89,7 @@ const Sidebar = ({ setActiveComponent }) => {
           <li>
             <a href="/admin/Blogs">
               <button className="flex items-center p-2 hover:bg-blue-700 rounded">
-                <FaTags className="h-5 w-5" />
+                <FaBlog className="h-5 w-5" />
                 <span className="ml-2">Blogs</span>
               </button>
             </a>
@@ -95,7 +97,7 @@ const Sidebar = ({ setActiveComponent }) => {
           <li>
             <a href="/admin/Faqs">
               <button className="flex items-center p-2 hover:bg-blue-700 rounded">
-                <FaCogs className="h-5 w-5" />
+                <FaQuestionCircle className="h-5 w-5" />
                 <span className="ml-2">FAQ's</span>
               </button>
             </a>
