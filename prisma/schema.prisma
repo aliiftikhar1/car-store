@@ -73,7 +73,7 @@ model Offer {
   
 }
 
-model Category_Coupon{
+model Category_coupon{
   id                Int      @id @default(autoincrement())
   name            String
   offer           String?
@@ -89,4 +89,15 @@ model Faqs {
   answer     String   @db.Text
   created_at DateTime
   updated_at DateTime
+}
+
+model Submittion {
+  id             Int      @id @default(autoincrement())
+  storeWebsite   String
+  offerType      String
+  code           String
+  description    String
+  startDate      DateTime? // Optional
+  expirationDate DateTime? // Optional
+  createdAt      DateTime  @default(now())
 }

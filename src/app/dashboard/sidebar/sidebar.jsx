@@ -87,6 +87,14 @@ const Sidebar = ({ setActiveComponent }) => {
             </a>
           </li>
           <li>
+            <a href="/admin/Submittions">
+              <button className="flex items-center p-2 hover:bg-blue-700 rounded">
+                <FaTags className="h-5 w-5" />
+                <span className="ml-2">Submittions</span>
+              </button>
+            </a>
+          </li>
+          <li>
             <a href="/admin/Blogs">
               <button className="flex items-center p-2 hover:bg-blue-700 rounded">
                 <FaBlog className="h-5 w-5" />
@@ -102,6 +110,7 @@ const Sidebar = ({ setActiveComponent }) => {
               </button>
             </a>
           </li>
+
 
           {/* Dropdown Menu */}
           {menuItems.map((category, index) => (

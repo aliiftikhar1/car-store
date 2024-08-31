@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../lib/prisma';
-
+import prisma from '../../../util/prisma';
 export async function GET(request, { params }) {
   const id = parseInt(params.id);
 
@@ -9,7 +8,7 @@ export async function GET(request, { params }) {
   }
 
   try {
-    const categoryCoupon = await prisma.category_Coupon.findUnique({
+    const categoryCoupon = await prisma.SubmitOffer.findUnique({
       where: { id },
     });
 
@@ -37,7 +36,7 @@ export async function PUT(request, { params }) {
     // Join the offers array into a comma-separated string
     const offersString = offers.join(',');
 
-    const updatedCategoryCoupon = await prisma.category_Coupon.update({
+    const updatedCategoryCoupon = await prisma.SubmitOffer.update({
       where: { id },
       data: {
         name,
@@ -64,7 +63,7 @@ export async function DELETE(request, { params }) {
   }
 
   try {
-    const deletedCategoryCoupon = await prisma.category_Coupon.delete({
+    const deletedCategoryCoupon = await prisma.SubmitOffer.delete({
       where: { id },
     });
 

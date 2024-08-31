@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../lib/prisma';
-
+import prisma from '../../../util/prisma';
 export async function GET(request, { params }) {
   try {
     const companyId = parseInt(params.id, 10);  // Convert the company ID to an integer

@@ -40,8 +40,8 @@ export default function Header() {
           <a href="/pages/alloffers" className="hover:text-blue-700">
             Coupons
           </a>
-          <a href="/pages/contactus" className="hover:text-blue-700">
-            Contact Us
+          <a href="/pages/submitoffer" className="hover:text-blue-700">
+            Submit Offer
           </a>
         </nav>
 

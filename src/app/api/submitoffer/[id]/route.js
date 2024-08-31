@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../util/prisma';
 
-// GET a single blog by ID
+// GET: Retrieve a specific coupon offer by ID
 export async function GET(request, { params }) {
   const id = parseInt(params.id);
 
@@ -10,54 +10,56 @@ export async function GET(request, { params }) {
   }
 
   try {
-    const blog = await prisma.blog.findUnique({
+    const couponOffer = await prisma.submittion.findUnique({
       where: { id },
     });
 
-    if (!blog) {
-      return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
+    if (!couponOffer) {
+      return NextResponse.json({ error: 'Coupon offer not found' }, { status: 404 });
     }
 
-    return NextResponse.json(blog);
+    return NextResponse.json(couponOffer);
   } catch (error) {
-    console.error('Error fetching blog:', error);
+    console.error('Error fetching coupon offer:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// UPDATE a blog by ID
+// PUT: Update a specific coupon offer by ID
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const { title, description, image, category } = data;
+    const { storeWebsite, offerType, code, description, startDate, expirationDate } = data;
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid ID provided' }, { status: 400 });
     }
 
-    const updatedBlog = await prisma.blog.update({
+    const updatedCouponOffer = await prisma.submittion.update({
       where: { id },
       data: {
-        title,
+        storeWebsite,
+        offerType,
+        code,
         description,
-        image,
-        category,
+        startDate: startDate ? new Date(startDate) : null,
+        expirationDate: expirationDate ? new Date(expirationDate) : null,
         updatedAt: new Date(),
       },
     });
 
-    return NextResponse.json(updatedBlog);
+    return NextResponse.json(updatedCouponOffer);
   } catch (error) {
-    console.error('Error updating blog:', error);
+    console.error('Error updating coupon offer:', error);
     if (error.code === 'P2025') { // Prisma specific error when record not found
-      return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Coupon offer not found' }, { status: 404 });
     }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// DELETE a blog by ID
+// DELETE: Delete a specific coupon offer by ID
 export async function DELETE(request, { params }) {
   const id = parseInt(params.id);
 
@@ -66,15 +68,15 @@ export async function DELETE(request, { params }) {
   }
 
   try {
-    const deletedBlog = await prisma.blog.delete({
+    const deletedCouponOffer = await prisma.submittion.delete({
       where: { id },
     });
 
-    return NextResponse.json({ message: 'Blog deleted successfully' });
+    return NextResponse.json({ message: 'Coupon offer deleted successfully' });
   } catch (error) {
-    console.error('Error deleting blog:', error);
+    console.error('Error deleting coupon offer:', error);
     if (error.code === 'P2025') { // Prisma specific error when record not found
-      return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Coupon offer not found' }, { status: 404 });
     }
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/app/lib/prisma';
-
+import prisma from '../../util/prisma';
 // POST handler for creating a new Category_Coupon
 export async function POST(request) {
   try {
