@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Menu, Search, User } from 'lucide-react'
-import { MainNav } from "./main-nav"
+import { MainNav } from "./Main-nav"
 import Header2 from "./Header2"
 
 export default function Header() {
