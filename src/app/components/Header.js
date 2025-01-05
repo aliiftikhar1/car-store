@@ -20,7 +20,7 @@ export default function Header() {
                     </div>
                     <div className="flex flex-col justify-center items-center">
                         <h1 className="font-xspace text-base md:text-3xl -tracking-[4px] md:tracking-tight">CAR BUY DIRECT</h1>
-                        <p className="uppercase font-[300] text-xs md:text-base">Supercar Blondie</p>
+                        {/* <p className="uppercase font-[300] text-xs md:text-base">Supercar Blondie</p> */}
                     </div>
                     <div className="flex gap-4 text-lg font-[400] tracking-wider justify-center items-center">
                         <Search className="size-6" />

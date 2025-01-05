@@ -14,7 +14,7 @@ export default function Footer() {
                         <div className="flex flex-col justify-center items-center">
                         <h1 className="font-xspace text-base md:text-3xl -tracking-[4px] md:tracking-tighter">CAR BUY DIRECT</h1>
                             {/* <h1 className="font-xspace text-3xl tracking-tight">SBX | CARS</h1> */}
-                            <p className="uppercase font-[300]">Supercar Blondie</p>
+                            {/* <p className="uppercase font-[300]">Supercar Blondie</p> */}
                         </div>
                         <div className="flex space-x-4 justify-center items-center">
                             <Link href="#" className="text-gray-600 hover:text-gray-900">
