@@ -1,82 +1,36 @@
-'use client'
-import { useState } from 'react';
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'; // Updated import path for v2 icons
+"use client"
+
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Menu, Search, User } from 'lucide-react'
+import { MainNav } from "./main-nav"
+import Header2 from "./Header2"
 
 export default function Header() {
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false)
 
-  const toggleServicesDropdown = () => {
-    setIsServicesOpen(!isServicesOpen);
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  return (
-    <header className="bg-white border-b-2 text-white px-4">
-      <div className="container mx-auto flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center">
-          <a href="/">
-            <img src="/logo/logo.jpg" alt="Logo" className="w-40" />
-          </a>
-        </div>
-        
-        {/* Navigation */}
-        <nav className="hidden lg:flex text-lg space-x-8 text-black text-sm font-semibold">
-        <a href="/pages/blog" className="hover:text-blue-700">
-            Blog
-          </a>
-          
-          <a href="/pages/categories" className="hover:text-blue-700">
-            Categories
-          </a>
-          <a href="/pages/stores" className="hover:text-blue-700">
-            Stores
-          </a>
-          
-          <a href="/pages/alloffers" className="hover:text-blue-700">
-            Coupons
-          </a>
-          <a href="/pages/submitoffer" className="hover:text-blue-700">
-            Submit Offer
-          </a>
-        </nav>
-
-        {/* Search Icon */}
-        <div className="flex items-center">
-          <MagnifyingGlassIcon className="h-5 w-5 text-black cursor-pointer hover:text-blue-700" /> {/* Updated to use the v2 icon */}
-          <span className="ml-2 cursor-pointer text-black hover:text-blue-700">Search</span>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={toggleMenu}
-          className="lg:hidden text-black focus:outline-none"
-        >
-          &#9776; {/* Hamburger icon */}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <nav className="lg:hidden bg-teal-600 text-white p-4">
-          <a href="/pages/blog" className="block py-2 hover:bg-teal-700">
-            BLOG
-          </a>
-          <a href="/pages/categories" className="block py-2 hover:bg-teal-700">
-            CATEGORIES
-          </a>
-          <a href="/pages/alloffers" className="block py-2 hover:bg-teal-700">
-            COUPONS
-          </a>
-          <a href="/pages/contactus" className="block py-2 hover:bg-teal-700">
-            CONTACT US
-          </a>
-        </nav>
-      )}
-    </header>
-  );
+    return (
+        <>
+            <div className="w-full h-20 flex justify-center items-center z-20 sticky top-0 border-b bg-white px-2 md:px-20">
+                <div className="flex justify-between items-center w-full bg-white z-20">
+                    <div className="flex justify-center items-center">
+                        <MainNav isOpen={isOpen} onOpenChange={setIsOpen}>
+                            <Menu className="size-10 cursor-pointer" />
+                        </MainNav>
+                    </div>
+                    <div className="flex flex-col justify-center items-center">
+                        <h1 className="font-xspace text-2xl md:text-3xl tracking-tighter md:tracking-tight">SBX | CARS</h1>
+                        <p className="uppercase font-[300] text-sm md:text-base">Supercar Blondie</p>
+                    </div>
+                    <div className="flex gap-4 text-lg font-[400] tracking-wider justify-center items-center">
+                        <Search className="size-6" />
+                        <p className="hidden md:flex">SignIn</p>
+                        <User className="flex md:hidden" />
+                    </div>
+                </div>
+                <Header2 />
+            </div>
+        </>
+    )
 }
+
