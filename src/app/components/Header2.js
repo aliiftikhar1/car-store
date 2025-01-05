@@ -34,7 +34,7 @@ export default function Header2() {
       }`}
     >
       <div className="w-full p-4">
-        <div className="flex text-sm md:text-lg space-x-8 justify-center items-center">
+        <div className="flex text-xs md:text-lg space-x-4 md:space-x-8 justify-center items-center">
           <div className="relative group cursor-pointer">
             <p>Auction</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>

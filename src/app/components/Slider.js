@@ -24,7 +24,7 @@ const Carousel = ({ items, autoplayInterval = 5000 }) => {
 
   return (
     <div className='md:px-20'>
-    <div className="relative w-full md:h-[600px] h-[400px] mt-[0px] overflow-hidden">
+    <div className="relative w-full md:h-[600px] h-[320px] mt-[0px] overflow-hidden">
       {items.map((item, index) => (
         <div
           key={index}
@@ -59,7 +59,7 @@ const Carousel = ({ items, autoplayInterval = 5000 }) => {
           {/* Preview Button */}
           <Button
             variant="secondary"
-            className="absolute bottom-4 md:bottom-8 right-8 px-8 py-6 text-lg font-medium tracking-wider"
+            className="absolute bottom-4 md:bottom-8 right-8 px-4 md:px-8 py-3 md:py-6 text-sm md:text-lg border font-medium tracking-wider"
           >
             PREVIEW
           </Button>
@@ -69,14 +69,14 @@ const Carousel = ({ items, autoplayInterval = 5000 }) => {
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-0 md:left-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors"
+        className="absolute p-0 bg-black/20 rounded left-0 md:left-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-12 h-12" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-0 md:right-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors"
+        className="absolute p-0 bg-black/20 rounded right-0 md:right-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors"
         aria-label="Next slide"
       >
         <ChevronRight className="w-12 h-12" />

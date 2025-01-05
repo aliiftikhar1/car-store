@@ -170,15 +170,15 @@ export default function Auction() {
                                 className="w-full h-full object-cover group-hover:scale-[1.07] transform transition-all duration-500"
                             />
                             <div className="w-full h-full bg-black/20 absolute top-0"></div>
-                            <div className="p-5 absolute z-10 bottom-0 text-white w-full">
-                                <div className="flex justify-between text-xl">
+                            <div className="p-2 md:p-5 absolute z-10 bottom-0 text-white w-full">
+                                <div className="flex justify-between text-base md:text-xl">
                                     <div>
                                         <p>{item.year}</p>
-                                        <h3 className="font-extrabold text-xl">{item.name}</h3>
+                                        <h3 className="font-extrabold text-2xl">{item.name}</h3>
                                         <p>{item.model}</p>
                                     </div>
                                     <div>
-                                        <p className=" text-right  text-lg font-[300]">
+                                        <p className=" text-right  text-base md:text-lg font-[300]">
                                             {item.location.split(",").map((part, index) => (
                                                 <span key={index}>
                                                     {part}
