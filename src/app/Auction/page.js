@@ -179,7 +179,7 @@ export default function Auction() {
 
 
     return (
-        <div className="px-2 md:px-20 md:py-20">
+        <div className="px-2 md:px-20 md:py-20 pt-10">
             <div className="py-2 flex flex-row items-center space-x-4">
                 <h2 className="uppercase font-extrabold text-base md:text-xl">Live Auction</h2>
                 <p className="text-sm md:text-base">Country: ALL</p>
