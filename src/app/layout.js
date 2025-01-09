@@ -2,6 +2,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import "react-toastify/dist/ReactToastify.css";
+import TopBar from "./components/TopBar";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,15 +17,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-    
-    <body className=" bg-white">
-   
 
-      <div>{children}</div>
+      <body className=" bg-white">
+        <TopBar />
+        <Header />
+
+        <div>{children}</div>
+        <Footer />
 
 
-
-    </body>
-  </html>
+      </body>
+    </html>
   );
 }

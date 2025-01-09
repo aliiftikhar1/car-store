@@ -23,7 +23,7 @@ const Carousel = ({ items, autoplayInterval = 5000 }) => {
   }, [nextSlide, autoplayInterval])
 
   return (
-    <div className='md:px-20'>
+    <div className='md:px-20 md:py-16]'>
     <div className="relative w-full md:h-[600px] h-[320px] mt-[0px] overflow-hidden">
       {items.map((item, index) => (
         <div
