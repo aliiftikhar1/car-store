@@ -29,7 +29,7 @@ export default function Header2() {
 
   return (
     <div
-      className={`absolute border-b top-full -z-10 w-full bg-white transition-transform duration-500 ${
+      className={`absolute mt-[0.5px] border-b top-full -z-10 w-full bg-[#5a79c8] transition-transform duration-500 ${
         showHeader ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -37,27 +37,27 @@ export default function Header2() {
         <div className="flex text-xs md:text-lg space-x-4 md:space-x-8 justify-center items-center">
           <a href="/Auction" className="relative group cursor-pointer">
             <p>Auction</p>
-            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
+            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-white"></div>
+          </a>
+          <a href="/Preview" className="relative group cursor-pointer">
+            <p>Preview</p>
+            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-[#eeeeee]"></div>
+          </a>
+          <a href="/Results" className="relative group cursor-pointer">
+            <p>Results</p>
+            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-[#eeeeee]"></div>
           </a>
           <div className="relative group cursor-pointer">
-            <p>Preview</p>
-            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </div>
-          <div className="relative group cursor-pointer">
-            <p>Results</p>
-            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </div>
-          <div className="relative group cursor-pointer">
             <p>Sell</p>
-            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
+            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-[#eeeeee]"></div>
           </div>
           <div className="relative group cursor-pointer">
             <p>FAQ</p>
-            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
+            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-[#eeeeee]"></div>
           </div>
           <div className="relative group cursor-pointer">
             <p>About</p>
-            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
+            <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-[#eeeeee]"></div>
           </div>
         </div>
       </div>

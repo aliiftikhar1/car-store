@@ -5,14 +5,15 @@ import { Input } from "@/components/ui/input"
 import { Menu, Search, User } from 'lucide-react'
 import { MainNav } from "./Main-nav"
 import Header2 from "./Header2"
+import { AuthDialogs } from "./LoginDialog"
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false)
 
     return (
         <>
-            <div className="w-full h-16 md:h-20 flex justify-center items-center z-20 sticky top-0 border-b bg-white px-2 md:px-20">
-                <div className="flex justify-between items-center w-full bg-white z-20">
+            <div className="w-full h-16 md:h-20 flex justify-center items-center z-20 sticky top-0 border-b text-[#eeeeee] bg-[#5a79c8] px-2 md:px-20">
+                <div className="flex justify-between items-center w-full bg-[#5a79c8] z-20">
                     <div className="flex justify-center items-center">
                         <MainNav isOpen={isOpen} onOpenChange={setIsOpen}>
                             <Menu className="size-7 md:size-10 cursor-pointer" />
@@ -24,8 +25,7 @@ export default function Header() {
                     </div>
                     <div className="flex gap-4 text-lg font-[400] tracking-wider justify-center items-center">
                         <Search className="size-6" />
-                        <p className="hidden md:flex">SignIn</p>
-                        <User className="flex md:hidden" />
+                       <AuthDialogs/>
                     </div>
                 </div>
                 <Header2 />

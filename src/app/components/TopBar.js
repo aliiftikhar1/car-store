@@ -10,7 +10,7 @@ export default function TopBar() {
             <div className="absolute top-2 right-4">
                 <X className="text-gray-300 hover:text-gray-100" onClick={()=>setvisible(!visible)}/>
             </div>
-            <div className="p-1  md:p-2 bg-[#b2732a]">
+            <div className="p-1  md:p-2 bg-[#d59c5cd8]">
                 <p className="uppercase text-sm md:text-base text-white text-center flex justify-center items-center">Sell your supercar <ChevronRight /></p>
             </div>
             <div className="p-1 bg-[#e2e2de] px-12 text-base space-x-4 hidden md:flex ">

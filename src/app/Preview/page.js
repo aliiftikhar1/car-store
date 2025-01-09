@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import AuctionCard from "./AuctionCard";
 
 export default function Auction() {
     // List of auction items
@@ -12,6 +13,7 @@ export default function Auction() {
             image: "/images/image (2).jpg",
             latestBid: "US$ 345",
             timeLeft: "4 days",
+            status:'live'
         },
         {
             id: 2,
@@ -22,6 +24,7 @@ export default function Auction() {
             image: "/images/image (1).jpg",
             latestBid: "US$ 500",
             timeLeft: "2 days",
+            status:'live'
         },
         {
             id: 3,
@@ -32,6 +35,7 @@ export default function Auction() {
             image: "/images/image (3).jpg",
             latestBid: "US$ 700",
             timeLeft: "1 day",
+            status:'live'
         },
         {
             id: 4,
@@ -42,6 +46,7 @@ export default function Auction() {
             image: "/images/image (4).jpg",
             latestBid: "US$ 420",
             timeLeft: "5 days",
+            status:'live'
         },
         {
             id: 5,
@@ -52,6 +57,7 @@ export default function Auction() {
             image: "/images/image (5).jpg",
             latestBid: "US$ 650",
             timeLeft: "3 days",
+            status:'live'
         },
         {
             id: 6,
@@ -62,6 +68,8 @@ export default function Auction() {
             image: "/images/image (6).jpg",
             latestBid: "US$ 800",
             timeLeft: "1 day",
+            status:'waiting',
+            date:'18 June'
         },
         {
             id: 7,
@@ -72,6 +80,8 @@ export default function Auction() {
             image: "/images/image (7).jpg",
             latestBid: "US$ 1,200",
             timeLeft: "1 day",
+            status:'waiting',
+            date:'18 June'
         },
         {
             id: 8,
@@ -82,6 +92,7 @@ export default function Auction() {
             image: "/images/image (8).jpg",
             latestBid: "US$ 600",
             timeLeft: "2 days",
+            status:'comming-soon'
         },
         {
             id: 9,
@@ -92,6 +103,8 @@ export default function Auction() {
             image: "/images/image (9).jpg",
             latestBid: "US$ 550",
             timeLeft: "4 days",
+            status:'waiting',
+            date:'18 June'
         },
         {
             id: 10,
@@ -102,6 +115,8 @@ export default function Auction() {
             image: "/images/image (10).jpg",
             latestBid: "US$ 900",
             timeLeft: "1 day",
+            status:'waiting',
+            date:'18 June'
         },
         {
             id: 11,
@@ -112,6 +127,8 @@ export default function Auction() {
             image: "/images/image (11).jpg",
             latestBid: "US$ 300",
             timeLeft: "6 days",
+            status:'waiting',
+            date:'13 December'
         },
         {
             id: 12,
@@ -122,6 +139,8 @@ export default function Auction() {
             image: "/images/image (12).jpg",
             latestBid: "US$ 400",
             timeLeft: "3 days",
+            status:'waiting',
+            date:'13 January'
         },
         {
             id: 13,
@@ -132,6 +151,7 @@ export default function Auction() {
             image: "/images/image (13).jpg",
             latestBid: "US$ 350",
             timeLeft: "4 days",
+            status:'comming-soon'
         },
         {
             id: 14,
@@ -142,6 +162,7 @@ export default function Auction() {
             image: "/images/image (14).jpg",
             latestBid: "US$ 700",
             timeLeft: "2 days",
+            status:'comming-soon'
         },
         {
             id: 15,
@@ -152,58 +173,32 @@ export default function Auction() {
             image: "/images/image (15).jpg",
             latestBid: "US$ 750",
             timeLeft: "1 day",
+            status:'comming-soon'
         },
     ];
 
 
     return (
-        <div className="px-2 md:px-20">
-            <div className="py-2 flex  flex-row  items-center  space-x-4">
-                <h2 className="uppercase font-extrabold text-base md:text-xl">Auction</h2>
+        <div className="px-2 md:px-20 md:py-20 pt-12">
+            {/* <div className="py-2 flex flex-row items-center space-x-4">
+                <h2 className="uppercase font-extrabold text-base md:text-xl">Live Auction</h2>
                 <p className="text-sm md:text-base">Country: ALL</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 ">
-                {auctionItems.map((item) => (
-                    <div key={item.id} className="md:border group py-2  md:p-4 cursor-pointer">
-                        <div className="bg-white h-[90vh] relative shadow-lg overflow-hidden ">
-                            <img
-                                src={item.image}
-                                alt={item.name}
-                                className="w-full h-full object-cover group-hover:scale-[1.07] transform transition-all duration-500"
-                            />
-                            <div className="bg-black absolute flex rounded-full text-white justify-center items-center gap-2  top-2 right-2 px-4 py-2"><Star className="text-white size-5 fill-transparent hover:fill-white"/> 423</div>
-                            <div className="w-full h-full bg-black/20 absolute top-0"> </div>
-                            <div className="p-2 md:p-5 absolute z-10 bottom-0 text-white w-full">
-                                <div className="flex justify-between text-base md:text-xl">
-                                    <div>
-                                        <p>{item.year}</p>
-                                        <h3 className="font-extrabold text-2xl">{item.name}</h3>
-                                        <p>{item.model}</p>
-                                    </div>
-                                    <div>
-                                        <p className=" text-right  text-base md:text-lg font-[300]">
-                                            {item.location.split(",").map((part, index) => (
-                                                <span key={index}>
-                                                    {part}
-                                                    {index < item.location.split(",").length - 1 && <br />}
-                                                </span>
-                                            ))}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-4 flex items-center justify-between px-1">
-                            <div>
-                                <div className="text-sm text-muted-foreground">Latest bid</div>
-                                <div className="text-xl font-bold">{item.latestBid}</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-sm text-muted-foreground">Time left</div>
-                                <div className="text-xl font-bold text-[#B1955A]">{item.timeLeft}</div>
-                            </div>
-                        </div>
-                    </div>
+                {auctionItems.filter(item => item.status === 'live').map((item,index) => (
+                   <AuctionCard item={item} key={index}/>
+                ))}
+            </div> */}
+            <div className="py-2 flex flex-row items-center space-x-4">
+                <h2 className="uppercase font-extrabold text-base md:text-xl">Preview Auction</h2>
+                <p className="text-sm md:text-base">Country: ALL</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 ">
+                {auctionItems.filter(item => item.status !== 'live').sort((a,b)=>{
+                    const order ={live:1,waiting:2,'comming-soon':3}
+                    return order[a.status]-order[b.status]
+                    a.status.localeCompare(b.status)}).map((item,index) => (
+                   <AuctionCard item={item} key={index}/>
                 ))}
             </div>
         </div>
