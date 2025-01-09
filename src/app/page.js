@@ -63,12 +63,12 @@ const carouselItems = [
 export default function Home() {
   return (
     <main className="min-h-screen ">
-      <TopBar/>
+      {/* <TopBar/>
       <Header/>
-      
+       */}
       <Carousel items={carouselItems} />
       <Auction/>
-      <Footer/>
+      {/* <Footer/> */}
     </main>
   )
 }
