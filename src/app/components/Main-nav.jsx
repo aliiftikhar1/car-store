@@ -29,9 +29,9 @@ export function MainNav({ children, isOpen, onOpenChange }) {
           </div>
           <nav className="flex-1 px-2">
             <div className="space-y-2 py-4">
-              <NavLink href="/auctions">Auctions</NavLink>
-              <NavLink href="/preview">Preview</NavLink>
-              <NavLink href="/results">Results</NavLink>
+              <NavLink href="/Auction">Auctions</NavLink>
+              <NavLink href="/Preview">Preview</NavLink>
+              <NavLink href="/Results">Results</NavLink>
               <NavLink href="/sell">Sell Your Vehicle</NavLink>
               <NavLink href="/about">About Us</NavLink>
               <NavLink href="/team">Team</NavLink>

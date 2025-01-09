@@ -22,9 +22,9 @@ export function AuthDialogs() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} className="p-4">
       <DialogTrigger asChild>
-        <button className="text-white hover:text-white/90">
+        <button className="text-black hover:text-black/90">
           <p className="hidden md:flex">{isLogin ? "SignIn" : "Sign Up"}</p>
           <User className="flex md:hidden" />
         </button>
@@ -32,7 +32,7 @@ export function AuthDialogs() {
       
       {isLogin ? (
         // Login Dialog Content
-        <DialogContent className="max-w-sm p-4">
+        <DialogContent className="max-w-xs md:max-w-sm p-4">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl">Log In</DialogTitle>
             <DialogDescription className="text-center">
@@ -111,7 +111,7 @@ export function AuthDialogs() {
         </DialogContent>
       ) : (
         // Sign Up Dialog Content
-        <DialogContent className="max-w-sm p-4">
+        <DialogContent className="max-w-xs md:max-w-sm p-4">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl">Sign Up</DialogTitle>
             <DialogDescription className="text-center">
