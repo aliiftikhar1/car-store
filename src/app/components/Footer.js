@@ -11,11 +11,16 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-4">
                     {/* Logo and Social Media Section */}
                     <div className="space-y-4">
-                        <div className="flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center">
+                        <img src="/logo/1.png" className="h-16 md:h-20 w-[100vw] md:w-[50vw] object-cover"></img>
+                        {/* <h1 className="font-xspace text-base md:text-3xl -tracking-[4px] md:tracking-tight">CAR BUY DIRECT</h1> */}
+                        {/* <p className="uppercase font-[300] text-xs md:text-base">Supercar Blondie</p> */}
+                    </div>
+                        {/* <div className="flex flex-col justify-center items-center">
                         <h1 className="font-xspace text-base md:text-3xl -tracking-[4px] md:-tracking-[4px]">CAR BUY DIRECT</h1>
-                            {/* <h1 className="font-xspace text-3xl tracking-tight">SBX | CARS</h1> */}
-                            {/* <p className="uppercase font-[300]">Supercar Blondie</p> */}
-                        </div>
+                            <h1 className="font-xspace text-3xl tracking-tight">SBX | CARS</h1>
+                            <p className="uppercase font-[300]">Supercar Blondie</p>
+                        </div> */}
                         <div className="flex space-x-4 justify-center items-center">
                             <Link href="#" className="text-gray-600 hover:text-gray-900">
                                 <Facebook className="h-5 w-5" />

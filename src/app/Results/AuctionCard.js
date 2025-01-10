@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 export default function AuctionCard({ item, index }) {
     return (
         <div key={index} className="md:border group py-2  md:p-4 cursor-pointer">
-            <div className="bg-white h-[90vh] relative shadow-lg overflow-hidden ">
+            <div className="bg-white h-[60vh] md:h-[90vh] relative shadow-lg overflow-hidden ">
                 <img
                     src={item.image}
                     alt={item.name}
