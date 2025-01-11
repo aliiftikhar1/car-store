@@ -162,10 +162,10 @@ export default function Auction() {
                 <h2 className="uppercase font-extrabold text-base md:text-xl">Auction</h2>
                 <p className="text-sm md:text-base">Country: ALL</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 ">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 ">
                 {auctionItems.map((item) => (
                     <div key={item.id} className="md:border group py-2  md:p-4 cursor-pointer">
-                        <div className="bg-white h-[90vh] relative shadow-lg overflow-hidden ">
+                        <div className="bg-white h-[90%] relative shadow-lg overflow-hidden ">
                             <img
                                 src={item.image}
                                 alt={item.name}
