@@ -15,17 +15,12 @@ export default function TopBar() {
             </div>
             <div className="p-1 bg-[#e2e2de] px-12 text-sm space-x-4 hidden md:flex ">
                 <p>US +1-718-787-584</p>
-                <p>|</p>
-                <p>UAE +9714876 1764</p>
-                <p>|</p>
-                <p>UK +442045258014</p>
+               
                 <p>|</p>
                 <p>sales@carbuydirect.com</p>
             </div>
-            <div className="p-1 bg-[#e2e2de] px-4 text-xs space-x-1 flex justify-between md:hidden">
+            <div className=" bg-[#e2e2de] px-4 py-1 text-xs h-7  flex justify-between items-center md:hidden">
             <p>+1-718-787-584</p>
-                <p>|</p>
-                <p>+97148761764</p>
                 <p>|</p>
                 <p>sales@carbuydirect.com</p>
                 </div>

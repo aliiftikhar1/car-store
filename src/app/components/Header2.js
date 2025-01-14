@@ -51,10 +51,10 @@ export default function Header2() {
             <p>Sell</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
           </a>
-          <div className="relative group cursor-pointer">
+          <a href="/FAQ" className="relative group cursor-pointer">
             <p>FAQ</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </div>
+          </a>
           <a href='/About' className="relative group cursor-pointer">
             <p>About</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>

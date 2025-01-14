@@ -1,11 +1,11 @@
 import FirstSection from "./FirstSection";
-import WhySBXCars from "./WhyCarBuyIdrect";
+import WhyCarBuyDirect from "./WhyCarBuyDirect";
 
 export default function About(){
     return(
         <div>
             <FirstSection/>
-            <WhySBXCars/>
+            <WhyCarBuyDirect/>
         </div>
     )
 }

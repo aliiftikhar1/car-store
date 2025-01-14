@@ -33,12 +33,12 @@ const FAQSection = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto p-6 bg-white mt-[150px]">
+        <div className="md:max-w-7xl mx-auto p-6 bg-white mt-[50px] md:mt-[150px]">
 
 
             <div className="flex">
                 {/* Sidebar Tabs */}
-                <div className="w-1/5 pr-4 sticky top-[150px] self-start">
+                <div className="w-1/5 pr-4 hidden md:block sticky top-[150px] self-start">
                     <ul className="space-y-2">
                         {tabs.map((tab) => (
                             <li key={tab.id}>
@@ -54,7 +54,7 @@ const FAQSection = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="w-4/5 pl-4 space-y-16 overflow-y-auto">
+                <div className="md:w-4/5 md:pl-4 space-y-2 md:space-y-16 overflow-y-auto">
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-[100] text-gray-800 mb-2">
                             Frequently Asked <span className="text-yellow-500">Questions</span>

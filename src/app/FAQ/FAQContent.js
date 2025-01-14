@@ -11,28 +11,28 @@ import { cn } from "@/lib/utils"
 const FAQContent = ({ activeTab, searchTerm, isSearching }) => {
   const faqData = {
     general: {
-      text: "General questions about the auction on SBX Cars",
+      text: "General questions about the auction on CarBuyDirect",
       questions: [
-        { question: "What is SBX Cars?", answer: "SBX Cars is a car auction platform..." },
+        { question: "What is CarBuyDirect?", answer: "CarBuyDirect is a car auction platform..." },
         {
-          question: "How do I create an SBX Cars account?",
+          question: "How do I create an CarBuyDirect account?",
           answer: <>
-            <span className="font-medium">Click here</span> to create an SBX Cars account. You will be asked to provide your name, email address, phone number, and create a username of your choice. Once you have signed up, you can search current auction listings, save, and follow your favorite auctions. You can also participate in the comments section of any auction. If you would like to bid on a vehicle, you will have to create a Registered Bidders account.
+            <span className="font-medium">Click here</span> to create an CarBuyDirect account. You will be asked to provide your name, email address, phone number, and create a username of your choice. Once you have signed up, you can search current auction listings, save, and follow your favorite auctions. You can also participate in the comments section of any auction. If you would like to bid on a vehicle, you will have to create a Registered Bidders account.
           </>,
         },
-        { question: "Do I need an SBX Cars account?", answer: "Yes, to access our services..." },
+        { question: "Do I need an CarBuyDirect account?", answer: "Yes, to access our services..." },
         { question: "How do I register to bid?", answer: "You can register by..." },
       ],
     },
     selling: {
-      text: "General questions about selling with SBX Cars",
+      text: "General questions about selling with CarBuyDirect",
       questions: [
-        { question: "Why should I sell with SBX Cars?", answer: "Selling with SBX Cars offers..." },
-        { question: "How much does it cost to sell with SBX Cars?", answer: "The cost to sell varies based on..." },
+        { question: "Why should I sell with CarBuyDirect?", answer: "Selling with CarBuyDirect offers..." },
+        { question: "How much does it cost to sell with CarBuyDirect?", answer: "The cost to sell varies based on..." },
       ],
     },
     buying: {
-      text: "General questions about buying on SBX Cars",
+      text: "General questions about buying on CarBuyDirect",
       questions: [
         { question: "How do I register to bid?", answer: "To register for bidding, you need..." },
         { question: "Are there any taxes involved?", answer: "Yes, taxes such as VAT may apply..." },
@@ -53,7 +53,7 @@ const FAQContent = ({ activeTab, searchTerm, isSearching }) => {
   const filteredQuestions = isSearching ? filterQuestions(allQuestions) : faqData[activeTab].questions;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="md:max-w-3xl mx-auto md:px-4 py-8">
       {isSearching ? (
         <h1 className="text-center mb-6 text-4xl font-light">
           <span className="text-neutral-900">Filtered Questions</span>
