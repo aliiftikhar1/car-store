@@ -102,7 +102,8 @@ export default function Footer() {
                 {/* Copyright Section */}
                 <div className="mt-12 pt-4 border-t border-gray-200">
                     <p className="text-center text-sm text-muted-foreground">
-                        © Copyright {new Date().getFullYear()} All rights reserved SB Media USA Inc
+                    © Copyright {new Date().getFullYear()} All rights reserved by CarBuyDirect, Inc.
+                        
                     </p>
                 </div>
             </div>
