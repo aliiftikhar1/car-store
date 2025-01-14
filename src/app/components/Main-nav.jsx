@@ -24,10 +24,10 @@ export function MainNav({ children, isOpen, onOpenChange }) {
               <NavLink href="/Results" onOpenChange={onOpenChange}>
                 Results
               </NavLink>
-              <NavLink href="/sell" onOpenChange={onOpenChange}>
+              <NavLink href="/Sell" onOpenChange={onOpenChange}>
                 Sell Your Vehicle
               </NavLink>
-              <NavLink href="/about" onOpenChange={onOpenChange}>
+              <NavLink href="/About" onOpenChange={onOpenChange}>
                 About Us
               </NavLink>
               <NavLink href="/team" onOpenChange={onOpenChange}>
