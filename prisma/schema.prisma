@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -14,90 +9,101 @@ datasource db {
 }
 
 
-model Company {
-  id               Int      @id @default(autoincrement())
-  com_title        String
-  comp_logo        String
-  comp_category    Int      
-  comp_description String   @db.Text
-  comp_phone       String
-  comp_email       String
-  comp_website     String
-  comp_rating      String
-  com_details      String   @db.Text
-  comp_details  String?   @db.Text   
-  comp_other_details    String?   @db.Text  
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
-}
-
-
-
-model Category {
-  id             Int      @id @default(autoincrement())
-  category_name  String
-  category_description String?
-  category_status String?
-  category_image String
-  created_at     DateTime
-  updated_at     DateTime
-}
-
-model Blog{
+model Brand {
   id          Int      @id @default(autoincrement())
-  title       String
+  name        String
   description String
   image       String
-  category    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  Cars        Car[]    @relation("BrandCars")
 }
 
+model User {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  password    String
+  type        String
+  location    String
+  status      String
+  verified    Boolean
+  phoneNo     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-model Offer {
-  id                Int      @id @default(autoincrement())
-  comp_id           Int
-  offer_type        String
-  offer_status      String?
-  offer_title       String
-  offer_code        String
-  offer_description String
-  offer_link1       String
-  offer_link2       String
-  offer_users       String
-  offer_expiry      String
-  offer_isverify    String
-  offer_details     String
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-  
+  Cars        Car[]    @relation("SellerCars")
+  Auctions    Auction[] @relation("SellerAuctions")
+  Bids        Bidding[] @relation("UserBids")
 }
 
-model Category_coupon{
-  id                Int      @id @default(autoincrement())
-  name            String
-  offer           String?
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+model Car {
+  id          Int      @id @default(autoincrement())
+  brandId     Int
+  sellerId    Int
+  name        String
+  description String    @db.Text
+  highlights  String    @db.Text
+  specs       String    @db.Text
+  chasisNo    String
+  exterior    String
+  interior    String
+  lotNo       String
+  location    String
+  mileage     String
+  orientation String
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  Brand       Brand    @relation("BrandCars", fields: [brandId], references: [id])
+  Seller      User     @relation("SellerCars", fields: [sellerId], references: [id])
+  Images      CarImage[]
+  Auctions    Auction[]
+  Bids        Bidding[]
 }
 
-model Faqs {
-  id         Int      @id @default(autoincrement())
-  comp_id    Int
-  question   String   @db.Text
-  answer     String   @db.Text
-  created_at DateTime
-  updated_at DateTime
+model CarImage {
+  id        Int      @id @default(autoincrement())
+  carId     Int
+  url       String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Car       Car      @relation(fields: [carId], references: [id])
 }
 
-model Submittion {
-  id             Int      @id @default(autoincrement())
-  storeWebsite   String
-  offerType      String
-  code           String
-  description    String
-  startDate      DateTime? // Optional
-  expirationDate DateTime? // Optional
-  createdAt      DateTime  @default(now())
+model Auction {
+  id           Int      @id @default(autoincrement())
+  startDate    DateTime
+  endDate      DateTime
+  carId        Int
+  sellerId     Int
+  views        Int      @default(0)
+  watching     Int      @default(0)
+  location     String
+  closingPrice String
+  status       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  Car          Car      @relation(fields: [carId], references: [id])
+  Seller       User     @relation("SellerAuctions", fields: [sellerId], references: [id])
+  Bids         Bidding[]
+}
+
+model Bidding {
+  id        Int      @id @default(autoincrement())
+  auctionId Int
+  userId    Int
+  carId     Int
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Auction   Auction  @relation(fields: [auctionId], references: [id])
+  User      User     @relation("UserBids", fields: [userId], references: [id])
+  Car       Car      @relation(fields: [carId], references: [id])
 }

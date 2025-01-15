@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 
 export default function AuctionCard({ item, index }) {
     return (
-        <div key={index} className="md:border group py-2  md:p-4 cursor-pointer">
+        <a href="/Car/1" key={index} className="md:border group py-2  md:p-4 cursor-pointer">
             <div className="bg-white h-[60vh] md:h-[90%] relative shadow-lg overflow-hidden ">
                 <img
                     src={item.image}
@@ -55,6 +55,6 @@ export default function AuctionCard({ item, index }) {
                 </>
 
             }
-        </div>
+        </a>
     )
 }
