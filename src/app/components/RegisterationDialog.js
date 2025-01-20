@@ -16,7 +16,7 @@ export function RegistrationDialog({ open, onClose, email }) {
     const payload = { email, name, location, phoneNo, password };
 
     try {
-      const response = await fetch("http://localhost:3000/api/user/register", {
+      const response = await fetch("/api/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 
 export async function getUserDetails(id){
     const dipatch = useDispatch()
-    const response = await fetch(`http://localhost:3000/api/user/getUserDetails/${id}`)
+    const response = await fetch(`api/user/getUserDetails/${id}`)
     const data = await response.json()
     console.log("data fetched is : ",data.user)
     dipatch(setUserDetails(data.user))
@@ -15,7 +15,7 @@ export async function getUserDetails(id){
   export async function updateUserDetails(formData,dispatch) {
     console.log("Formdata is ",formData)
     try {
-      const response = await fetch(`http://localhost:3000/api/user/updateUser`, {
+      const response = await fetch(`/api/user/updateUser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

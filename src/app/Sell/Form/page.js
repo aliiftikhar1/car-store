@@ -83,7 +83,7 @@ export default function ContactForm() {
       jsonData.files = await Promise.all(filePromises);
   
       // Submit the form
-      const response = await fetch('http://localhost:3000/api/user/submitform', {
+      const response = await fetch('/api/user/submitform', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

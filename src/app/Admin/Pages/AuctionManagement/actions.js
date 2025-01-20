@@ -66,7 +66,7 @@ export async function getBiddingsForAuction(auctionId) {
 
 export async function getAuctions() {
   try {
-    const response = await fetch(`http:localhost:3000/api/admin/auctionmanagement`, {
+    const response = await fetch(`/api/admin/auctionmanagement`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +88,7 @@ export async function getAuctions() {
 
 export async function getCarSubmissions() {
   try {
-    const response = await fetch(`http:localhost:3000/api/admin/approvedcarsubmissions`, {
+    const response = await fetch(`/api/admin/approvedcarsubmissions`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
