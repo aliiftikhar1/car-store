@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const JoditEditor = dynamic(() => import('jodit-react'), {
   ssr: false,
 });
-import { Eye, Pencil, Trash } from "lucide-react"
+import { Eye, Loader, Pencil, Trash } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
 import dynamic from "next/dynamic"
@@ -47,23 +47,28 @@ export default function AdminCarSubmissions() {
     brand:'',
   })
   const [imageLabels, setImageLabels] = useState({})
+  const [loading, setloading]=useState(true)
   async function fetchSubmissions() {
+  
     fetch("/api/admin/carsubmissions")
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           setCarSubmissions(data.data)
-          setFilteredSubmissions(data.data)
+          // setFilteredSubmissions(data.data)
+          setloading(false)
         }
       })
       .catch((error) => console.error("Error fetching car submissions:", error))
   }
   const fetchBrands = async () => {
     try {
+      setloading(false)
       const response = await fetch('/api/admin/brandmanagement');
       const data = await response.json();
       console.log("Fetched brands are, ", data)
       setBrands(data.data);
+      setloading(false)
     } catch (error) {
       toast.error('Failed to fetch brands');
     }
@@ -193,10 +198,14 @@ export default function AdminCarSubmissions() {
     }
   }
 
+
+  if(loading){
+    return <div className="w-full h-screen flex justify-center items-center"><Loader className="animate-spin"/></div>
+  }
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Car Submissions</h1>
-      <Input placeholder="Filter Submissions" value={filter} onChange={handleFilterChange} className="mb-4" />
+      <h1 className="text-2xl font-bold mb-4">Car Submissions </h1>
+      {/* <Input placeholder="Filter Submissions" value={filter} onChange={handleFilterChange} className="mb-4" /> */}
       <Table>
         <TableHeader>
           <TableRow>
@@ -210,7 +219,7 @@ export default function AdminCarSubmissions() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredSubmissions.map((submission) => (
+          {carSubmissions.map((submission) => (
             <TableRow key={submission.id}>
               <TableCell>{submission.id}</TableCell>
               <TableCell>{submission.vehicleMake}</TableCell>

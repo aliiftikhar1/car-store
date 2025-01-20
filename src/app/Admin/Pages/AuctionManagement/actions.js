@@ -1,7 +1,6 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
 
 export async function createAuction(formData) {
   const { carSubmissionId, startDate, endDate, location, status } = formData
@@ -34,7 +33,6 @@ export async function createAuction(formData) {
       data: { status: "in_auction" },
     })
 
-    revalidatePath("/admin/auctions")
     return { success: true, auction: newAuction }
   } catch (error) {
     console.error("Failed to create auction:", error)
