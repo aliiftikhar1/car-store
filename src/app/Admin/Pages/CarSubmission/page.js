@@ -1,0 +1,604 @@
+"use client"
+
+import React, { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
+import { Label } from "@radix-ui/react-label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import JoditEditor from "jodit-react"
+import { Eye, Pencil, Trash } from "lucide-react"
+import Image from "next/image"
+import { toast } from "sonner"
+
+export default function AdminCarSubmissions() {
+  const [brands, setBrands] = useState([]);
+  const [carSubmissions, setCarSubmissions] = useState([])
+  const [filteredSubmissions, setFilteredSubmissions] = useState([])
+  const [filter, setFilter] = useState("")
+  const [selectedSubmission, setSelectedSubmission] = useState(null)
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
+  const [review, setReview] = useState("")
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    vehicleMake: "",
+    vehicleModel: "",
+    vehicleYear: "",
+    vin: "",
+    mileage: "",
+    mileageUnit: "mi",
+    price: "",
+    currency: "USD",
+    country: "",
+    postal: "",
+    description: "",
+    highlights: "",
+    notes: "",
+    brand:'',
+  })
+  const [imageLabels, setImageLabels] = useState({})
+  async function fetchSubmissions() {
+    fetch("/api/admin/carsubmissions")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setCarSubmissions(data.data)
+          setFilteredSubmissions(data.data)
+        }
+      })
+      .catch((error) => console.error("Error fetching car submissions:", error))
+  }
+  const fetchBrands = async () => {
+    try {
+      const response = await fetch('/api/admin/brandmanagement');
+      const data = await response.json();
+      console.log("Fetched brands are, ", data)
+      setBrands(data.data);
+    } catch (error) {
+      toast.error('Failed to fetch brands');
+    }
+  };
+  useEffect(() => {
+    fetchSubmissions()
+    fetchBrands();
+  }, [1])
+
+  const handleFilterChange = (e) => {
+    const value = e.target.value.toLowerCase()
+    setFilter(value)
+    const filtered = carSubmissions.filter(
+      (submission) =>
+        submission.vehicleMake.toLowerCase().includes(value) ||
+        submission.vehicleModel.toLowerCase().includes(value) ||
+        submission.status.toLowerCase().includes(value) ||
+        submission.vin.toLowerCase().includes(value),
+    )
+    setFilteredSubmissions(filtered)
+  }
+
+  const handleViewDetails = (submission) => {
+    setSelectedSubmission(submission)
+    setIsViewDialogOpen(true)
+  }
+
+  const handleCloseViewDialog = () => {
+    setSelectedSubmission(null)
+    setIsViewDialogOpen(false)
+  }
+
+  const handleOpenUpdateDialog = (submission) => {
+    setSelectedSubmission(submission)
+    setReview(submission.review || "")
+    setFormData({
+      firstname: submission.firstname || "",
+      lastname: submission.lastname || "",
+      email: submission.email || "",
+      phone: submission.phone || "",
+      vehicleMake: submission.vehicleMake || "",
+      vehicleModel: submission.vehicleModel || "",
+      vehicleYear: submission.vehicleYear || "",
+      vin: submission.vin || "",
+      mileage: submission.mileage || "",
+      mileageUnit: submission.mileageUnit || "mi",
+      price: submission.price || "",
+      currency: submission.currency || "USD",
+      country: submission.country || "",
+      postal: submission.postal || "",
+      description: submission.description || "",
+      highlights: submission.highlights || "",
+      notes: submission.notes || "",
+      brand: submission.brand || "",
+    })
+    setIsUpdateDialogOpen(true)
+  }
+
+  const handleCloseUpdateDialog = () => {
+    setSelectedSubmission(null)
+    setReview("")
+    setIsUpdateDialogOpen(false)
+  }
+
+  const handleFormChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleImageLabelChange = (imageId, label) => {
+    setImageLabels((prev) => ({
+      ...prev,
+      [imageId]: label,
+    }))
+  }
+
+  const handledelete = async (submission) => {
+    if (!submission) return
+    try {
+      const response = await fetch(`/api/admin/carsubmissions/${submission.id}`, {
+        method: "DELETE",
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(`Submission deleted successfully`)
+        fetchSubmissions()
+        handleCloseUpdateDialog()
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (error) {
+      // console.error('Error updating submission:', error)
+      toast.error("Failed to delete")
+    }
+  }
+
+  const handleUpdateSubmission = async (action) => {
+    if (!selectedSubmission) return
+
+    try {
+      const response = await fetch(`/api/admin/carsubmissions/${selectedSubmission.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: action === "approve" ? "Approved" : "Rejected",
+          review,
+          ...formData,
+          imageLabels,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(`Submission ${action}d successfully`)
+        fetchSubmissions()
+        handleCloseUpdateDialog()
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (error) {
+      console.error("Error updating submission:", error)
+      toast.error("Failed to update submission")
+    }
+  }
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Car Submissions</h1>
+      <Input placeholder="Filter Submissions" value={filter} onChange={handleFilterChange} className="mb-4" />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Vehicle Make</TableHead>
+            <TableHead>Vehicle Model</TableHead>
+            <TableHead>Year</TableHead>
+            <TableHead>VIN</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredSubmissions.map((submission) => (
+            <TableRow key={submission.id}>
+              <TableCell>{submission.id}</TableCell>
+              <TableCell>{submission.vehicleMake}</TableCell>
+              <TableCell>{submission.vehicleModel}</TableCell>
+              <TableCell>{submission.vehicleYear}</TableCell>
+              <TableCell>{submission.vin}</TableCell>
+              <TableCell>{submission.status}</TableCell>
+
+              <TableCell>
+                <Button variant="ghost" size="icon" onClick={() => handleViewDetails(submission)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleOpenUpdateDialog(submission)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handledelete(submission)}>
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {/* Dialog for Viewing Submission Details */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Submission Details</DialogTitle>
+          </DialogHeader>
+          {selectedSubmission && (
+            <div className="space-y-4 max-h-[80vh] overflow-auto">
+              <div>
+                <h2 className="text-xl font-semibold mb-2">Vehicle Details</h2>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">Make</TableCell>
+                      <TableCell>{selectedSubmission.vehicleMake}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Model</TableCell>
+                      <TableCell>{selectedSubmission.vehicleModel}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Year</TableCell>
+                      <TableCell>{selectedSubmission.vehicleYear}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">VIN</TableCell>
+                      <TableCell>{selectedSubmission.vin}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Status</TableCell>
+                      <TableCell>{selectedSubmission.status}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Price</TableCell>
+                      <TableCell>
+                        {selectedSubmission.price} {selectedSubmission.currency}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Mileage</TableCell>
+                      <TableCell>
+                        {selectedSubmission.mileage} {selectedSubmission.mileageUnit}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-2">Seller Details</h2>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">Name</TableCell>
+                      <TableCell>
+                        {selectedSubmission.firstname} {selectedSubmission.lastname}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Email</TableCell>
+                      <TableCell>{selectedSubmission.email}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Phone</TableCell>
+                      <TableCell>{selectedSubmission.phone}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Country</TableCell>
+                      <TableCell>{selectedSubmission.country}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Zipcode</TableCell>
+                      <TableCell>{selectedSubmission.postal}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-2">Images</h2>
+                <div className="grid grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
+                  {selectedSubmission.SubmissionImages.map((image) => (
+                    <Image
+                      key={image.id}
+                      src={image.data || "/placeholder.svg"}
+                      alt={image.name}
+                      width={200}
+                      height={200}
+                      className="w-full h-auto rounded-lg shadow-md"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <div
+                  id="description"
+                  className="mt-1 p-2 border rounded-md"
+                  dangerouslySetInnerHTML={{ __html: selectedSubmission.description }}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="highlights">Highlights</Label>
+                <div
+                  id="highlights"
+                  className="mt-1 p-2 border rounded-md"
+                  dangerouslySetInnerHTML={{ __html: selectedSubmission.highlights }}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="notes">Notes</Label>
+                <div
+                  id="notes"
+                  className="mt-1 p-2 border rounded-md"
+                  dangerouslySetInnerHTML={{ __html: selectedSubmission.notes }}
+                />
+              </div>
+
+              {selectedSubmission.review && (
+                <div>
+                  <Label htmlFor="review">Admin Review</Label>
+                  <div id="review" className="mt-1 p-2 border rounded-md">
+                    {selectedSubmission.review}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={handleCloseViewDialog}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Update Submission</DialogTitle>
+          </DialogHeader>
+          {selectedSubmission && (
+            <div className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="firstname">First Name</Label>
+                  <Input
+                    id="firstname"
+                    value={formData.firstname}
+                    onChange={(e) => handleFormChange("firstname", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastname">Last Name</Label>
+                  <Input
+                    id="lastname"
+                    value={formData.lastname}
+                    onChange={(e) => handleFormChange("lastname", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleFormChange("email", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleFormChange("phone", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="vehicleMake">Vehicle make</Label>
+                  <Input
+                    id="vehicleMake"
+                    value={formData.vehicleMake}
+                    onChange={(e) => handleFormChange("vehicleMake", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="brand">Brand</Label>
+                  <Select value={formData.brand} onValueChange={(value) => handleFormChange("brand", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {brands.map((item,index)=>{
+                        return(
+                          <SelectItem key={index} value={item.id}>{item.name}</SelectItem>
+                        )
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vehicleModel">Vehicle model</Label>
+                  <Input
+                    id="vehicleModel"
+                    value={formData.vehicleModel}
+                    onChange={(e) => handleFormChange("vehicleModel", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="vehicleYear">Vehicle year</Label>
+                  <Input
+                    id="vehicleYear"
+                    value={formData.vehicleYear}
+                    onChange={(e) => handleFormChange("vehicleYear", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vin">VIN or Chassis No.</Label>
+                  <Input id="vin" value={formData.vin} onChange={(e) => handleFormChange("vin", e.target.value)} />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="mileage">Estimated Mileage</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="mileage"
+                      value={formData.mileage}
+                      onChange={(e) => handleFormChange("mileage", e.target.value)}
+                      className="flex-1"
+                    />
+                    <Select
+                      value={formData.mileageUnit}
+                      onValueChange={(value) => handleFormChange("mileageUnit", value)}
+                    >
+                      <SelectTrigger className="w-[80px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mi">mi</SelectItem>
+                        <SelectItem value="km">km</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="price">Expected Price</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="price"
+                      value={formData.price}
+                      onChange={(e) => handleFormChange("price", e.target.value)}
+                      className="flex-1"
+                    />
+                    <Select value={formData.currency} onValueChange={(value) => handleFormChange("currency", value)}>
+                      <SelectTrigger className="w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USD">USD</SelectItem>
+                        <SelectItem value="EUR">EUR</SelectItem>
+                        <SelectItem value="GBP">GBP</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="country">Where is the car located?</Label>
+                  <Select value={formData.country} onValueChange={(value) => handleFormChange("country", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="US">United States</SelectItem>
+                      <SelectItem value="CA">Canada</SelectItem>
+                      <SelectItem value="UK">United Kingdom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="postal">Postal / Zip Code</Label>
+                  <Input
+                    id="postal"
+                    value={formData.postal}
+                    onChange={(e) => handleFormChange("postal", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {["description", "highlights", "notes"].map((field) => (
+                <div key={field} className="space-y-2">
+                  <Label htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
+                  <JoditEditor
+                    value={formData[field]}
+                    onBlur={(newContent) => handleFormChange(field, newContent)}
+                    onChange={() => {}}
+                  />
+                </div>
+              ))}
+
+              <div className="space-y-2">
+                <Label htmlFor="review">Admin Review</Label>
+                <Textarea id="review" value={review} onChange={(e) => setReview(e.target.value)} rows={4} />
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-2">Images</h2>
+                <div className="grid grid-cols-3 gap-4 max-h-[60vh] overflow-auto">
+                  {selectedSubmission.SubmissionImages.map((image) => (
+                    <div key={image.id} className="space-y-2">
+                      <Image
+                        src={image.data || "/placeholder.svg"}
+                        alt={image.name}
+                        width={200}
+                        height={200}
+                        className="w-full h-auto rounded-lg shadow-md"
+                      />
+                      <Select
+                        value={imageLabels[image.id] || "other"}
+                        onValueChange={(value) => handleImageLabelChange(image.id, value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select label" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="portrait">Portrait</SelectItem>
+                          <SelectItem value="horizontal">Horizontal</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button onClick={() => handleUpdateSubmission("reject")} variant="destructive">
+                  Reject
+                </Button>
+                <Button onClick={() => handleUpdateSubmission("approve")} variant="default">
+                  Approve
+                </Button>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={handleCloseUpdateDialog} variant="outline">
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+

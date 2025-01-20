@@ -20,7 +20,7 @@ export default function NavBar() {
                 </div>
                 <div className="relative">
                     <div className="size-[50px] rounded-full border border-gray-800 overflow-hidden cursor-pointer" onClick={toggleDropdown}>
-                        <img src="/Images/ecommercelogo.jpg" className="w-full h-full object-cover" alt="Logo" />
+                        <img src="/logo/1.png" className="w-full h-full object-cover" alt="Logo" />
                     </div>
                     {dropdownOpen && (
                         <div className="absolute right-0 mt-2 p-4 space-y-2 w-48 bg-white border border-gray-300 rounded shadow-lg">

@@ -13,7 +13,7 @@ import {
 
 export default function AdminHomePage() {
     return (
-        <div className=" bg-white p-6">
+        <div className=" bg-white p-6 h-[70vh] flex justify-center items-center">
             <Head>
                 <title>Admin Panel - Home</title>
             </Head>
@@ -23,8 +23,8 @@ export default function AdminHomePage() {
                 <p className="text-gray-600">Manage your eCommerce website efficiently</p>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Analytics Section */}
+            {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
                 <Card>
                     <CardHeader>
                         <CardTitle>Website Analytics</CardTitle>
@@ -47,7 +47,6 @@ export default function AdminHomePage() {
                     </CardContent>
                 </Card>
 
-                {/* Recent Orders */}
                 <Card className="col-span-1 lg:col-span-2">
                     <CardHeader>
                         <CardTitle>Recent Orders</CardTitle>
@@ -78,7 +77,6 @@ export default function AdminHomePage() {
                     </CardContent>
                 </Card>
 
-                {/* Quick Actions */}
                 <Card>
                     <CardHeader>
                         <CardTitle>Quick Actions</CardTitle>
@@ -91,7 +89,7 @@ export default function AdminHomePage() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            </div> */}
         </div>
     );
 }

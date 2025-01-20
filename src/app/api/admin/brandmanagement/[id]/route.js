@@ -7,7 +7,7 @@ export async function GET(request,{params}) {
         const { id } = await params;
 
         const deletedBrand = await prisma.Brand.findUnique({
-            where: { id: id },
+            where: { id: parseInt(id) },
         });
 
         return NextResponse.json({
@@ -34,7 +34,7 @@ export async function PUT(request,{params}) {
         const {name, description, image} = data;
 
         const updatedBrand = await prisma.Brand.update({
-            where: { id: id },
+            where: { id: parseInt(id) },
             data: {name, description, image: image?image:undefined,},
         });
 

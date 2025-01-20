@@ -33,22 +33,32 @@ export async function PUT(request,{params}) {
         console.log("Payload is : ",id,data);
         
         let hashedPassword = undefined;
-        if (password) {
-          hashedPassword = await bcrypt.hash(password, 10); 
+        if (data.password) {
+          hashedPassword = await bcrypt.hash(data.password, 10); 
         }
 
-        const updatedUser = await prisma.Users.update({
-            where: { id: id },
+        const updatedUser = await prisma.User.update({
+            where: { id: parseInt(id) },
             data: {
                 name: data.name,
                 email: data.email,
-                type: data.type,
-                location: data.location,
-                status: data.status,
-                verified: data.verified==='on'?true:false,
-                phoneNo: data.phoneNo,
-                password: hashedPassword || undefined, },
-        });
+                type: data.type || "user", // Default type if not provided
+                image: data.image || null,
+                username: data.username || null,
+                bio: data.bio || null,
+                password: hashedPassword || undefined, 
+                address: data.address || null,
+                city: data.city || null,
+                country: data.country || null,
+                province: data.province || null,
+                zipcode: data.zipcode || null,
+                status: data.status || "active", // Default status
+                verified: data.verified === "on" ? true : false,
+                phoneNo: data.phoneNo || null,
+                
+                
+        }
+    });
 
         return NextResponse.json({
             success: true,

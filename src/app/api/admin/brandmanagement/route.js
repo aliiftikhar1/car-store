@@ -8,14 +8,19 @@ export async function POST(request) {
         const data = await request.json(); 
         console.log("Payload is", data);
 
-        const newUser = await prisma.Brand.create({
-            data
+        const newBrand = await prisma.Brand.create({
+            data: {
+                name: data.name,
+                description: data.description,
+                image: data.image,
+            },
+           
         });
 
         return NextResponse.json({
             success: true,
             message: "Brand created successfully",
-            data: newUser,
+            data: newBrand,
         });
     } catch (e) {
         console.error("Error is", e);

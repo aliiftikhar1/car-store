@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function HowItWorksSection() {
   return (
     <section className="md:h-screen flex justify-center items-center px-6 md:px-36 bg-white mt-8">
@@ -58,9 +60,9 @@ export default function HowItWorksSection() {
             </div>
           </div>
           <div className="w-full flex justify-center items-center">
-          <button className="bg-yellow-600 text-white px-8 py-4 w-[250px] mdw-[300px] mx-auto font-semibold">
+          <Link href="/Sell/Form" className="bg-yellow-600 text-white px-8 py-4 w-[250px] mdw-[300px] mx-auto font-semibold">
             SUBMIT YOUR CAR
-          </button>
+          </Link>
           </div>
         </div>
       </div>

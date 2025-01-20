@@ -154,24 +154,21 @@ export default function BrandManagement() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoadingAction('image')
+    setLoadingAction('image');
     const formData = new FormData(e.target);
-
+  
     const selectedImage = formData.get('image');
-
-
+  
     try {
-
-
-      const imageUrl = await imgHippoUpload(selectedImage);
-
+      // Convert the image to a base64 string
+      const imageBase64 = await convertToBase64(selectedImage);
+  
       const brandData = {
         name: formData.get('name'),
         description: formData.get('description'),
-        image: imageUrl,
-
+        image: imageBase64, // Use base64 string
       };
-
+  
       setLoadingAction('form');
       if (currentbrand) {
         await updateBrand({ ...currentbrand, ...brandData });
@@ -180,7 +177,7 @@ export default function BrandManagement() {
         await addBrand(brandData);
         toast.success('Brand added successfully');
       }
-
+  
       const updatedBrands = await fetchBrands();
       setBrands(updatedBrands);
       setIsModalOpen(false);
@@ -190,7 +187,17 @@ export default function BrandManagement() {
       setLoadingAction(null);
     }
   };
-
+  
+  // Utility function to convert a file to a base64 string
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+  
   return (
     <div>
       <ToastContainer />
@@ -277,9 +284,9 @@ export default function BrandManagement() {
                   <TableRow key={brand.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
-                      <Image
-                        width={500}
-                        height={500}
+                      <img
+                        width={1000}
+                        height={1000}
                         src={brand.image || '/placeholder.jpg'}
                         alt="Brand"
                         className="max-h-32 max-w-36 object-contain"

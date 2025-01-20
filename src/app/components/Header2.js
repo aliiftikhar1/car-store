@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Header2() {
@@ -35,30 +36,30 @@ export default function Header2() {
     >
       <div className="w-full p-4">
         <div className="flex text-xs md:text-base space-x-4 md:space-x-8 justify-center items-center">
-          <a href="/Auction" className="relative group cursor-pointer">
+          <Link href="/Auction" className="relative group cursor-pointer">
             <p>Auction</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </a>
-          <a href="/Preview" className="relative group cursor-pointer">
+          </Link>
+          <Link href="/Preview" className="relative group cursor-pointer">
             <p>Preview</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </a>
-          <a href="/Results" className="relative group cursor-pointer">
+          </Link>
+          <Link href="/Results" className="relative group cursor-pointer">
             <p>Results</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </a>
-          <a href="/Sell" className="relative group cursor-pointer">
+          </Link>
+          <Link href="/Sell" className="relative group cursor-pointer">
             <p>Sell</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </a>
-          <a href="/FAQ" className="relative group cursor-pointer">
+          </Link>
+          <Link href="/FAQ" className="relative group cursor-pointer">
             <p>FAQ</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </a>
-          <a href='/About' className="relative group cursor-pointer">
+          </Link>
+          <Link href='/About' className="relative group cursor-pointer">
             <p>About</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

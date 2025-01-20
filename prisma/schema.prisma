@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,71 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Brand {
   id          Int      @id @default(autoincrement())
   name        String
   description String
-  image       String
+  image       String   @db.LongText
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Cars        Car[]    @relation("BrandCars")
+  CarSubmission   CarSubmission[]
+
 }
 
 model User {
   id          Int      @id @default(autoincrement())
   name        String
   email       String   @unique
+  image       String?  @db.LongText
+  username    String?  @unique
+  bio         String?
+  address     String?
+  city        String?
+  country     String?
+  province    String?
+  zipcode     String?
   password    String
   type        String
-  location    String
   status      String
   verified    Boolean
   phoneNo     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Cars        Car[]    @relation("SellerCars")
-  Auctions    Auction[] @relation("SellerAuctions")
-  Bids        Bidding[] @relation("UserBids")
+
+  Auctions    Auction[]   @relation("SellerAuctions")
+  Bids        Bidding[]   @relation("UserBids")
+  Submissions CarSubmission[]
 }
 
-model Car {
-  id          Int      @id @default(autoincrement())
-  brandId     Int
-  sellerId    Int
-  name        String
-  description String    @db.Text
-  highlights  String    @db.Text
-  specs       String    @db.Text
-  chasisNo    String
-  exterior    String
-  interior    String
-  lotNo       String
-  location    String
-  mileage     String
-  orientation String
-  status      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model CarSubmission {
+  id               Int      @id @default(autoincrement())
+  firstname        String
+  lastname         String
+  email            String
+  phone            String
+  vehicleMake      String
+  vehicleModel     String
+  vehicleYear      String
+  sellerId         Int
+  notes            String?    @db.Text
+  description      String?    @db.LongText
+  highlights       String?    @db.LongText
+  specs            String?    @db.Text
+  review           String?
+  vin              String
+  mileage          String
+  mileageUnit      String
+  status           String
+  price            String     @default("0")
+  currency         String     @default("0")
+  country          String
+  postal           String
+  brand            Int?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 
-  Brand       Brand    @relation("BrandCars", fields: [brandId], references: [id])
-  Seller      User     @relation("SellerCars", fields: [sellerId], references: [id])
-  Images      CarImage[]
-  Auctions    Auction[]
-  Bids        Bidding[]
+  Brand            Brand?     @relation(fields: [brand], references: [id], onDelete: Cascade)
+  User             User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  SubmissionImages CarSubmissionImage[]
+  Auction          Auction[]
 }
 
-model CarImage {
-  id        Int      @id @default(autoincrement())
-  carId     Int
-  url       String
-  type      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  Car       Car      @relation(fields: [carId], references: [id])
+model CarSubmissionImage {
+  id            Int      @id @default(autoincrement())
+  submissionId  Int
+  name          String
+  label         String?
+  type          String
+  size          Int
+  data          String   @db.LongText
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  CarSubmission CarSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
 }
 
 model Auction {
@@ -89,8 +107,8 @@ model Auction {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  Car          Car      @relation(fields: [carId], references: [id])
-  Seller       User     @relation("SellerAuctions", fields: [sellerId], references: [id])
+  CarSubmission          CarSubmission      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  Seller       User     @relation("SellerAuctions", fields: [sellerId], references: [id], onDelete: Cascade)
   Bids         Bidding[]
 }
 
@@ -103,7 +121,7 @@ model Bidding {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Auction   Auction  @relation(fields: [auctionId], references: [id])
-  User      User     @relation("UserBids", fields: [userId], references: [id])
-  Car       Car      @relation(fields: [carId], references: [id])
+  Auction   Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  User      User     @relation("UserBids", fields: [userId], references: [id], onDelete: Cascade)
+  
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import TimerComponent from "./CountDownTimer";
 
-export default function AuctionDetails() {
+export default function AuctionDetails({data}) {
   const bids = [
     { user: "jingy1983", amount: "$125,000", time: "23 hours ago" },
     { user: "nycexec212", amount: "$121,000", time: "a day ago" },
@@ -17,22 +17,21 @@ export default function AuctionDetails() {
           <div className="w-full md:w-1/2 space-y-3">
             <h3 className="text-2xl font-bold">AUCTION SUMMARY</h3>
             <p className="flex flex-col font-bold text-xl">
-              <span className=" text-lg font-normal">Auction ends:</span> 16 January 12
-              am
+              <span className=" text-lg font-normal">Auction ends:</span> {new Date(data?.endDate).toLocaleString()}
             </p>
             <p className="flex flex-col font-bold text-xl">
-            <span className=" text-lg font-normal">Auction views:</span> 6,591
+            <span className=" text-lg font-normal">Auction views:</span> {data?.views}
             </p>
             <p className="flex flex-col font-bold text-xl">
-            <span className=" text-lg font-normal">Watching:</span> 51
+            <span className=" text-lg font-normal">Watching:</span> {data?.watching}
             </p>
             <p className="flex flex-col font-bold text-xl">
             <span className=" text-lg font-normal">Location:</span>{" "}
-              <span className="text-blue-700">Dallas, Texas, USA</span>
+              <span className="text-blue-700">{data?.location}</span>
             </p>
             <p className="flex flex-col font-bold text-xl">
             <span className=" text-lg font-normal">Seller:</span>{" "}
-              <span className="text-yellow-600">Jlame36</span>
+              <span className="text-yellow-600">{data?.Seller.name}</span>
             </p>
           </div>
 
@@ -75,7 +74,7 @@ export default function AuctionDetails() {
             </p>
             <p className="text-sm text-gray-500 flex flex-col text-center gap-2">Time left
                 <div className="text-xl text-gray-700 w-52">
-                    <TimerComponent endDate='2025-01-16' className=""/>
+                    <TimerComponent endDate='2025-01-18' className="gap-0"/>
                 </div>
             </p>
             <div className="border-l-4 bg-gray-100/50 px-2 py-1 border-gray-400 flex justify-center items-center h-10"><h2 className="text-xl">Reserve Lowered</h2></div>

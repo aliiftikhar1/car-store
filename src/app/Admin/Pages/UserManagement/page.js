@@ -1,6 +1,6 @@
 'use client';
 
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { PencilIcon, TrashIcon, PlusIcon, EyeIcon, EyeOffIcon, Loader } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,8 +22,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@radix-ui/react-label';
-
-import 'react-toastify/dist/ReactToastify.css';
 
 // Fetch all users
 const fetchUsers = async () => {
@@ -82,7 +80,9 @@ export default function UserManagement() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingAction, setLoadingAction] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [image, setimage] = useState()
 
+ 
   useEffect(() => {
     fetchUsers()
       .then(setUsers)
@@ -126,33 +126,52 @@ export default function UserManagement() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const userData = Object.fromEntries(formData.entries());
+// Image change handler with Base64 conversion
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setimage(reader.result); // Set the base64 string
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
-    setLoadingAction('form');
-    try {
-      if (currentUser) {
-        await updateUser({ ...currentUser, ...userData });
-        toast.success('User updated successfully');
-      } else {
-        await addUser(userData);
-        toast.success('User added successfully');
-      }
-      const updatedUsers = await fetchUsers();
-      setUsers(updatedUsers);
-      setIsModalOpen(false);
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoadingAction(null);
+// Submit handler with image as base64
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const userData = Object.fromEntries(formData.entries());
+
+  // Include the base64 image in the userData object
+  if (image) {
+    userData.image = image;
+  }
+
+  setLoadingAction('form');
+  try {
+    if (currentUser) {
+      await updateUser({ ...currentUser, ...userData });
+      toast.success('User updated successfully');
+    } else {
+      await addUser(userData);
+      toast.success('User added successfully');
     }
-  };
+    const updatedUsers = await fetchUsers();
+    setUsers(updatedUsers);
+    setIsModalOpen(false);
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    setLoadingAction(null);
+  }
+};
+
 
   return (
     <div>
-      <ToastContainer />
+ 
       <div className="p-6">
         <div className="mb-6 flex justify-between items-center">
           <Input
@@ -174,11 +193,12 @@ export default function UserManagement() {
                 <DialogTitle>{currentUser ? 'Update User' : 'Add User'}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  {['name', 'email', 'password', 'location', 'phoneNo'].map((field) => (
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                 
+                  {['name','username', 'email', 'password','bio', 'phoneNo', 'country', 'province', 'city', 'zipcode', 'address'].map((field) => (
                     <div key={field} className="relative">
                       <label htmlFor={field} className="block text-sm font-medium">
-                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                        {field === 'province' ? 'State/Province' : field.charAt(0).toUpperCase() + field.slice(1)}
                       </label>
                       <Input
                         type={field === 'password' && !showPassword ? 'password' : field === 'phoneNo' ? 'number' : 'text'}
@@ -196,7 +216,7 @@ export default function UserManagement() {
                       )}
                     </div>
                   ))}
-                  <div className="col-span-1">
+                   <div className="col-span-1">
                     <Label htmlFor="type" className="block text-sm font-medium text-gray-800">
                       Select Role
                     </Label>
@@ -210,6 +230,29 @@ export default function UserManagement() {
                       </SelectContent>
                     </Select>
                   </div>
+                   <div className='flex col-span-1 flex-col justify-end'>
+                    <label htmlFor='image' className="block text-sm font-medium">Profile Image</label>
+                    <Input
+                      type='file'
+                      accept='image/*'
+                      name='image'
+                      onChange={handleImageChange}
+                      placeholder='Choose Profile Picture'
+                    />
+                  
+                  <div className='size-40  border-2 border-dashed '>
+                    {image ? (
+                      <img
+                        src={image}
+                        alt="Profile Preview"
+                        className="w-full h-full object-cover "
+                      />
+                    ) : (
+                      <div className="flex w-full text-center h-full justify-center items-center text-gray-500">No image selected</div>
+                    )}
+                  </div>
+                  </div>
+                 
                   <div className="col-span-1">
                     <Label htmlFor="status" className="block text-sm font-medium text-gray-800">
                       Select Status
@@ -225,7 +268,7 @@ export default function UserManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-start mt-6 space-x-2">
                     <Input
                       type="checkbox"
                       id="verified"
@@ -235,7 +278,7 @@ export default function UserManagement() {
                     />
                     <label
                       htmlFor="verified"
-                      className="text-sm font-medium text-gray-800"
+                      className="text-sm font-medium flex items-center text-gray-800"
                     >
                       Verified
                     </label>
@@ -260,6 +303,7 @@ export default function UserManagement() {
               <TableHeader>
                 <TableRow>
                   <TableHead>No.</TableHead>
+                  <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Type</TableHead>
@@ -272,6 +316,7 @@ export default function UserManagement() {
                 {filteredUsers.map((user, index) => (
                   <TableRow key={user.id}>
                     <TableCell>{index + 1}</TableCell>
+                    <TableCell><img src={user.image} className='h-12'/> </TableCell>
                     <TableCell>{user.name} </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.type}</TableCell>

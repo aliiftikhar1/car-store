@@ -42,12 +42,12 @@ export default function TimerComponent({ className = "", endDate }) {
   }, [endDate]);
 
   return (
-    <div className={cn("grid grid-flow-col gap-5 text-center auto-cols-max", className)}>
+    <div className={cn("flex justify-center items-center gap-5 text-center ", className)}>
       <div className="flex flex-col w-full">
         <span className={cn("countdown font-[900]", className)}>{timeLeft.days}</span>
         <span className="text-sm font-normal">days</span>
       </div>
-      <div className="flex flex-col w-full">
+      {timeLeft.days<2?<><div className="flex flex-col w-full">
         <span className={cn("countdown font-[900]", className)}>{timeLeft.hours}</span>
         <span className="text-sm font-normal">hours</span>
       </div>
@@ -58,7 +58,8 @@ export default function TimerComponent({ className = "", endDate }) {
       <div className="flex flex-col w-full">
         <span className={cn("countdown font-[900]", className)}>{timeLeft.seconds}</span>
         <span className="text-sm font-normal">sec</span>
-      </div>
+      </div></>:''}
+      
     </div>
   );
 }

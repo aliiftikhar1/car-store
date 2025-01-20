@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -11,27 +11,171 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { User } from 'lucide-react'
+import { Bell, Heart, User } from 'lucide-react'
+import { RegistrationDialog } from "./RegisterationDialog"
+import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
+import { clearUserDetails, setUserDetails } from "@/store/UserSlice"
+ 
+import { toast } from "sonner"
 
 export function AuthDialogs() {
   const [open, setOpen] = useState(false)
+  const [open2, setOpen2] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
+  const [isRegister, setIsRegister] = useState(false)
+  const [email, setemail] = useState('')
+  const [password, setpassword] = useState('')
+  const user = useSelector((data)=>data.CarUser.userDetails) ||[]
+  if(!user){
+   setOpen(true)
+  }
+  const dispatch = useDispatch()
 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  
+  const dropdownRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    dispatch(clearUserDetails())
+    setDropdownOpen(false)
+    console.log("Logged out"); // Replace with your logout logic
+  };
   const toggleAuth = () => {
     setIsLogin(!isLogin)
   }
 
+  function handleRegisterDialog() {
+    setIsRegister(true)
+    setIsLogin(false)
+    setOpen2(true)
+  }
+
+  async function handleEmailCheck() {
+    try {
+      const response = await fetch('http://localhost:3000/api/checkEmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email })
+      })
+      const data = await response.json()
+      console.log(data)
+      if (data.status === 200) {
+        console.log('email is already registered')
+        toast.error(data.message)
+      }
+      if (data.status === 201) {
+        console.log('email is not registered')
+        handleRegisterDialog()
+      }
+    } catch (error) {
+      console.log("error checking email")
+    }
+  }
+  async function handleLogin() {
+    try {
+      const response = await fetch('http://localhost:3000/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, password:password })
+      })
+      const data = await response.json()
+      console.log(data)
+      if (data.status === 200) {
+        console.log('User logged in successfully');
+        toast.success("User Logged In Successfully")
+        // Dispatching the action to set user details
+        dispatch(setUserDetails(data.user));
+        
+        console.log('Data saved to Redux');
+        setOpen(false)
+        setOpen2(false)
+      }
+      
+    } catch (error) {
+      console.log("error loggin in")
+    }
+  }
+
   return (
+    
     <Dialog open={open} onOpenChange={setOpen} className="p-4">
-      <DialogTrigger asChild>
+      <div className="relative">
+      {user.id ? (
+        <div className="flex gap-4 justify-center items-center">
+          <Bell/>
+          <Heart/>
+        <div ref={dropdownRef}
+          className="cursor-pointer flex items-center text-black-500 justify-center size-12 rounded-full  font-extrabold text-2xl bg-gray-200/70"
+          onClick={toggleDropdown}
+        >
+         {`${user?.name || ""}`.toUpperCase().slice(0, 1) || "?"}
+        </div>
+        </div>
+      ) : (
+        <DialogTrigger asChild>
         <button className="text-black hover:text-black/90">
-          <p className="hidden md:flex">{isLogin ? "SignIn" : "Sign Up"}</p>
+          <p className="hidden md:flex">{isLogin ? "Sign In" : "Sign Up"}</p>
           <User className="flex md:hidden" />
         </button>
-      </DialogTrigger>
-      
+         </DialogTrigger>
+      )}
+
+      {/* Dropdown */}
+      {dropdownOpen && user && (
+        <div className="absolute right-0 mt-2 space-y-4 text-sm w-48 bg-white shadow-lg  overflow-hidden z-10">
+          <a
+          href="/my-profile"
+            className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
+            onClick={() => console.log("Profile clicked")}
+          >
+            Profile
+          </a>
+          <a
+          href="/my-listings"
+            className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
+            onClick={() => console.log("Profile clicked")}
+          >
+            Listing
+          </a>
+          <button
+            className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
+            onClick={() => console.log("Profile clicked")}
+          >
+            Settings
+          </button>
+          <button
+            className="block w-full px-4 py-2 text-left text-black bg-red-300/50 hover:bg-gray-100"
+            onClick={handleLogout}
+          >
+            SignOut
+          </button>
+        </div>
+      )}
+    </div>
+     
+
       {isLogin ? (
-        // Login Dialog Content
         <DialogContent className="max-w-xs md:max-w-sm p-4">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl">Log In</DialogTitle>
@@ -44,6 +188,7 @@ export function AuthDialogs() {
               id="email"
               placeholder="Email"
               type="email"
+              onChange={(e)=>setemail(e.target.value)}
               className="col-span-3 px-4 py-6"
             />
             <div className="relative">
@@ -51,17 +196,21 @@ export function AuthDialogs() {
                 id="password"
                 placeholder="Password"
                 type="password"
+                onChange={(e)=>setpassword(e.target.value)}
                 className="col-span-3 px-4 py-6"
               />
               <Button
                 variant="link"
                 className="absolute right-0 top-1/2 -translate-y-1/2 text-sm"
-                onClick={() => {}}
+               
               >
                 Forgot?
               </Button>
             </div>
-            <Button className="w-full bg-[#B69C66] hover:bg-[#B69C66]/90 px-4 py-6">
+            <Button 
+            className="w-full bg-[#B69C66] hover:bg-[#B69C66]/90 px-4 py-6"
+            onClick={handleLogin}
+            >
               LOG IN
             </Button>
             <div className="text-center text-sm">
@@ -80,7 +229,7 @@ export function AuthDialogs() {
                 </span>
               </div>
             </div>
-            <Button variant="outline" className="w-full px-4 py-6" onClick={() => {}}>
+            <Button variant="outline" className="w-full px-4 py-6" onClick={() => { }}>
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -101,7 +250,7 @@ export function AuthDialogs() {
               </svg>
               Continue with Google
             </Button>
-            <Button variant="outline" className="w-full px-4 py-6" onClick={() => {}}>
+            <Button variant="outline" className="w-full px-4 py-6" onClick={() => { }}>
               <svg className="mr-2 h-4 w-4" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396v8.01Z" />
               </svg>
@@ -122,7 +271,7 @@ export function AuthDialogs() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
-            <Button variant="outline" className="w-full px-4 py-6" onClick={() => {}}>
+            <Button variant="outline" className="w-full px-4 py-6" onClick={() => { }}>
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -143,7 +292,7 @@ export function AuthDialogs() {
               </svg>
               Continue with Google
             </Button>
-            <Button variant="outline" className="w-full px-4 py-6" onClick={() => {}}>
+            <Button variant="outline" className="w-full px-4 py-6" onClick={() => { }}>
               <svg className="mr-2 h-4 w-4" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396v8.01Z" />
               </svg>
@@ -164,12 +313,20 @@ export function AuthDialogs() {
               placeholder="Email"
               type="email"
               className="col-span-3 px-4 py-6"
+              onChange={(e) => setemail(e.target.value)}
             />
-            <Button className="w-full bg-black hover:bg-black/90 text-white px-4 py-6">
+            <Button onClick={handleEmailCheck} className="w-full bg-black hover:bg-black/90 text-white px-4 py-6">
               CREATE ACCOUNT
             </Button>
           </div>
         </DialogContent>
+      )}
+      {open2 && (
+        <RegistrationDialog
+          open={open2}
+          onClose={() => setOpen2(false)}
+          email={email}
+        />
       )}
     </Dialog>
   )
