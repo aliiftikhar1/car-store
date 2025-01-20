@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@radix-ui/react-label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import JoditEditor from "jodit-react"
+const JoditEditor = dynamic(() => import('jodit-react'), {
+  ssr: false,
+});
 import { Eye, Pencil, Trash } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"

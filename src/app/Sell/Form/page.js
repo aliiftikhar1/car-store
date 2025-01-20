@@ -13,7 +13,9 @@ import {
 import { useRef, useState } from "react"
 import { Upload, Loader2 } from 'lucide-react'
 import { toast } from "sonner"
-import JoditEditor from 'jodit-react';
+const JoditEditor = dynamic(() => import('jodit-react'), {
+  ssr: false,
+});
 import { Label } from "@radix-ui/react-label"
 
 

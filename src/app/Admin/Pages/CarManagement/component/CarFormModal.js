@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
-import JoditEditor from 'jodit-react';
+const JoditEditor = dynamic(() => import('jodit-react'), {
+  ssr: false,
+});
 
 export function CarFormModal({ isOpen, setIsModalOpen, currentCar, cars, brands }) {
   const [selectedImages, setSelectedImages] = useState([]);
