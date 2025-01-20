@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronDown, ArrowUpDown } from 'lucide-react'
+import { ChevronDown, ArrowUpDown, Loader } from 'lucide-react'
 import { toast } from "sonner"
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -16,6 +16,7 @@ import AuctionCard from "./AuctionCard"
 
 
 export default function Auction() {
+  const [loading, setloading]=useState(false)
   const [auctionItems, setAuctionItems] = useState([])
   const [brands, setBrands] = useState([])
   const [filters, setFilters] = useState({
@@ -27,10 +28,12 @@ export default function Auction() {
 
   const fetchBrands = async () => {
     try {
+      setloading(true)
       const response = await fetch("/api/admin/brandmanagement")
       const data = await response.json()
       console.log("Fetched brands are, ", data)
       setBrands(data.data)
+      setloading(false)
     } catch (error) {
       toast.error("Failed to fetch brands")
     }
@@ -38,9 +41,11 @@ export default function Auction() {
 
   async function GetAuctions() {
     try {
+      setloading(true)
       const response = await fetch("/api/user/FetchAuctions")
       const data = await response.json()
       setAuctionItems(data.data)
+      setloading(false)
     } catch (error) {
       toast.error("Failed to fetch auctions")
     }
@@ -187,6 +192,7 @@ export default function Auction() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading&&<Loader className="animate-spin"/>}
             {sortedItems.map((item) => (
               <AuctionCard key={item.id} item={item} />
             ))}
