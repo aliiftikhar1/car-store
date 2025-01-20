@@ -13,6 +13,7 @@ import {
 import { useRef, useState } from "react"
 import { Upload, Loader2 } from 'lucide-react'
 import { toast } from "sonner"
+import dynamic from "next/dynamic"
 const JoditEditor = dynamic(() => import('jodit-react'), {
   ssr: false,
 });

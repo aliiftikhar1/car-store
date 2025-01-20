@@ -14,6 +14,7 @@ const JoditEditor = dynamic(() => import('jodit-react'), {
 import { Eye, Pencil, Trash } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
+import dynamic from "next/dynamic"
 
 export default function AdminCarSubmissions() {
   const [brands, setBrands] = useState([]);

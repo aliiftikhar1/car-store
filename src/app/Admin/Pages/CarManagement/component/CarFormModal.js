@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import dynamic from "next/dynamic"
 const JoditEditor = dynamic(() => import('jodit-react'), {
   ssr: false,
 });
