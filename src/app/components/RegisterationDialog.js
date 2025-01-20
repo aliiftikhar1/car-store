@@ -8,12 +8,12 @@ import { toast } from "sonner";
 
 export function RegistrationDialog({ open, onClose, email }) {
   const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [password, setpassword] = useState('')
 
   const handleSubmit = async () => {
-    const payload = { email, name, location, phoneNo, password };
+    const payload = { email, name, address, phoneNo, password };
 
     try {
       const response = await fetch("/api/user/register", {
@@ -56,10 +56,10 @@ export function RegistrationDialog({ open, onClose, email }) {
           />
           <Input
             type="text"
-            placeholder="Location"
-            value={location}
+            placeholder="Address"
+            value={address}
             className='rounded-none p-4'
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => setAddress(e.target.value)}
           />
           <Input
             type="text"

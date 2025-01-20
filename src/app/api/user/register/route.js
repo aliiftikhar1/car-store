@@ -16,7 +16,7 @@ export async function POST(request) {
                 email: data.email,
                 type: 'customer',
                 password: hashedPassword,
-                location: data.location,
+                address: data.address,
                 status: 'Active',
                 verified: data.verified==='on'?true:false,
                 phoneNo: data.phoneNo,
