@@ -30,10 +30,10 @@ export default function Gallery({ data }) {
     <div className="px-20 flex max-h-[80vh] w-full gap-4">
       <div className="w-3/4 relative" id="big-image-section">
         <Image
-          src={images[currentIndex]?.data || "/placeholder.jpg"}
-          alt="Main image"
-          layout="fill"
-          objectFit="contain"
+         src={images[currentIndex]?.data  || "/placeholder.svg"}
+         width={200}
+         height={200}
+         className="w-full h-full object-contain"
         />
         <button
           onClick={prevImage}
@@ -50,14 +50,14 @@ export default function Gallery({ data }) {
           <ChevronRight size={24} />
         </button>
       </div>
-      <div className="w-1/4 grid grid-cols-2 grid-rows-3 overflow-hidden gap-2">
-        {images.slice(currentIndex + 1, currentIndex + 7).map((image, index) => (
-          <div key={index} className="aspect-square relative">
+      <div className="w-1/4 grid grid-cols-2 grid-rows-4 overflow-hidden gap-2">
+        {images.slice(currentIndex + 1, currentIndex + 9).map((image, index) => (
+          <div key={index} className="aspect-square w-full h-full relative">
             <Image
-              src={image.data || "/placeholder.svg"}
-              alt={`Thumbnail ${index + 1}`}
-              layout="fill"
-              objectFit="cover"
+             src={image.data  || "/placeholder.svg"}
+             width={200}
+             height={200}
+             className="w-full h-full object-cover"
             />
             {/* {index === 7 && (
               <div className="flex text-white font-bold justify-center items-center absolute top-0 z-20 w-full h-full bg-black/50">

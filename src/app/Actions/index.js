@@ -40,3 +40,28 @@ export async function getUserDetails(id){
     }
   }
   
+
+  export async function uploadfiletoserver (file){
+    try {
+      if (!file) throw new Error('No file selected for upload');
+      const formData = new FormData();
+      formData.append('myFile', file);
+  
+      const response = await fetch('http://46.202.130.158:3002/upload', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Image upload failed: ${errorData.error.message}`);
+      }
+  
+      const data = await response.json();
+      console.log("Data is", data);
+      return data.file; // Uploaded image URL
+    } catch (error) {
+      console.error('Error during image upload:', error);
+      throw error;
+    }
+  };

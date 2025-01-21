@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import Image from "next/image";
 
 // export default function AuctionCard({ item, index }) {
 //     return (
@@ -69,13 +70,15 @@ export default function AuctionCard({item,index}){
     return(
         <a href={`/Car/${item.id}`} key={index} className="md:border h-[70%] group py-2  md:p-4 cursor-pointer">
         <div className="bg-white h-[60vh] md:h-[70%] relative  overflow-hidden ">
-            <img
+            <Image
+               width={200}
+               height={200}
+            //    className="w-full h-full object-cover"
               src={
                 item?.CarSubmission?.SubmissionImages?.find(
                   (image) => image.label === "portrait"
                 )?.data || "/placeholder.jpg"
               }
-              
                 alt={item.name}
                 className="w-full h-full object-cover group-hover:scale-[1.07] transform transition-all duration-500"
             />

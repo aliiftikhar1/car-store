@@ -23,6 +23,7 @@ import {
 import { Loader } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
+import { uploadfiletoserver } from '@/app/Actions';
 
 
 
@@ -88,116 +89,85 @@ export default function BrandManagement() {
     return true;
   };
 
-  // Image upload function
-  const imgHippoUpload = async (file) => {
-    try {
-      if (!file) throw new Error('No file selected for upload');
-      const formData = new FormData();
-      formData.append('api_key', '91ae71a1cd49263f128de1b43b06aaff'); // Your API key
-      formData.append('file', file);
 
-      const response = await fetch('https://api.imghippo.com/v1/upload', {
-        method: 'POST',
-        body: formData,
-      });
+useEffect(() => {
+  fetchBrands()
+    .then(setBrands)
+    .catch((err) => toast.error(err.message))
+    .finally(() => setIsLoading(false));
+}, []);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Image upload failed: ${errorData.error.message}`);
-      }
-
-      const data = await response.json();
-      return data.data.url; // Uploaded image URL
-    } catch (error) {
-      console.error('Error during image upload:', error);
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    fetchBrands()
-      .then(setBrands)
-      .catch((err) => toast.error(err.message))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  useEffect(() => {
-    setFilteredbrands(
-      brands.filter((brand) =>
-        [brand.name, brand.description].some((field) =>
-          field.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+useEffect(() => {
+  setFilteredbrands(
+    brands.filter((brand) =>
+      [brand.name, brand.description].some((field) =>
+        field.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    );
-  }, [brands, searchTerm]);
+    )
+  );
+}, [brands, searchTerm]);
 
-  const handleAddBrand = () => {
-    setCurrentbrand(null);
-    setIsModalOpen(true);
-  };
+const handleAddBrand = () => {
+  setCurrentbrand(null);
+  setIsModalOpen(true);
+};
 
-  const handleDeleteBrand = async (id) => {
-    if (window.confirm('Are you sure you want to delete this brand?')) {
-      setLoadingAction(id);
-      try {
-        await deleteBrand(id);
-        const updatedBrands = await fetchBrands();
-        setBrands(updatedBrands);
-        toast.success('Brand deleted successfully');
-      } catch (err) {
-        toast.error(err.message);
-      } finally {
-        setLoadingAction(null);
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoadingAction('image');
-    const formData = new FormData(e.target);
-  
-    const selectedImage = formData.get('image');
-  
+const handleDeleteBrand = async (id) => {
+  if (window.confirm('Are you sure you want to delete this brand?')) {
+    setLoadingAction(id);
     try {
-      // Convert the image to a base64 string
-      const imageBase64 = await convertToBase64(selectedImage);
-  
-      const brandData = {
-        name: formData.get('name'),
-        description: formData.get('description'),
-        image: imageBase64, // Use base64 string
-      };
-  
-      setLoadingAction('form');
-      if (currentbrand) {
-        await updateBrand({ ...currentbrand, ...brandData });
-        toast.success('Brand updated successfully');
-      } else {
-        await addBrand(brandData);
-        toast.success('Brand added successfully');
-      }
-  
+      await deleteBrand(id);
       const updatedBrands = await fetchBrands();
       setBrands(updatedBrands);
-      setIsModalOpen(false);
+      toast.success('Brand deleted successfully');
     } catch (err) {
       toast.error(err.message);
     } finally {
       setLoadingAction(null);
     }
-  };
-  
-  // Utility function to convert a file to a base64 string
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-  };
-  
+  }
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoadingAction('image');
+
+  const formData = new FormData(e.target);
+  const selectedImage = formData.get('image'); // Get the selected image file
+
+  try {
+    let imageUrl = '';
+
+    // If there's a selected image, upload it to the server
+    if (selectedImage) {
+      imageUrl = await uploadfiletoserver(selectedImage); // Get the uploaded image URL
+    }
+
+    const brandData = {
+      name: formData.get('name'),
+      description: formData.get('description'),
+      image: imageUrl, // Use the uploaded image URL
+    };
+
+    setLoadingAction('form');
+    if (currentbrand) {
+      await updateBrand({ ...currentbrand, ...brandData });
+      toast.success('Brand updated successfully');
+    } else {
+      await addBrand(brandData);
+      toast.success('Brand added successfully');
+    }
+
+    const updatedBrands = await fetchBrands();
+    setBrands(updatedBrands);
+    setIsModalOpen(false);
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    setLoadingAction(null);
+  }
+};
+
   return (
     <div>
       <ToastContainer />

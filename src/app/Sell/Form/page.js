@@ -18,6 +18,7 @@ const JoditEditor = dynamic(() => import('jodit-react'), {
   ssr: false,
 });
 import { Label } from "@radix-ui/react-label"
+import { uploadfiletoserver } from "@/app/Actions"
 
 
 export default function ContactForm() {
@@ -71,12 +72,12 @@ export default function ContactForm() {
       jsonData.notes = editorContent.notes;
      
       const filePromises = files.map(async (file) => {
-        const base64 = await convertToBase64(file);
+        const imageUrl = await uploadfiletoserver(file);
         return {
           name: file.name,
           type: file.type,
           size: file.size,
-          data: base64,
+          data: imageUrl,
         };
       });
   
