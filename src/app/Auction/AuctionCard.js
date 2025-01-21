@@ -73,7 +73,6 @@ export default function AuctionCard({item,index}){
             <Image
                width={200}
                height={200}
-            //    className="w-full h-full object-cover"
               src={
                 item?.CarSubmission?.SubmissionImages?.find(
                   (image) => image.label === "portrait"
