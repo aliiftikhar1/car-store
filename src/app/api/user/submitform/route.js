@@ -25,8 +25,15 @@ export async function POST(request) {
             postal,
             notes,
             description,
-                highlights,
-                specs,
+            highlights,
+            specs,
+            category,
+            bodyType,
+            transmission,
+            engineCapacity,
+            fuelType,
+            exteriorColor,
+            condition,
             files,
         } = data;
 
@@ -51,6 +58,13 @@ export async function POST(request) {
                 highlights,
                 specs,
                 notes,
+                category,
+                bodyType,
+                transmission,
+                engineCapacity,
+                fuelType,
+                exteriorColor,
+                condition,
                 status: "Pending",
                 sellerId: 1, // Replace with actual seller ID
             },
@@ -80,8 +94,8 @@ export async function POST(request) {
                 }
             }
         };
-    
-    
+
+
         if (files && Array.isArray(files)) {
             for (const img of files) {
                 if (img && img.data) {

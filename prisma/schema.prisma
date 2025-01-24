@@ -31,6 +31,10 @@ model User {
   country     String?
   province    String?
   zipcode     String?
+  cardName    String?
+  cardNumber  String?
+  cardExpiry  String?
+  cardCvc     String?
   password    String
   type        String
   status      String
@@ -51,8 +55,15 @@ model CarSubmission {
   lastname         String
   email            String
   phone            String
-  vehicleMake      String
+  category         String?
+  bodyType          String?
+  transmission      String?
+  engineCapacity    String?
+  fuelType          String?
+  exteriorColor     String?
+  condition         String?
   vehicleModel     String
+  vehicleMake      String
   vehicleYear      String
   sellerId         Int
   notes            String?    @db.Text
@@ -125,3 +136,4 @@ model Bidding {
   User      User     @relation("UserBids", fields: [userId], references: [id], onDelete: Cascade)
   
 }
+

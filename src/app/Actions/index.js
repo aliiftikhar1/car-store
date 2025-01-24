@@ -47,7 +47,8 @@ export async function getUserDetails(id){
       const formData = new FormData();
       formData.append('myFile', file);
   
-      const response = await fetch('http://46.202.130.158:3002/upload', {
+      const response = await fetch('https://www.getcarbuydirect.com/uploadImage.php', {
+        // https://file-upload-server-chi.vercel.app/upload', {
         method: 'POST',
         body: formData,
       });

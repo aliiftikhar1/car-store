@@ -15,9 +15,17 @@ import { Eye, Loader, Pencil, Trash } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
 import dynamic from "next/dynamic"
+import { AutocompleteInput } from "./AutoCompleteInput"
 
 export default function AdminCarSubmissions() {
-  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState(["SuperCar", "LuxuryCar"]);
+  const [bodyTypes, setBodyTypes] = useState(["Metal", "Plastic"]);
+  const [transmissions, setTransmissions] = useState(["Self", "Manual"]);
+  const [engineCapacities, setEngineCapacities] = useState(["1200", "1000"]);
+  const [fuelTypes, setFuelTypes] = useState(["Gas", "Petrol"]);
+  const [exteriorColors, setExteriorColors] = useState(["Red", "Yellow"]);
+  const [conditions, setConditions] = useState(["Used", "New"]);
+  const [brands, setBrands] = useState(["Make"]);
   const [carSubmissions, setCarSubmissions] = useState([])
   const [filteredSubmissions, setFilteredSubmissions] = useState([])
   const [filter, setFilter] = useState("")
@@ -44,12 +52,19 @@ export default function AdminCarSubmissions() {
     description: "",
     highlights: "",
     notes: "",
-    brand:'',
+    brand: '',
+    category: '',
+    bodyType: '',
+    transmission: '',
+    engineCapacity: '',
+    fuelType: '',
+    exteriorColor: '',
+    condition: '',
   })
   const [imageLabels, setImageLabels] = useState({})
-  const [loading, setloading]=useState(true)
+  const [loading, setloading] = useState(true)
   async function fetchSubmissions() {
-  
+
     fetch("/api/admin/carsubmissions")
       .then((response) => response.json())
       .then((data) => {
@@ -63,20 +78,48 @@ export default function AdminCarSubmissions() {
   }
   const fetchBrands = async () => {
     try {
-      setloading(false)
-      const response = await fetch('/api/admin/brandmanagement');
-      const data = await response.json();
-      console.log("Fetched brands are, ", data)
-      setBrands(data.data);
-      setloading(false)
+      setloading(true);
+  
+      // Define the API endpoints
+      const endpoints = [
+        '/api/user/FetchLists/Makes',
+        '/api/user/FetchLists/BodyTypes',
+        '/api/user/FetchLists/Categories',
+        '/api/user/FetchLists/Conditions',
+        '/api/user/FetchLists/EngineCapacity',
+        '/api/user/FetchLists/ExteriorColor',
+        '/api/user/FetchLists/FuelType',
+        '/api/user/FetchLists/Transmissions',
+      ];
+  
+      // Fetch all data concurrently
+      const responses = await Promise.all(endpoints.map((endpoint) => fetch(endpoint)));
+  
+      // Parse all responses as JSON
+      const data = await Promise.all(responses.map((response) => response.json()));
+  
+      // Update the state with the fetched data
+      setBrands(data[0].vehicleMakes);
+      setBodyTypes(data[1].bodyType);
+      setCategories(data[2].vehiclecategory);
+      setConditions(data[3].vehiclecondition);
+      setEngineCapacities(data[4].vehicleengineCapacity);
+      setExteriorColors(data[5].vehicleexteriorColor);
+      setFuelTypes(data[6].vehiclefuelType);
+      setTransmissions(data[7].vehicletransmission);
+  
+      setloading(false);
     } catch (error) {
+      setloading(false);
       toast.error('Failed to fetch brands');
     }
   };
+  
   useEffect(() => {
-    fetchSubmissions()
+    fetchSubmissions();
     fetchBrands();
-  }, [1])
+  }, []);
+  
 
   const handleFilterChange = (e) => {
     const value = e.target.value.toLowerCase()
@@ -123,6 +166,14 @@ export default function AdminCarSubmissions() {
       highlights: submission.highlights || "",
       notes: submission.notes || "",
       brand: submission.brand || "",
+
+      category: submission.category || '',
+      bodyType: submission.bodyType || '',
+      transmission: submission.transmission || '',
+      engineCapacity: submission.engineCapacity || '',
+      fuelType: submission.fuelType || '',
+      exteriorColor: submission.exteriorColor || '',
+      condition: submission.condition || '',
     })
     setIsUpdateDialogOpen(true)
   }
@@ -199,8 +250,8 @@ export default function AdminCarSubmissions() {
   }
 
 
-  if(loading){
-    return <div className="w-full h-screen flex justify-center items-center"><Loader className="animate-spin"/></div>
+  if (loading) {
+    return <div className="w-full h-screen flex justify-center items-center"><Loader className="animate-spin" /></div>
   }
   return (
     <div className="p-4">
@@ -330,8 +381,8 @@ export default function AdminCarSubmissions() {
                       key={image.id}
                       src={image.data || "/placeholder.svg"}
                       alt={image.name}
-                      width={200}
-                      height={200}
+                      width={1200}
+                      height={1200}
                       className="w-full h-auto rounded-lg shadow-md"
                     />
                   ))}
@@ -428,29 +479,8 @@ export default function AdminCarSubmissions() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="vehicleMake">Vehicle make</Label>
-                  <Input
-                    id="vehicleMake"
-                    value={formData.vehicleMake}
-                    onChange={(e) => handleFormChange("vehicleMake", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="brand">Brand</Label>
-                  <Select value={formData.brand} onValueChange={(value) => handleFormChange("brand", value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {brands.map((item,index)=>{
-                        return(
-                          <SelectItem key={index} value={item.id}>{item.name}</SelectItem>
-                        )
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <AutocompleteInput options={brands} setFormData={setFormData} value={formData.vehicleMake} name="vehicleMake" label="Vehicle Make" required />
+              
                 <div className="space-y-2">
                   <Label htmlFor="vehicleModel">Vehicle model</Label>
                   <Input
@@ -475,7 +505,24 @@ export default function AdminCarSubmissions() {
                   <Input id="vin" value={formData.vin} onChange={(e) => handleFormChange("vin", e.target.value)} />
                 </div>
               </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <AutocompleteInput options={categories} setFormData={setFormData} value={formData.category} name="category" label="Category" required />
+                <AutocompleteInput options={bodyTypes} setFormData={setFormData} value={formData.bodyType} name="bodyType" label="Body Type" required />
+              </div>
 
+              <div className="grid md:grid-cols-2 gap-6">
+                <AutocompleteInput options={transmissions} setFormData={setFormData} value={formData.transmission} name="transmission" label="Transmission" required />
+                <AutocompleteInput options={engineCapacities} setFormData={setFormData} value={formData.engineCapacity} name="engineCapacity" label="Engine Capacity" required />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <AutocompleteInput options={fuelTypes} setFormData={setFormData} value={formData.fuelType} name="fuelType" label="Fuel Type" required />
+                <AutocompleteInput options={exteriorColors} setFormData={setFormData} value={formData.exteriorColor} name="exteriorColor" label="Exterior Color" required />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <AutocompleteInput options={conditions} setFormData={setFormData} value={formData.condition} name="condition" label="Condition" required />
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="mileage">Estimated Mileage</Label>
@@ -553,7 +600,7 @@ export default function AdminCarSubmissions() {
                   <JoditEditor
                     value={formData[field]}
                     onBlur={(newContent) => handleFormChange(field, newContent)}
-                    onChange={() => {}}
+                    onChange={() => { }}
                   />
                 </div>
               ))}
@@ -571,8 +618,8 @@ export default function AdminCarSubmissions() {
                       <Image
                         src={image.data || "/placeholder.svg"}
                         alt={image.name}
-                        width={200}
-                        height={200}
+                        width={1200}
+                        height={1200}
                         className="w-full h-auto rounded-lg shadow-md"
                       />
                       <Select

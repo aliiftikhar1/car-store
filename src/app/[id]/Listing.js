@@ -8,7 +8,7 @@ import { useSelector } from "react-redux"
 export default function MyListingsSection() {
   const [activeTab, setActiveTab] = useState('active')
   const [listings] = useState([]) // Empty array to simulate no listings
-  const userid = useSelector((state) => state.CarUser.userDetails.id);
+  const userid = useSelector((state) => state.CarUser?.userDetails?.id);
   const [userDetails, setUserDetails]=useState('')
   async function getListing(){
     const data = await fetch(`/api/user/getUserDetails/${userid}`)

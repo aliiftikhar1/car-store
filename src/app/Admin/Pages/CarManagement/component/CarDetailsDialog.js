@@ -29,8 +29,8 @@ import {
                       <img
                         src={`data:image/jpeg;base64,${image.url}`}
                         alt={`Car image ${index + 1}`}
-                        width={200}
-                        height={200}
+                        width={1000}
+                        height={1000}
                         className="object-cover rounded"
                       />
                       <span className="absolute top-0 left-0 bg-blue-500 text-white text-xs px-1 rounded-br">

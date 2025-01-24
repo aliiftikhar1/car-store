@@ -44,7 +44,14 @@ export async function PUT(request, { params }) {
         specs,
         review,
         status,
-        brand,
+        // brand,
+        category,
+        bodyType,
+        transmission,
+        engineCapacity,
+        fuelType,
+        exteriorColor,
+        condition,
         imageLabels,
     } = data;
 
@@ -59,7 +66,7 @@ export async function PUT(request, { params }) {
                 { status: 404 }
             );
         }
-        if(submission.status==='in_auction'){
+        if (submission.status === 'in_auction') {
             const updatedSubmission = await prisma.CarSubmission.update({
                 where: { id },
                 data: {
@@ -82,8 +89,14 @@ export async function PUT(request, { params }) {
                     highlights,
                     specs,
                     review,
-                    brand,
-                   
+                    // brand,
+                    category,
+                    bodyType,
+                    transmission,
+                    engineCapacity,
+                    fuelType,
+                    exteriorColor,
+                    condition,
                 },
             });
 
@@ -94,60 +107,60 @@ export async function PUT(request, { params }) {
                         data: { label },
                     })
                 );
-    
+
                 await Promise.all(imageUpdatePromises);
             }
-    
+
             return NextResponse.json(
                 { success: true, message: "Car updated successfully", data: updatedSubmission },
                 { status: 200 }
             );
         }
-        else{
-        const updatedSubmission = await prisma.CarSubmission.update({
-            where: { id },
-            data: {
-                firstname,
-                lastname,
-                email,
-                phone,
-                vehicleMake,
-                vehicleModel,
-                vehicleYear,
-                vin,
-                mileage,
-                mileageUnit,
-                price,
-                currency,
-                country,
-                postal,
-                notes,
-                description,
-                highlights,
-                specs,
-                review,
-                status,
-            },
-        });
+        else {
+            const updatedSubmission = await prisma.CarSubmission.update({
+                where: { id },
+                data: {
+                    firstname,
+                    lastname,
+                    email,
+                    phone,
+                    vehicleMake,
+                    vehicleModel,
+                    vehicleYear,
+                    vin,
+                    mileage,
+                    mileageUnit,
+                    price,
+                    currency,
+                    country,
+                    postal,
+                    notes,
+                    description,
+                    highlights,
+                    specs,
+                    review,
+                    status,
+                },
+            });
 
-        if (imageLabels && typeof imageLabels === 'object') {
-            const imageUpdatePromises = Object.entries(imageLabels).map(([imageId, label]) =>
-                prisma.CarSubmissionImage.update({
-                    where: { id: parseInt(imageId) },
-                    data: { label },
-                })
+            if (imageLabels && typeof imageLabels === 'object') {
+                const imageUpdatePromises = Object.entries(imageLabels).map(([imageId, label]) =>
+                    prisma.CarSubmissionImage.update({
+                        where: { id: parseInt(imageId) },
+                        data: { label },
+                    })
+                );
+
+                await Promise.all(imageUpdatePromises);
+            }
+
+            return NextResponse.json(
+                { success: true, message: "Car updated successfully", data: updatedSubmission },
+                { status: 200 }
             );
-
-            await Promise.all(imageUpdatePromises);
         }
 
-        return NextResponse.json(
-            { success: true, message: "Car updated successfully", data: updatedSubmission },
-            { status: 200 }
-        );
-    }
 
-        
     } catch (error) {
         console.error("Error updating car submission:", error);
         return NextResponse.json(

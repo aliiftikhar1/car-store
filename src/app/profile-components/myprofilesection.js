@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserDetails } from "../Actions";
+import { updateUserDetails, uploadfiletoserver } from "../Actions";
 import { toast } from "sonner";
 
 export default function MyProfileSection() {
@@ -33,21 +33,18 @@ const dispatch = useDispatch()
   //     setSelectedImage(imageUrl);
   //   }
   // };
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result); // Set the base64 string
-      };
-      reader.readAsDataURL(file);
+      const result = await uploadfiletoserver(file)
+        setSelectedImage(result); 
     }
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault();
   
-    // Prepare JSON object for submission
+
     const formData = {
       id: data.id||'',
       bio: bio || "",

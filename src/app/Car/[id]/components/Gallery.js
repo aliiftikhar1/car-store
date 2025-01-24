@@ -31,8 +31,8 @@ export default function Gallery({ data }) {
       <div className="w-3/4 relative" id="big-image-section">
         <Image
          src={images[currentIndex]?.data  || "/placeholder.svg"}
-         width={200}
-         height={200}
+         width={1200}
+         height={1200}
          className="w-full h-full object-contain"
         />
         <button
@@ -55,8 +55,8 @@ export default function Gallery({ data }) {
           <div key={index} className="aspect-square w-full h-full relative">
             <Image
              src={image.data  || "/placeholder.svg"}
-             width={200}
-             height={200}
+             width={1200}
+             height={1200}
              className="w-full h-full object-cover"
             />
             {/* {index === 7 && (

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronDown, ArrowUpDown, Loader } from 'lucide-react'
+import { ChevronDown, ArrowUpDown, Loader } from "lucide-react"
 import { toast } from "sonner"
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -12,32 +12,70 @@ import { Checkbox } from "@radix-ui/react-checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import AuctionCard from "./AuctionCard"
 
-
-
-
 export default function Auction() {
-  const [loading, setloading]=useState(false)
+  const [loading, setloading] = useState(false)
   const [auctionItems, setAuctionItems] = useState([])
-  const [brands, setBrands] = useState([])
+  const [categories, setCategories] = useState(["SuperCar", "LuxuryCar"])
+  const [bodyTypes, setBodyTypes] = useState(["Metal", "Plastic"])
+  const [transmissions, setTransmissions] = useState(["Self", "Manual"])
+  const [engineCapacities, setEngineCapacities] = useState(["1200", "1000"])
+  const [fuelTypes, setFuelTypes] = useState(["Gas", "Petrol"])
+  const [exteriorColors, setExteriorColors] = useState(["Red", "Yellow"])
+  const [conditions, setConditions] = useState(["Used", "New"])
+  const [brands, setBrands] = useState(["Make"])
   const [filters, setFilters] = useState({
     minPrice: "",
     maxPrice: "",
-    brandIds: [] ,
+    brandIds: [],
+    categories: [],
+    bodyTypes: [],
+    transmissions: [],
+    engineCapacities: [],
+    fuelTypes: [],
+    exteriorColors: [],
+    conditions: [],
     sortBy: "relevant",
   })
 
   const fetchBrands = async () => {
     try {
       setloading(true)
-      const response = await fetch("/api/admin/brandmanagement")
-      const data = await response.json()
-      console.log("Fetched brands are, ", data)
-      setBrands(data.data)
+
+      // Define the API endpoints
+      const endpoints = [
+        "/api/user/FetchLists/Makes",
+        "/api/user/FetchLists/BodyTypes",
+        "/api/user/FetchLists/Categories",
+        "/api/user/FetchLists/Conditions",
+        "/api/user/FetchLists/EngineCapacity",
+        "/api/user/FetchLists/ExteriorColor",
+        "/api/user/FetchLists/FuelType",
+        "/api/user/FetchLists/Transmissions",
+      ]
+
+      // Fetch all data concurrently
+      const responses = await Promise.all(endpoints.map((endpoint) => fetch(endpoint)))
+
+      // Parse all responses as JSON
+      const data = await Promise.all(responses.map((response) => response.json()))
+
+      // Update the state with the fetched data
+      setBrands(data[0].vehicleMakes)
+      setBodyTypes(data[1].bodyType)
+      setCategories(data[2].vehiclecategory)
+      setConditions(data[3].vehiclecondition)
+      setEngineCapacities(data[4].vehicleengineCapacity)
+      setExteriorColors(data[5].vehicleexteriorColor)
+      setFuelTypes(data[6].vehiclefuelType)
+      setTransmissions(data[7].vehicletransmission)
+
       setloading(false)
     } catch (error) {
+      setloading(false)
       toast.error("Failed to fetch brands")
     }
   }
+
 
   async function GetAuctions() {
     try {
@@ -65,6 +103,15 @@ export default function Auction() {
     }))
   }
 
+  const handleFilterChange = (filterType, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: prev[filterType].includes(value)
+        ? prev[filterType].filter((item) => item !== value)
+        : [...prev[filterType], value],
+    }))
+  }
+
   const handlePriceChange = (type, value) => {
     setFilters((prev) => ({
       ...prev,
@@ -73,16 +120,29 @@ export default function Auction() {
   }
 
   const filteredItems = auctionItems.filter((item) => {
-    console.log("Filters are",filters)
+    console.log("Filters are", filters)
     const price = Number.parseFloat(item.CarSubmission.price)
     if (filters.minPrice && price < Number.parseFloat(filters.minPrice)) return false
     if (filters.maxPrice && price > Number.parseFloat(filters.maxPrice)) return false
     if (
       filters.brandIds.length > 0 &&
       item.CarSubmission.Brand &&
-      !filters.brandIds.includes(item.CarSubmission.Brand.id)
+      !filters.brandIds.includes(item.CarSubmission.vehicleMake)
     )
       return false
+    if (filters.categories.length > 0 && !filters.categories.includes(item.CarSubmission.category)) return false
+    if (filters.bodyTypes.length > 0 && !filters.bodyTypes.includes(item.CarSubmission.bodyType)) return false
+    if (filters.transmissions.length > 0 && !filters.transmissions.includes(item.CarSubmission.transmission))
+      return false
+    if (
+      filters.engineCapacities.length > 0 &&
+      !filters.engineCapacities.includes(item.CarSubmission.engineCapacity)
+    )
+      return false
+    if (filters.fuelTypes.length > 0 && !filters.fuelTypes.includes(item.CarSubmission.fuelType)) return false
+    if (filters.exteriorColors.length > 0 && !filters.exteriorColors.includes(item.CarSubmission.exteriorColor))
+      return false
+    if (filters.conditions.length > 0 && !filters.conditions.includes(item.CarSubmission.condition)) return false
     return true
   })
 
@@ -100,10 +160,10 @@ export default function Auction() {
   })
 
   return (
-    <div className=" px-4 md:px-6 py-6 md:py-20">
+    <div className=" px-4 md:px-6 py-16 md:py-20">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Filters Sidebar */}
-        <div className="w-full md:w-64 space-y-4">
+        <div className="hidden md:flex md:flex-col w-full md:w-64 space-y-4">
           <Accordion type="single" collapsible className="w-full" defaultValue="">
             <AccordionItem value="price">
               <AccordionTrigger>Price Range</AccordionTrigger>
@@ -133,21 +193,189 @@ export default function Auction() {
             <AccordionItem value="brands">
               <AccordionTrigger>Brands</AccordionTrigger>
               <AccordionContent>
-              <div className="space-y-2">
+                <div className="space-y-2">
                   {brands.map((brand) => (
-                    <div key={brand.id} className="flex items-center space-x-2">
+                    <div key={brand} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
-                        id={`brand-${brand.id}`}
-                        checked={filters.brandIds.includes(brand.id)}
-                        onChange={() => handleBrandFilter(brand.id)}
+                        id={`brand-${brand}`}
+                        checked={filters.brandIds.includes(brand)}
+                        onChange={() => handleBrandFilter(brand)}
                         className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                       />
                       <Label
-                        htmlFor={`brand-${brand.id}`}
+                        htmlFor={`brand-${brand}`}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        {brand.name}
+                        {brand}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="categories">
+              <AccordionTrigger>Categories</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {categories.map((category) => (
+                    <div key={category} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`category-${category}`}
+                        checked={filters.categories.includes(category)}
+                        onChange={() => handleFilterChange("categories", category)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`category-${category}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {category}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="bodyTypes">
+              <AccordionTrigger>Body Types</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {bodyTypes.map((bodyType) => (
+                    <div key={bodyType} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`bodyType-${bodyType}`}
+                        checked={filters.bodyTypes.includes(bodyType)}
+                        onChange={() => handleFilterChange("bodyTypes", bodyType)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`bodyType-${bodyType}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {bodyType}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="transmissions">
+              <AccordionTrigger>Transmissions</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {transmissions.map((transmission) => (
+                    <div key={transmission} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`transmission-${transmission}`}
+                        checked={filters.transmissions.includes(transmission)}
+                        onChange={() => handleFilterChange("transmissions", transmission)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`transmission-${transmission}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {transmission}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="engineCapacities">
+              <AccordionTrigger>Engine Capacities</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {engineCapacities.map((engineCapacity) => (
+                    <div key={engineCapacity} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`engineCapacity-${engineCapacity}`}
+                        checked={filters.engineCapacities.includes(engineCapacity)}
+                        onChange={() => handleFilterChange("engineCapacities", engineCapacity)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`engineCapacity-${engineCapacity}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {engineCapacity}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="fuelTypes">
+              <AccordionTrigger>Fuel Types</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {fuelTypes.map((fuelType) => (
+                    <div key={fuelType} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`fuelType-${fuelType}`}
+                        checked={filters.fuelTypes.includes(fuelType)}
+                        onChange={() => handleFilterChange("fuelTypes", fuelType)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`fuelType-${fuelType}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {fuelType}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="exteriorColors">
+              <AccordionTrigger>Exterior Colors</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {exteriorColors.map((exteriorColor) => (
+                    <div key={exteriorColor} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`exteriorColor-${exteriorColor}`}
+                        checked={filters.exteriorColors.includes(exteriorColor)}
+                        onChange={() => handleFilterChange("exteriorColors", exteriorColor)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`exteriorColor-${exteriorColor}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {exteriorColor}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="conditions">
+              <AccordionTrigger>Conditions</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {conditions.map((condition) => (
+                    <div key={condition} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`condition-${condition}`}
+                        checked={filters.conditions.includes(condition)}
+                        onChange={() => handleFilterChange("conditions", condition)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <Label
+                        htmlFor={`condition-${condition}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {condition}
                       </Label>
                     </div>
                   ))}
@@ -163,6 +391,13 @@ export default function Auction() {
                 minPrice: "",
                 maxPrice: "",
                 brandIds: [],
+                categories: [],
+                bodyTypes: [],
+                transmissions: [],
+                engineCapacities: [],
+                fuelTypes: [],
+                exteriorColors: [],
+                conditions: [],
                 sortBy: "relevant",
               })
             }
@@ -191,8 +426,8 @@ export default function Auction() {
             </Select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading&&<Loader className="animate-spin"/>}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {loading && <Loader className="animate-spin" />}
             {sortedItems.map((item) => (
               <AuctionCard key={item.id} item={item} />
             ))}
@@ -202,3 +437,4 @@ export default function Auction() {
     </div>
   )
 }
+
