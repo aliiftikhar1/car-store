@@ -87,6 +87,7 @@ model CarSubmission {
   User             User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   SubmissionImages CarSubmissionImage[]
   Auction          Auction[]
+  Bidding           Bidding[]
 }
 
 
@@ -128,12 +129,14 @@ model Bidding {
   auctionId Int
   userId    Int
   carId     Int
+  currency  String
   price     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   Auction   Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
   User      User     @relation("UserBids", fields: [userId], references: [id], onDelete: Cascade)
+  CarSubmission CarSubmission @relation(fields:[carId], references:[id], onDelete:Cascade)
   
 }
 

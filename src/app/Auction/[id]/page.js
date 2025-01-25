@@ -11,7 +11,8 @@ export default function Car() {
   const [auctionItems, setAuctionItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [handler,setHandler] = useState(false);
+ 
   const GetAuctions = async () => {
     try {
       const response = await fetch(`/api/user/FetchAuctions/${id}`);
@@ -31,7 +32,7 @@ export default function Car() {
 
   useEffect(() => {
     GetAuctions();
-  }, []); // Empty array ensures fetch runs only once on mount.
+  }, [handler]); // Empty array ensures fetch runs only once on mount.
 
   if (loading) {
     return <div className="text-center mt-20">Loading auctions...</div>;
@@ -47,7 +48,7 @@ export default function Car() {
 
   return (
     <div className="flex flex-col justify-center items-center h-auto mt-20">
-      <HeroSection data={auctionItems} />
+      <HeroSection data={auctionItems} triggerfetch={setHandler} />
       {/* <OverviewSection data={auctionItems} /> */}
     </div>
   );

@@ -10,7 +10,12 @@ export async function getUserDetails(id){
     dipatch(setUserDetails(data.user))
     return data.user
   }
-
+  export async function getUserBids(id){
+    const response = await fetch(`api/user/mybid/${id}`)
+    const data = await response.json()
+    console.log("data fetched is : ",data.data)
+    return data.data
+  }
  
   export async function updateUserDetails(formData,dispatch) {
     console.log("Formdata is ",formData)

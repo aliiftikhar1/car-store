@@ -118,12 +118,15 @@ export default function CreateAuctionDialog({ carSubmissions, fetchData }) {
               name="status"
               value={formData.status}
               onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value }))}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option value="" disabled>
                 Select Status
               </option>
               <option value="Coming-Soon">Coming Soon</option>
               <option value="Scheduled">Scheduled</option>
+              <option value="Live">Live</option>
+              <option value="Ended">Ended</option>
             </select>
           </div>
           <Button type="submit" disabled={loading}>

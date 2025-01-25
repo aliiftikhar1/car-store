@@ -21,7 +21,11 @@ export async function GET(request,{params}){
                         type:true
                     }
                 },
-                Bids:true
+                Bids: {
+                    orderBy: {
+                      createdAt: "desc", 
+                    },
+                  },
             }
         })
         return NextResponse.json({success:true, message:"Auctions Fetched Successfully!!",data:response},{status:200})

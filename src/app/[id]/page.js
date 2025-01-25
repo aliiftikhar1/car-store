@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import MyProfileSection from "../profile-components/myprofilesection"
 import ProfilePage from "./Profile"
 // import MyBiddingSection from "./my-bidding-section"
@@ -13,27 +13,34 @@ import MyInvoicesSection from "./Invoices"
 import MyFavoritesSection from "./Favourites"
 import Link from "next/link"
 import { useSelector } from "react-redux"
-import { getUserDetails } from "../Actions"
+import { getUserDetails,getUserBids } from "../Actions"
 
 
 export default function MyProfile() {
   const params = useParams()
   const curenttab = params.id
   const [activeTab, setActiveTab] = useState(curenttab)
-  const UserDetails = useSelector((data)=>data.CarUser.userDetails)
+  const UserDetails= useSelector((data)=>data.CarUser.userDetails)
+  const [UserBids,setUserBids] = useState([])
   const userid = useSelector((data)=>data.CarUser.userDetails?.id)
-  if(userid && !UserDetails){
+
+  useEffect(() => {
+  if(userid ){
     console.log("User id is:",userid)
     getUserDetails(userid).then((data)=>{
-      setUserDetails(data)
+      sconsole.log("UserDetails is:",data)
       })
+      getUserBids(userid).then((data)=>{
+        setUserBids(data)
+        })
       
-  }
-  console.log("UserDetails is:",UserDetails)
+  }} , [userid])
+  
+  console.log("UserBids is:",UserBids)
   const tabs= [
     { id: 'my-profile', label: 'Profile', component: <ProfilePage  /> },
     { id: 'my-listings', label: 'Listings', component: <MyListingsSection /> },
-    { id: 'my-bids', label: 'Bids', component: <MybidsSection /> },
+    { id: 'my-bids', label: 'Bids', component: <MybidsSection bids={UserBids} /> },
     { id: 'my-invoices', label: 'Invoices', component: <MyInvoicesSection/> },
     { id: 'my-favorites', label: 'Favorites', component: <MyFavoritesSection /> },
     { id: 'my-settings', label: 'Settings', component: <div>Invoices Content</div> },

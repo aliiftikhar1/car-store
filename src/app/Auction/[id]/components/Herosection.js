@@ -11,9 +11,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import BidRegistrationForm from "./BidRegisterationDialog"
 import { useSelector } from "react-redux"
 import { Loader } from "lucide-react"
+import TimerComponent from "@/app/Car/[id]/components/CountDownTimer"
 
 
-export default function HeroSection({ data }) {
+export default function HeroSection({ data,triggerfetch }) {
   const images = data.CarSubmission.SubmissionImages || []
 
   const [currentImage, setCurrentImage] = useState(0)
@@ -21,9 +22,9 @@ export default function HeroSection({ data }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isBidDialogOpen, setIsBidDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [bidAmount, setBidAmount] = useState(data?.CarSubmission?.price + 100); // Default bid value
-  const [bids, setBids] = useState(data?.CarSubmission?.bids || 0); // Total bids
-  const [currentBid, setCurrentBid] = useState(data?.CarSubmission?.price || 0); // Current bid
+  const [currentBid, setCurrentBid] = useState(parseInt(data?.Bids[0]?.price)||parseInt(data?.CarSubmission?.price) || 0); // Current bid
+  const [bidAmount, setBidAmount] = useState(parseInt(currentBid) + 100); // Default bid value
+  const [bids, setBids] = useState(data?.Bids?.length || 0); // Total bids
   const userid = useSelector((state) => state.CarUser.userDetails?.id);
   const [loading, setLoading] = useState(false);
   const [handler,setHandler] = useState(false);
@@ -61,16 +62,50 @@ export default function HeroSection({ data }) {
     }
   };
 
-  const confirmBid = () => {
+  const confirmBid = async () => {
     if (bidAmount < currentBid + 100) {
       alert(`Bid amount must be at least $${currentBid + 100}.`);
       return;
     }
-    setCurrentBid(bidAmount);
-    setBids(bids + 1);
-    alert("Bid placed successfully!");
-    setIsBidDialogOpen(false);
+  
+    setLoading(true); // Start loading state
+    try {
+      const response = await fetch(`/api/user/bid`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bidAmount: bidAmount,
+          currency: data.CarSubmission.currency,
+          auctionId: data.id,
+          userId: userid,
+          carId: data.CarSubmission.id,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to place bid. Status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log("Bid placed successfully:", result);
+  
+      setCurrentBid(bidAmount);
+      setBidAmount(bidAmount + 100);
+      setBids((prevBids) => prevBids + 1);
+      triggerfetch((prev) => !prev);
+      // alert("Bid placed successfully!");
+      setIsBidDialogOpen(false);
+    } catch (error) {
+      console.error("Error occurred while placing bid:", error);
+      alert("An error occurred while placing your bid. Please try again.");
+    } finally {
+      setLoading(false); // End loading state
+    }
   };
+  
+  
   useEffect(() => {
     // Initialize `currentImage` with the index of the image whose label is "horizontal"
     const horizontalImageIndex = images.findIndex((image) => image.label === "horizontal")
@@ -171,13 +206,13 @@ export default function HeroSection({ data }) {
             {data.CarSubmission.vehicleYear} {data.CarSubmission.vehicleMake} {data.CarSubmission.vehicleModel} Direct
             Drive Hatchback
             <br />
-            (RWC Issued-24/12/2024)
+           
           </h1>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-red-600">
               <span className="flex items-center gap-1">
-                Going, going, gone: 1m 17s
+               <TimerComponent className="gap-1" endDate={data.endDate} />
                 <button>
                   <HelpCircle className="h-4 w-4 text-gray-400" />
                 </button>
@@ -193,7 +228,7 @@ export default function HeroSection({ data }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 Current Bid
-                <span className="text-blue-600">(77 bids)</span>
+                <span className="text-blue-600">{data?.Bids.length}</span>
               </div>
               <div className="flex items-center gap-1 text-green-600">
                 <span>No reserve</span>
@@ -201,7 +236,7 @@ export default function HeroSection({ data }) {
               </div>
             </div>
 
-            <div className="text-4xl font-bold">$5,909</div>
+            <div className="text-4xl font-bold">{data?.Bids[0]?.price+' '+ data.Bids[0]?.currency || data.CarSubmission.currency +' '+ data.CarSubmission.price}</div>
 
             <div className="text-sm text-gray-600">
               <span className="text-blue-600">$690</span> buyers premium not included in the price. Excludes any Debit
@@ -210,9 +245,9 @@ export default function HeroSection({ data }) {
           </div>
 
           <div className="space-y-3">
-            <div className="font-medium">Bid $6,009 or more</div>
+            <div className="font-medium">Bid {data.CarSubmission.currency } {parseInt(data?.Bids[0]?.price) +100 || parseInt(data.CarSubmission.price) +100} or more</div>
             <div className="flex gap-2">
-              <Input type="text" value="6009" className="text-lg" />
+              <Input type="text" value={parseInt(data?.Bids[0]?.price) +100 || parseInt(data.CarSubmission.price) +100} className="text-lg" />
               <Tabs defaultValue="autobid" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="autobid" className="text-sm">

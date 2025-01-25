@@ -52,6 +52,10 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
     console.log("Form Data:", formData);
   }, [formData]);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 16); // This ensures the format is yyyy-MM-ddThh:mm
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -83,7 +87,7 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
               type="datetime-local"
               id="startDate"
               name="startDate"
-              value={formData.startDate}
+              value={formatDate(formData.startDate)}
               onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
             />
           </div>
@@ -93,7 +97,7 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
               type="datetime-local"
               id="endDate"
               name="endDate"
-              value={formData.endDate}
+              value={formatDate(formData.endDate)}
               onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
             />
           </div>
@@ -121,6 +125,8 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
               </option>
               <option value="Coming-Soon">Coming Soon</option>
               <option value="Scheduled">Scheduled</option>
+              <option value="Live">Live</option>
+              <option value="Ended">Ended</option>
             </select>
           </div>
           <Button type="submit" disabled={loading}>

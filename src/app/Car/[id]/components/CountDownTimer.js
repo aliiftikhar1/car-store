@@ -43,23 +43,30 @@ export default function TimerComponent({ className = "", endDate }) {
 
   return (
     <div className={cn("flex justify-center items-center gap-5 text-center ", className)}>
+       {timeLeft.days>10?<span className={cn("countdown font-[700]", className)}>{new Date(endDate).toLocaleDateString()}</span>:<>
+       {timeLeft.days==0?'':
       <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[900]", className)}>{timeLeft.days}</span>
-        <span className="text-sm font-normal">days</span>
-      </div>
-      {timeLeft.days<2?<><div className="flex flex-col w-full">
-        <span className={cn("countdown font-[900]", className)}>{timeLeft.hours}</span>
-        <span className="text-sm font-normal">hours</span>
-      </div>
+        <span className={cn("countdown font-[700]", className)}>{timeLeft.days}</span>
+        <span className="text-xs font-normal">days</span>
+      </div>}
+      {timeLeft.days<2?<>
+        {timeLeft.hours==0?'':
+        <div className="flex flex-col w-full">
+        <span className={cn("countdown font-[700]", className)}>{timeLeft.hours}</span>
+        <span className="text-xs font-normal">hours</span>
+      </div>}
+      {timeLeft.minutes==0?'':
       <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[900]", className)}>{timeLeft.minutes}</span>
-        <span className="text-sm font-normal">min</span>
-      </div>
+        <span className={cn("countdown font-[700]", className)}>{timeLeft.minutes}</span>
+        <span className="text-xs font-normal">min</span>
+      </div>}
+      {timeLeft.seconds==0?'':
       <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[900]", className)}>{timeLeft.seconds}</span>
-        <span className="text-sm font-normal">sec</span>
-      </div></>:''}
-      
+        <span className={cn("countdown font-[700]", className)}>{timeLeft.seconds}</span>
+        <span className="text-xs font-normal">sec</span>
+      </div>}</>:''}
+      </>
+}
     </div>
   );
 }

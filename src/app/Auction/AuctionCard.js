@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
+import TimerComponent from "../Car/[id]/components/CountDownTimer";
 
 export default function AuctionCard({ item, index }) {
     return (
@@ -33,27 +34,34 @@ export default function AuctionCard({ item, index }) {
                     </div>
 
                     {/* Status Section */}
-                    <div className="flex-grow">
+                    <div className="flex-grow flex justify-center items-center">
                         {item.status === 'Coming-Soon' ? (
-                            <p className="text-sm sm:text-base text-left text-gray-600">Coming Soon</p>
+                            <h2 className="text-xl  font-[200]">Comming Soon</h2>
+                            // <p className="text-sm sm:text-base text-left text-gray-600">Coming Soon</p>
                         ) : item.status === 'Scheduled' ? (
+                            <div className="text-left flex gap-4">
+                                <p className="text-xl  font-[200] ">Auction Begins At</p>
+                                <TimerComponent className="gap-1 text-lg" endDate={item.startDate} />
+                            </div>
+                        ) : item.status === 'Ended' ? (
                             <div className="text-left">
-                                <p className="text-sm text-gray-600">Auction Begins</p>
-                                <p className="text-base sm:text-lg font-semibold">
-                                    {new Date(item.startDate).toLocaleDateString()}
-                                </p>
+                                <p className="text-sm text-gray-600">Auction Ended</p>
+                                <p className="text-sm sm:text-base text-left text-gray-600">Sold Out</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 gap-4 mt-2">
                                 <div>
                                     <p className="text-xs sm:text-sm text-gray-600">Latest bid</p>
-                                    <p className="text-sm sm:text-base md:text-lg font-bold">{item.latestBid}</p>
+                                    <p className="text-lg sm:text-xl font-bold text-red-500">
+                                    {item?.Bids[0]?.price+' '+ item.Bids[0]?.currency || item.CarSubmission.currency +' '+ item.CarSubmission.price}
+                                    </p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-xs sm:text-sm text-gray-600">Time left</p>
-                                    <p className="text-sm sm:text-base md:text-lg font-bold text-[#B1955A]">
+                                    <TimerComponent className="gap-1" endDate={item.endDate} />
+                                    {/* <p className="text-sm sm:text-base md:text-lg font-bold text-[#B1955A]">
                                         {item.timeLeft}
-                                    </p>
+                                    </p> */}
                                 </div>
                             </div>
                         )}
@@ -61,9 +69,7 @@ export default function AuctionCard({ item, index }) {
 
                     {/* Price and Location */}
                     <div className="space-y-1">
-                        <p className="text-lg sm:text-xl font-bold text-red-500">
-                            {item?.CarSubmission?.currency} {item?.CarSubmission?.price}
-                        </p>
+
                         <p className="text-xs sm:text-sm text-gray-600 truncate">
                             {item?.location}
                         </p>
