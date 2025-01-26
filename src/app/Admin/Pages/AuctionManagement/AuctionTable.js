@@ -19,10 +19,10 @@ export default function AuctionTable({initialAuctions }) {
     setFilter(value)
     const filtered = initialAuctions.filter(
       (auction) =>
-        auction.CarSubmission.vehicleMake.toLowerCase().includes(value) ||
-        auction.CarSubmission.vehicleModel.toLowerCase().includes(value) ||
-        auction.CarSubmission.User.name.toLowerCase().includes(value) ||
-        auction.status.toLowerCase().includes(value),
+        auction?.CarSubmission?.vehicleMake.toLowerCase().includes(value) ||
+        auction?.CarSubmission?.vehicleModel.toLowerCase().includes(value) ||
+        auction?.CarSubmission?.User.name.toLowerCase().includes(value) ||
+        auction?.status?.toLowerCase().includes(value),
     )
     setAuctions(filtered)
   }
@@ -51,7 +51,7 @@ export default function AuctionTable({initialAuctions }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {auctions.map((auction) => (
+          {auctions?.map((auction) => (
             <TableRow key={auction.id}>
               <TableCell>
                 {auction.CarSubmission.vehicleMake} {auction.CarSubmission.vehicleModel}

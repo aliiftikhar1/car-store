@@ -65,7 +65,7 @@ export default function AdminCarSubmissions() {
   const [loading, setloading] = useState(true)
   async function fetchSubmissions() {
 
-    fetch("/api/admin/carsubmissions")
+    fetch(`/api/admin/carsubmissions`)
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
@@ -82,14 +82,14 @@ export default function AdminCarSubmissions() {
   
       // Define the API endpoints
       const endpoints = [
-        '/api/user/FetchLists/Makes',
-        '/api/user/FetchLists/BodyTypes',
-        '/api/user/FetchLists/Categories',
-        '/api/user/FetchLists/Conditions',
-        '/api/user/FetchLists/EngineCapacity',
-        '/api/user/FetchLists/ExteriorColor',
-        '/api/user/FetchLists/FuelType',
-        '/api/user/FetchLists/Transmissions',
+        `/api/user/FetchLists/Makes`,
+        `/api/user/FetchLists/BodyTypes`,
+        `/api/user/FetchLists/Categories`,
+        `/api/user/FetchLists/Conditions`,
+        `/api/user/FetchLists/EngineCapacity`,
+        `/api/user/FetchLists/ExteriorColor`,
+        `/api/user/FetchLists/FuelType`,
+        `/api/user/FetchLists/Transmissions`,
       ];
   
       // Fetch all data concurrently
@@ -198,7 +198,7 @@ export default function AdminCarSubmissions() {
   const handledelete = async (submission) => {
     if (!submission) return
     try {
-      const response = await fetch(`/api/admin/carsubmissions/${submission.id}`, {
+      const response = await fetch(`$/admin/carsubmissions/${submission.id}`, {
         method: "DELETE",
       })
 
@@ -221,7 +221,7 @@ export default function AdminCarSubmissions() {
     if (!selectedSubmission) return
 
     try {
-      const response = await fetch(`/api/admin/carsubmissions/${selectedSubmission.id}`, {
+      const response = await fetch(`$/admin/carsubmissions/${selectedSubmission.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

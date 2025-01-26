@@ -1,9 +1,5 @@
 import Auction from "./components/Auction"
-import Footer from "./components/Footer"
-import Header from "./components/Header"
-import Header2 from "./components/Header2"
 import Carousel from "./components/Slider"
-import TopBar from "./components/TopBar"
 const carouselItems = [
   {
     year: "2019",
@@ -63,12 +59,8 @@ const carouselItems = [
 export default function Home() {
   return (
     <main className="min-h-screen ">
-      {/* <TopBar/>
-      <Header/>
-       */}
       <Carousel items={carouselItems} />
       <Auction/>
-      {/* <Footer/> */}
     </main>
   )
 }

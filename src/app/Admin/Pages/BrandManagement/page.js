@@ -38,7 +38,7 @@ export default function BrandManagement() {
 
   // Fetch all brands
   const fetchBrands = async () => {
-    const response = await fetch('/api/admin/brandmanagement');
+    const response = await fetch(`/api/admin/brandmanagement`);
     if (!response.ok) {
       throw new Error('Failed to fetch brands');
     }
@@ -48,7 +48,7 @@ export default function BrandManagement() {
 
   // Add a new brand
   const addBrand = async (brand) => {
-    const response = await fetch('/api/admin/brandmanagement', {
+    const response = await fetch(`/api/admin/brandmanagement`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(brand),

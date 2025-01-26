@@ -103,7 +103,7 @@ export function CarFormModal({ isOpen, setIsModalOpen, currentCar, cars, brands 
         });
         toast.success('Car updated successfully');
       } else {
-        await fetch('/api/admin/carmanagement', {
+        await fetch(`/api/admin/carmanagement`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(carData),

@@ -69,7 +69,7 @@ export function AuthDialogs() {
 
   async function handleEmailCheck() {
     try {
-      const response = await fetch('/api/checkEmail', {
+      const response = await fetch(`/api/checkEmail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export function AuthDialogs() {
   }
   async function handleLogin() {
     try {
-      const response = await fetch('/api/user/login', {
+      const response = await fetch(`/api/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

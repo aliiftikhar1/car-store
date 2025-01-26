@@ -26,7 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Fetch all accounts
 const fetchAccounts = async () => {
-  const response = await fetch('/api/admin/bankaccountmanagement');
+  const response = await fetch(`/api/admin/bankaccountmanagement`);
   if (!response.ok) {
     throw new Error('Failed to fetch accounts');
   }
@@ -37,7 +37,7 @@ const fetchAccounts = async () => {
 
 // Add a new account
 const addAccount = async (account) => {
-  const response = await fetch('/api/admin/bankaccountmanagement', {
+  const response = await fetch(`/api/admin/bankaccountmanagement`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(account),

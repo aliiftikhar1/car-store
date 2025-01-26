@@ -27,7 +27,7 @@ export default function CarManagement() {
   const fetchCars = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/admin/carmanagement');
+      const response = await fetch(`/api/admin/carmanagement`);
       const data = await response.json();
       setCars(data.data);
     } catch (error) {
@@ -39,7 +39,7 @@ export default function CarManagement() {
 
   const fetchBrands = async () => {
     try {
-      const response = await fetch('/api/admin/brandmanagement');
+      const response = await fetch(`/api/admin/brandmanagement`);
       const data = await response.json();
       console.log("Fetched brands are, ", data)
       setBrands(data.data);
@@ -106,14 +106,14 @@ export default function CarManagement() {
       };
 
       if (currentCar) {
-        await fetch(`/api/admin/carmanagement/${currentCar.id}`, {
+        await fetch(`$/admin/carmanagement/${currentCar.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(carData),
         });
         toast.success('Car updated successfully');
       } else {
-        await fetch('/api/admin/carmanagement', {
+        await fetch(`/api/admin/carmanagement`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(carData),
