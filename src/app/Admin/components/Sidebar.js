@@ -52,6 +52,16 @@ const items = [
         url: "/Admin/Pages/AuctionManagement",
         icon: CarFront,
     },
+    {
+        title: "Bidding",
+        url: "/Admin/Pages/BiddingManagement",
+        icon: CarFront,
+    },
+    {
+        title: "SoldOut",
+        url: "/Admin/Pages/SoldOutManagement",
+        icon: CarFront,
+    },
     // {
     //         title: "Orders Management",
     //         url: "#",

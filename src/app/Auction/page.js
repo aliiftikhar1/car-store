@@ -43,14 +43,14 @@ export default function Auction() {
 
       // Define the API endpoints
       const endpoints = [
-        "/api/user/FetchLists/Makes",
-        "/api/user/FetchLists/BodyTypes",
-        "/api/user/FetchLists/Categories",
-        "/api/user/FetchLists/Conditions",
-        "/api/user/FetchLists/EngineCapacity",
-        "/api/user/FetchLists/ExteriorColor",
-        "/api/user/FetchLists/FuelType",
-        "/api/user/FetchLists/Transmissions",
+        `/api/user/FetchLists/Makes`,
+        `/api/user/FetchLists/BodyTypes`,
+        `/api/user/FetchLists/Categories`,
+        `/api/user/FetchLists/Conditions`,
+        `/api/user/FetchLists/EngineCapacity`,
+        `/api/user/FetchLists/ExteriorColor`,
+        `/api/user/FetchLists/FuelType`,
+        `/api/user/FetchLists/Transmissions`,
       ]
 
       // Fetch all data concurrently
@@ -80,7 +80,7 @@ export default function Auction() {
   async function GetAuctions() {
     try {
       setloading(true)
-      const response = await fetch("/api/user/FetchAuctions")
+      const response = await fetch(`/api/user/FetchAuctions`)
       const data = await response.json()
       setAuctionItems(data.data)
       setloading(false)

@@ -25,7 +25,7 @@ import { Label } from '@radix-ui/react-label';
 
 // Fetch all users
 const fetchUsers = async () => {
-  const response = await fetch('/api/admin/usermanagement');
+  const response = await fetch(`/api/admin/usermanagement`);
   if (!response.ok) {
     throw new Error('Failed to fetch users');
   }
@@ -35,7 +35,7 @@ const fetchUsers = async () => {
 
 // Add a new user
 const addUser = async (user) => {
-  const response = await fetch('/api/admin/usermanagement', {
+  const response = await fetch(`/api/admin/usermanagement`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),

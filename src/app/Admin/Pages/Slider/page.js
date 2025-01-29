@@ -65,7 +65,7 @@ export default function SlideManagement() {
   const fetchSlides = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/admin/slidermanagement')
+      const response = await fetch(`/api/admin/slidermanagement`)
       if (!response.ok) throw new Error('Failed to fetch slides')
       const data = await response.json()
       setSlides(data)
@@ -150,7 +150,7 @@ export default function SlideManagement() {
         toast.success('Slide updated successfully')
       } else {
         // Add new slide
-        const response = await fetch('/api/admin/slidermanagement', {
+        const response = await fetch(`/api/admin/slidermanagement`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(slideData),

@@ -14,7 +14,7 @@ import { Loader } from "lucide-react"
 import TimerComponent from "@/app/Car/[id]/components/CountDownTimer"
 
 
-export default function HeroSection({ data,triggerfetch }) {
+export default function HeroSection({ data, triggerfetch }) {
   const images = data.CarSubmission.SubmissionImages || []
 
   const [currentImage, setCurrentImage] = useState(0)
@@ -22,13 +22,13 @@ export default function HeroSection({ data,triggerfetch }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isBidDialogOpen, setIsBidDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [currentBid, setCurrentBid] = useState(parseInt(data?.Bids[0]?.price)||parseInt(data?.CarSubmission?.price) || 0); // Current bid
+  const [currentBid, setCurrentBid] = useState(parseInt(data?.Bids[0]?.price) || parseInt(data?.CarSubmission?.price) || 0); // Current bid
   const [bidAmount, setBidAmount] = useState(parseInt(currentBid) + 100); // Default bid value
   const [bids, setBids] = useState(data?.Bids?.length || 0); // Total bids
   const userid = useSelector((state) => state.CarUser.userDetails?.id);
   const [loading, setLoading] = useState(false);
-  const [handler,setHandler] = useState(false);
- 
+  const [handler, setHandler] = useState(false);
+
   useEffect(() => {
     if (userid) {
 
@@ -43,12 +43,12 @@ export default function HeroSection({ data,triggerfetch }) {
           setLoading(false)
           console.error("Error fetching user details:", error);
         }
-        
+
       };
 
       fetchUserDetails();
     }
-  }, [userid,handler]);
+  }, [userid, handler]);
 
   const isEligible = user?.cardName && user?.cardNumber && user?.cardExpiry && user?.cardCvc;
 
@@ -67,7 +67,7 @@ export default function HeroSection({ data,triggerfetch }) {
       alert(`Bid amount must be at least $${currentBid + 100}.`);
       return;
     }
-  
+
     setLoading(true); // Start loading state
     try {
       const response = await fetch(`/api/user/bid`, {
@@ -83,14 +83,14 @@ export default function HeroSection({ data,triggerfetch }) {
           carId: data.CarSubmission.id,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to place bid. Status: ${response.status}`);
       }
-  
+
       const result = await response.json();
       console.log("Bid placed successfully:", result);
-  
+
       setCurrentBid(bidAmount);
       setBidAmount(bidAmount + 100);
       setBids((prevBids) => prevBids + 1);
@@ -104,8 +104,8 @@ export default function HeroSection({ data,triggerfetch }) {
       setLoading(false); // End loading state
     }
   };
-  
-  
+
+
   useEffect(() => {
     // Initialize `currentImage` with the index of the image whose label is "horizontal"
     const horizontalImageIndex = images.findIndex((image) => image.label === "horizontal")
@@ -116,11 +116,11 @@ export default function HeroSection({ data,triggerfetch }) {
 
   const updateVisibleThumbnails = (currentIndex) => {
     const totalImages = images.length
-    if (totalImages <= 7) {
+    if (totalImages <= 6) {
       setVisibleThumbnails(Array.from({ length: totalImages }, (_, i) => i))
     } else {
-      const start = Math.max(0, Math.min(currentIndex - 3, totalImages - 7))
-      setVisibleThumbnails(Array.from({ length: 7 }, (_, i) => start + i))
+      const start = Math.max(0, Math.min(currentIndex - 3, totalImages - 6))
+      setVisibleThumbnails(Array.from({ length: 6 }, (_, i) => start + i))
     }
   }
 
@@ -139,7 +139,7 @@ export default function HeroSection({ data,triggerfetch }) {
   return (
     <div className="w-full  px-4 md:px-8 lg:px-36 flex gap-8 py-8">
       {/* Left side - Image slider */}
-      <div className="space-y-4 w-2/3">
+      <div className="space-y-4 w-3/5">
         <div className="relative h-[75vh] aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100">
           {images.length > 0 ? (
             <Image
@@ -178,9 +178,8 @@ export default function HeroSection({ data,triggerfetch }) {
             <button
               key={images[index].id}
               onClick={() => setCurrentImage(index)}
-              className={`relative w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden ${
-                currentImage === index ? "ring-2 ring-red-500 shadow-[0_0_10px_red]" : ""
-              }`}
+              className={`relative w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden ${currentImage === index ? "ring-2 ring-red-500 shadow-[0_0_10px_red]" : ""
+                }`}
             >
               <Image
                 src={images[index].data || "/placeholder.svg"}
@@ -200,43 +199,64 @@ export default function HeroSection({ data,triggerfetch }) {
       </div>
 
       {/* Right side - Details */}
-      <div className="space-y-3 w-1/3">
+      <div className="space-y-3 w-2/5">
         <div className="space-y-3">
           <h1 className="text-2xl md:text-3xl font-bold">
             {data.CarSubmission.vehicleYear} {data.CarSubmission.vehicleMake} {data.CarSubmission.vehicleModel} Direct
             Drive Hatchback
             <br />
-           
+
           </h1>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-red-600">
-              <span className="flex items-center gap-1">
-               <TimerComponent className="gap-1" endDate={data.endDate} />
-                <button>
-                  <HelpCircle className="h-4 w-4 text-gray-400" />
-                </button>
-              </span>
+              {data.status === 'Coming-Soon' ? (
+                <h2 className="text-xl  font-[200] tracking-tight">Comming Soon</h2>
+                // <p className="text-sm sm:text-base text-left text-gray-600">Coming Soon</p>
+              ) : data.status === 'Scheduled' ? (
+                <div className="text-left flex gap-4">
+                  <p className="text-xl  font-[200] tracking-tight">Auction Begins On</p>
+                  <TimerComponent className="gap-1 text-lg" endDate={data.startDate} />
+                </div>
+              ) : data.status === 'Ended' ? (
+                <div className="text-left flex gap-4">
+                  <p className="text-xl  font-[200] tracking-tight">Auction Ended</p>
+                  {/* <p className="text-sm sm:text-base text-left text-gray-600">Sold Out</p> */}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <span className="flex items-center gap-1">
+                    <TimerComponent className="gap-1" endDate={data.endDate} />
+                    <button>
+                      <HelpCircle className="h-4 w-4 text-gray-400" />
+                    </button>
+                  </span>
+                </div>
+              )}
+
             </div>
-            <Button variant="ghost" className="text-red-600 flex items-center gap-2">
+            {(data.status==='Scheduled'||data.status==='Live') && <Button variant="ghost" className="text-red-600 flex items-center gap-2">
               <Bell className="h-4 w-4" />
               Remind me
-            </Button>
+            </Button>}
+          
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                Current Bid
-                <span className="text-blue-600">{data?.Bids.length}</span>
+            {data.status === 'Live' &&
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  Current Bid
+                  <span className="text-blue-600">{data?.Bids.length}</span>
+                </div>
+                <div className="flex items-center gap-1 text-green-600">
+                  <span>No reserve</span>
+                  <Info className="h-4 w-4" />
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-green-600">
-                <span>No reserve</span>
-                <Info className="h-4 w-4" />
-              </div>
-            </div>
+            }
 
-            <div className="text-4xl font-bold">{data?.Bids[0]?.price+' '+ data.Bids[0]?.currency || data.CarSubmission.currency +' '+ data.CarSubmission.price}</div>
+            <div className="text-4xl font-bold">{data?.CarSubmission.currency} {data?.Bids.length > 0 ? parseInt(data.Bids[0].price) : parseInt(data?.CarSubmission?.price)}</div>
 
             <div className="text-sm text-gray-600">
               <span className="text-blue-600">$690</span> buyers premium not included in the price. Excludes any Debit
@@ -244,116 +264,121 @@ export default function HeroSection({ data,triggerfetch }) {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="font-medium">Bid {data.CarSubmission.currency } {parseInt(data?.Bids[0]?.price) +100 || parseInt(data.CarSubmission.price) +100} or more</div>
-            <div className="flex gap-2">
-              <Input type="text" value={parseInt(data?.Bids[0]?.price) +100 || parseInt(data.CarSubmission.price) +100} className="text-lg" />
-              <Tabs defaultValue="autobid" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="autobid" className="text-sm">
-                    Autobid
-                  </TabsTrigger>
-                  <TabsTrigger value="standard" className="text-sm">
-                    Standard
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-              <Button size="icon" variant="ghost">
-                <Info className="h-4 w-4" />
+          {data.status === 'Live' ? <>
+            <div className="space-y-3">
+              <div className="font-medium">Bid {data?.CarSubmission.currency} {parseInt(data?.Bids.length > 0) ? parseInt(data.Bids[0].price) + 100 : parseInt(data?.CarSubmission?.price) + 100} or more</div>
+              <div className="flex gap-2">
+                <Input type="text" value={parseInt(data?.Bids[0]?.price) + 100 || parseInt(data.CarSubmission.price) + 100} className="text-lg" />
+                <Tabs defaultValue="autobid" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="autobid" className="text-sm">
+                      Autobid
+                    </TabsTrigger>
+                    <TabsTrigger value="standard" className="text-sm">
+                      Standard
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+                <Button size="icon" variant="ghost">
+                  <Info className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                variant="solid"
+                size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white"
+                onClick={handlePlaceBid}
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader className="animate-spin" size={20} />
+                    Loading...
+                  </span>
+                ) : (
+                  "Place A Bid"
+                )}
+              </Button>
+
+              <Button size="lg" variant="outline" className="w-full bg-gray-50">
+                <Heart className="h-4 w-4 mr-2" />
+                Watch
               </Button>
             </div>
-          </div>
+          </>
+            : <>{data.status === 'Ended' ? <p className="text-3xl text-red-500 text-center font-[800] tracking-tight">Sold Out</p> : ""}</>
+          }
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-          <Button
-            variant="solid"
-            size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white"
-            onClick={handlePlaceBid}
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <Loader className="animate-spin" size={20} />
-                Loading...
-              </span>
-            ) : (
-              "Place A Bid"
-            )}
-          </Button>
-          
-            <Button size="lg" variant="outline" className="w-full bg-gray-50">
-              <Heart className="h-4 w-4 mr-2" />
-              Watch
+
+        <div className="mt-4 pt-4 border-t">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center">
+              <span className="text-white text-xl">VA</span>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">VIC Auto</h3>
+              <p className="text-gray-600 text-sm">Enquires about the item</p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-4">
+            <Button variant="outline" className="flex-1 text-blue-600 border-blue-600">
+              <span className="mr-2">📞</span> Call
+            </Button>
+            <Button variant="link" className="flex-1 text-blue-600">
+              Send an email
             </Button>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center">
-                <span className="text-white text-xl">VA</span>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">VIC Auto</h3>
-                <p className="text-gray-600 text-sm">Enquires about the item</p>
-              </div>
-            </div>
-            <div className="mt-4 flex items-center gap-4">
-              <Button variant="outline" className="flex-1 text-blue-600 border-blue-600">
-                <span className="mr-2">📞</span> Call
-              </Button>
-              <Button variant="link" className="flex-1 text-blue-600">
-                Send an email
-              </Button>
-            </div>
-          </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <BidRegistrationForm setHandler={setHandler} setIsDialogOpen={setIsDialogOpen}/>
-        </DialogContent>
-      </Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <BidRegistrationForm setHandler={setHandler} setIsDialogOpen={setIsDialogOpen} />
+          </DialogContent>
+        </Dialog>
 
-      <Dialog open={isBidDialogOpen} onOpenChange={setIsBidDialogOpen}>
-        <DialogContent className="max-w-4xl">
-          <div className="p-6 space-y-4">
-            <h2 className="text-2xl font-bold">Place Your Bid</h2>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600">Current Bid</p>
-                <p className="text-2xl font-bold">${currentBid}</p>
-                <p className="text-sm text-gray-500">{bids} bids</p>
+        <Dialog open={isBidDialogOpen} onOpenChange={setIsBidDialogOpen}>
+          <DialogContent className="max-w-4xl">
+            <div className="p-6 space-y-4">
+              <h2 className="text-2xl font-bold">Place Your Bid</h2>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600">Current Bid</p>
+                  <p className="text-2xl font-bold">${currentBid}</p>
+                  <p className="text-sm text-gray-500">{bids} bids</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">
+                    Your Bid (Minimum: ${currentBid + 100})
+                  </p>
+                  <input
+                    type="number"
+                    className="w-32 p-2 border border-gray-300 rounded"
+                    value={bidAmount}
+                    min={currentBid + 100}
+                    onChange={(e) => setBidAmount(Number(e.target.value))}
+                  />
+                </div>
               </div>
-              <div>
-                <p className="text-gray-600">
-                  Your Bid (Minimum: ${currentBid + 100})
-                </p>
-                <input
-                  type="number"
-                  className="w-32 p-2 border border-gray-300 rounded"
-                  value={bidAmount}
-                  min={currentBid + 100}
-                  onChange={(e) => setBidAmount(Number(e.target.value))}
-                />
-              </div>
-            </div>
 
-            <div className="flex justify-end space-x-4">
-              <Button
-                className="px-6 py-2 text-lg bg-red-600 text-white hover:bg-red-700 rounded"
-                onClick={confirmBid}
-              >
-                Confirm Bid
-              </Button>
-              <Button
-                variant="ghost"
-                className="px-6 py-2 text-lg border border-gray-300 rounded hover:bg-gray-100"
-                onClick={() => setIsBidDialogOpen(false)}
-              >
-                Cancel
-              </Button>
+              <div className="flex justify-end space-x-4">
+                <Button
+                  className="px-6 py-2 text-lg bg-red-600 text-white hover:bg-red-700 rounded"
+                  onClick={confirmBid}
+                >
+                  Confirm Bid
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="px-6 py-2 text-lg border border-gray-300 rounded hover:bg-gray-100"
+                  onClick={() => setIsBidDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )

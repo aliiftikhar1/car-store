@@ -43,14 +43,14 @@ export default function ContactForm() {
     try {
       setloading(true);
       const endpoints = [
-        '/api/user/FetchLists/Makes',
-        '/api/user/FetchLists/BodyTypes',
-        '/api/user/FetchLists/Categories',
-        '/api/user/FetchLists/Conditions',
-        '/api/user/FetchLists/EngineCapacity',
-        '/api/user/FetchLists/ExteriorColor',
-        '/api/user/FetchLists/FuelType',
-        '/api/user/FetchLists/Transmissions',
+        `/api/user/FetchLists/Makes`,
+        `/api/user/FetchLists/BodyTypes`,
+        `/api/user/FetchLists/Categories`,
+        `/api/user/FetchLists/Conditions`,
+        `/api/user/FetchLists/EngineCapacity`,
+        `/api/user/FetchLists/ExteriorColor`,
+        `/api/user/FetchLists/FuelType`,
+        `/api/user/FetchLists/Transmissions`,
       ];
 
       // Fetch all data concurrently
@@ -136,7 +136,7 @@ export default function ContactForm() {
       jsonData.files = await Promise.all(filePromises)
 
       // Submit the form
-      const response = await fetch("/api/user/submitform", {
+      const response = await fetch(`/api/user/submitform`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
