@@ -16,8 +16,22 @@ import { RegistrationDialog } from "./RegisterationDialog"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { clearUserDetails, setUserDetails } from "@/store/UserSlice"
- 
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Label } from "@radix-ui/react-label"
 import { toast } from "sonner"
+import { set } from "jodit/esm/core/helpers"
+import { Card, CardContent } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 
 export function AuthDialogs() {
   const [open, setOpen] = useState(false)
@@ -26,14 +40,17 @@ export function AuthDialogs() {
   const [isRegister, setIsRegister] = useState(false)
   const [email, setemail] = useState('')
   const [password, setpassword] = useState('')
-  const user = useSelector((data)=>data.CarUser.userDetails) ||[]
-  if(!user){
-   setOpen(true)
+  const user = useSelector((data) => data.CarUser.userDetails) || []
+  const userId = useSelector((data) => data.CarUser.userDetails.id)
+  const [watching, setWatching] = useState([])
+
+  if (!user) {
+    setOpen(true)
   }
   const dispatch = useDispatch()
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  
+
   const dropdownRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -97,7 +114,7 @@ export function AuthDialogs() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: email, password:password })
+        body: JSON.stringify({ email: email, password: password })
       })
       const data = await response.json()
       console.log(data)
@@ -106,74 +123,139 @@ export function AuthDialogs() {
         toast.success("User Logged In Successfully")
         // Dispatching the action to set user details
         dispatch(setUserDetails(data.user));
-        
+
         console.log('Data saved to Redux');
         setOpen(false)
         setOpen2(false)
       }
-      
+
     } catch (error) {
       console.log("error loggin in")
     }
   }
 
+
+  async function fetchWatching() {
+    const response = await fetch(`/api/user/watch/${userId}`)
+    const data = await response.json()
+    console.log(data.data)
+    setWatching(data.data)
+  }
+  if (userId) {
+    useEffect(() => {
+      fetchWatching()
+    }, [])
+  }
+
   return (
-    
+
     <Dialog open={open} onOpenChange={setOpen} className="p-4">
       <div className="relative">
-      {user.id ? (
-        <div className="flex gap-4 justify-center items-center">
-          <Bell/>
-          <Heart/>
-        <div ref={dropdownRef}
-          className="cursor-pointer flex items-center text-black-500 justify-center size-12 rounded-full  font-extrabold text-2xl bg-gray-200/70"
-          onClick={toggleDropdown}
-        >
-         {`${user?.name || ""}`.toUpperCase().slice(0, 1) || "?"}
-        </div>
-        </div>
-      ) : (
-        <DialogTrigger asChild>
-        <button className="text-black hover:text-black/90">
-          <p className="hidden md:flex">{isLogin ? "Sign In" : "Sign Up"}</p>
-          <User className="flex md:hidden" />
-        </button>
-         </DialogTrigger>
-      )}
+        {user.id ? (
+          <div className="flex gap-4 justify-center items-center">
+            <Sheet>
+              <SheetTrigger asChild>
+              <Bell  className="cursor-pointer hover:fill-black" />
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Notifications</SheetTitle>
+                  <SheetDescription>Here are the auctions you're currently watching.</SheetDescription>
+                </SheetHeader>
+                <ScrollArea className=" mt-6">
+                <p>Here notifications will be displayed</p>
+                </ScrollArea>
+              </SheetContent>
+            </Sheet>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Heart className="cursor-pointer hover:fill-black" />
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Watching</SheetTitle>
+                  <SheetDescription>Here are the auctions you're currently watching.</SheetDescription>
+                </SheetHeader>
+                <ScrollArea className=" mt-6">
+                  {watching.length > 0 ? (
+                    watching.map((item) => (
+                      <Card key={item.id} className="mb-4">
+                        <CardContent className="p-4 flex">
+                          <img
+                            src={item.Auction.CarSubmission.SubmissionImages[0].data || "/placeholder.svg"}
+                            alt={`${item.Auction.CarSubmission.vehicleMake} ${item.Auction.CarSubmission.vehicleModel}`}
+                            className="w-24 h-full object-cover mr-4 rounded"
+                          />
+                          <div>
+                            <h3 className="font-bold">
+                            {item.Auction.CarSubmission.vehicleYear} {item.Auction.CarSubmission.vehicleMake} {item.Auction.CarSubmission.vehicleModel} 
+                            </h3>
+                            {/* <p className="text-sm text-gray-500">{item.Auction.CarSubmission.vehicleYear}</p> */}
+                            <p className="text-xs mt-1">
+                              Status:<br></br> <span className="text-sm font-semibold">{item.Auction.status}</span>
+                            </p>
+                            <p className="text-xs mt-1">
+                              Location: <br></br> <span className="text-sm font-semibold">{item.Auction.location}</span>
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <p className="text-center text-gray-500">You're not watching any auctions yet.</p>
+                  )}
+                </ScrollArea>
+              </SheetContent>
+            </Sheet>
+            <div ref={dropdownRef}
+              className="cursor-pointer flex items-center text-black-500 justify-center size-12 rounded-full  font-extrabold text-2xl bg-gray-200/70"
+              onClick={toggleDropdown}
+            >
+              {`${user?.name || ""}`.toUpperCase().slice(0, 1) || "?"}
+            </div>
+          </div>
+        ) : (
+          <DialogTrigger asChild>
+            <button className="text-black hover:text-black/90">
+              <p className="hidden md:flex">{isLogin ? "Sign In" : "Sign Up"}</p>
+              <User className="flex md:hidden" />
+            </button>
+          </DialogTrigger>
+        )}
 
-      {/* Dropdown */}
-      {dropdownOpen && user && (
-        <div className="absolute right-0 mt-2 space-y-4 text-sm w-48 bg-white shadow-lg  overflow-hidden z-10">
-          <a
-          href="/my-profile"
-            className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
-            onClick={() => console.log("Profile clicked")}
-          >
-            Profile
-          </a>
-          <a
-          href="/my-listings"
-            className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
-            onClick={() => console.log("Profile clicked")}
-          >
-            Listing
-          </a>
-          <button
-            className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
-            onClick={() => console.log("Profile clicked")}
-          >
-            Settings
-          </button>
-          <button
-            className="block w-full px-4 py-2 text-left text-black bg-red-300/50 hover:bg-gray-100"
-            onClick={handleLogout}
-          >
-            SignOut
-          </button>
-        </div>
-      )}
-    </div>
-     
+        {/* Dropdown */}
+        {dropdownOpen && user && (
+          <div className="absolute right-0 mt-2 space-y-4 text-sm w-48 bg-white shadow-lg  overflow-hidden z-10">
+            <a
+              href="/my-profile"
+              className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
+              onClick={() => console.log("Profile clicked")}
+            >
+              Profile
+            </a>
+            <a
+              href="/my-listings"
+              className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
+              onClick={() => console.log("Profile clicked")}
+            >
+              Listing
+            </a>
+            <button
+              className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
+              onClick={() => console.log("Profile clicked")}
+            >
+              Settings
+            </button>
+            <button
+              className="block w-full px-4 py-2 text-left text-black bg-red-300/50 hover:bg-gray-100"
+              onClick={handleLogout}
+            >
+              SignOut
+            </button>
+          </div>
+        )}
+      </div>
+
 
       {isLogin ? (
         <DialogContent className="max-w-xs md:max-w-sm p-4">
@@ -188,7 +270,7 @@ export function AuthDialogs() {
               id="email"
               placeholder="Email"
               type="email"
-              onChange={(e)=>setemail(e.target.value)}
+              onChange={(e) => setemail(e.target.value)}
               className="col-span-3 px-4 py-6"
             />
             <div className="relative">
@@ -196,20 +278,20 @@ export function AuthDialogs() {
                 id="password"
                 placeholder="Password"
                 type="password"
-                onChange={(e)=>setpassword(e.target.value)}
+                onChange={(e) => setpassword(e.target.value)}
                 className="col-span-3 px-4 py-6"
               />
               <Button
                 variant="link"
                 className="absolute right-0 top-1/2 -translate-y-1/2 text-sm"
-               
+
               >
                 Forgot?
               </Button>
             </div>
-            <Button 
-            className="w-full bg-[#B69C66] hover:bg-[#B69C66]/90 px-4 py-6"
-            onClick={handleLogin}
+            <Button
+              className="w-full bg-[#B69C66] hover:bg-[#B69C66]/90 px-4 py-6"
+              onClick={handleLogin}
             >
               LOG IN
             </Button>
