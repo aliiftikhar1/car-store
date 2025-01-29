@@ -48,6 +48,7 @@ model User {
   Bids        Bidding[]   @relation("UserBids")
   Submissions CarSubmission[]
   Sold        Sold[]
+  Watching    Watching[]
 }
 
 model CarSubmission {
@@ -124,6 +125,17 @@ model Auction {
   Seller       User     @relation("SellerAuctions", fields: [sellerId], references: [id], onDelete: Cascade)
   Bids         Bidding[]
   Sold          Sold[]
+  Watching      Watching[]
+}
+
+model Watching {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  auctionId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation( fields: [userId], references: [id], onDelete: Cascade)
+  Auction   Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
 }
 
 model Bidding {

@@ -15,6 +15,7 @@ import AuctionCard from "./AuctionCard"
 export default function Auction() {
   const [loading, setloading] = useState(false)
   const [auctionItems, setAuctionItems] = useState([])
+  const [watch, setwatch] = useState([])
   const [categories, setCategories] = useState(["SuperCar", "LuxuryCar"])
   const [bodyTypes, setBodyTypes] = useState(["Metal", "Plastic"])
   const [transmissions, setTransmissions] = useState(["Self", "Manual"])
@@ -23,6 +24,7 @@ export default function Auction() {
   const [exteriorColors, setExteriorColors] = useState(["Red", "Yellow"])
   const [conditions, setConditions] = useState(["Used", "New"])
   const [brands, setBrands] = useState(["Make"])
+  const [loadingAction, setloadingAction] = useState('default')
   const [filters, setFilters] = useState({
     minPrice: "",
     maxPrice: "",
@@ -37,6 +39,9 @@ export default function Auction() {
     sortBy: "relevant",
   })
 
+  function changeLoadingAction(value){
+    setloadingAction(value)
+  }
   const fetchBrands = async () => {
     try {
       setloading(true)
@@ -83,15 +88,28 @@ export default function Auction() {
       const response = await fetch(`/api/user/FetchAuctions`)
       const data = await response.json()
       setAuctionItems(data.data)
+      fetchWatch()
       setloading(false)
     } catch (error) {
       toast.error("Failed to fetch auctions")
     }
   }
 
+async function fetchWatch() {
+    try {
+      setloading(true)
+      const response = await fetch(`/api/user/watch`)
+      const data = await response.json()
+      setwatch(data.data)
+      setloading(false)
+    } catch (error) {
+      toast.error("Failed to fetch auctions")
+    }
+  }
   useEffect(() => {
     GetAuctions()
     fetchBrands()
+    
   }, [])
 
   const handleBrandFilter = (brandId) => {
@@ -427,9 +445,9 @@ export default function Auction() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {loading && <Loader className="animate-spin" />}
+            {(loading&&loadingAction==='default') && <Loader className="animate-spin" />}
             {sortedItems.map((item) => (
-              <AuctionCard key={item.id} item={item} />
+              <AuctionCard key={item.id} item={item} watchdata={watch} OnWatch={GetAuctions} setloadingAction={changeLoadingAction}/>
             ))}
           </div>
         </div>

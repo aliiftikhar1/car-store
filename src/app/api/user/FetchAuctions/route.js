@@ -21,6 +21,7 @@ export async function GET(request){
                       createdAt: "desc", 
                     },
                   },
+                  Watching:true
             }
         })
         return NextResponse.json({success:true, message:"Auctions Fetched Successfully!!",data:response},{status:200})
