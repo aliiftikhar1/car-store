@@ -4,7 +4,7 @@ import TimerComponent from "../Car/[id]/components/CountDownTimer";
 import { useSelector } from "react-redux";
 
 export default function AuctionCard({ item, index ,watchdata,OnWatch, setloadingAction}) {
-    const userid= useSelector((state) => state.CarUser.userDetails.id);
+    const userid= useSelector((state) => state.CarUser.userDetails?.id);
     function handleWatch() {
         fetch(`/api/user/watch`, {
             method: "POST",
