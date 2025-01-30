@@ -141,11 +141,11 @@ export function AuthDialogs() {
     console.log(data.data)
     setWatching(data.data)
   }
-  if (userId) {
+  
     useEffect(() => {
       fetchWatching()
-    }, [])
-  }
+    }, [userId])
+  
 
   return (
 
