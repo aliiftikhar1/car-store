@@ -2,10 +2,14 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import TimerComponent from "../Car/[id]/components/CountDownTimer";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 export default function AuctionCard({ item, index ,watchdata,OnWatch, setloadingAction}) {
     const userid= useSelector((state) => state.CarUser.userDetails?.id);
     function handleWatch() {
+        if(!userid){
+            toast.message("Login to watch auction!!")
+        }
         fetch(`/api/user/watch`, {
             method: "POST",
             body: JSON.stringify({
