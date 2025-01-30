@@ -98,7 +98,7 @@ export default function Auction() {
 async function fetchWatch() {
     try {
       setloading(true)
-      const response = await fetch(`/api/user/watch`)
+      const response = await fetch(`/api/user/watch/all/1`)
       const data = await response.json()
       setwatch(data.data)
       setloading(false)
