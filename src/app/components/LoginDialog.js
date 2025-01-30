@@ -41,7 +41,7 @@ export function AuthDialogs() {
   const [email, setemail] = useState('')
   const [password, setpassword] = useState('')
   const user = useSelector((data) => data.CarUser.userDetails) || []
-  const userId = useSelector((data) => data.CarUser.userDetails.id)
+  const userId = useSelector((data) => data.CarUser.userDetails?.id)
   const [watching, setWatching] = useState([])
 
   if (!user) {
@@ -177,7 +177,7 @@ export function AuthDialogs() {
                   <SheetDescription>Here are the auctions you're currently watching.</SheetDescription>
                 </SheetHeader>
                 <ScrollArea className=" mt-6">
-                  {watching.length > 0 ? (
+                  {(watching && watching.length > 0) ? (
                     watching.map((item) => (
                       <Card key={item.id} className="mb-4">
                         <CardContent className="p-4 flex">
