@@ -85,7 +85,7 @@ export default function Auction() {
   async function GetAuctions() {
     try {
       setloading(true)
-      const response = await fetch(`/api/user/FetchAuctions`)
+      const response = await fetch(`/api/user/FetchAuctions/all/1`)
       const data = await response.json()
       setAuctionItems(data.data)
       fetchWatch()
