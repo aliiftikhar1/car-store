@@ -9,6 +9,7 @@ export default function AuctionCard({ item, index ,watchdata,OnWatch, setloading
     function handleWatch() {
         if(!userid){
             toast.message("Login to watch auction!!")
+            return
         }
         fetch(`/api/user/watch`, {
             method: "POST",
