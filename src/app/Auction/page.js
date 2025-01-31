@@ -444,7 +444,7 @@ async function fetchWatch() {
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {(loading&&loadingAction==='default') && <Loader className="animate-spin" />}
             {sortedItems.map((item) => (
               <AuctionCard key={item.id} item={item} watchdata={watch} OnWatch={GetAuctions} setloadingAction={changeLoadingAction}/>

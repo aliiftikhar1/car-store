@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { Clock } from "lucide-react";
 
 export default function TimerComponent({ className = "", endDate }) {
   const getOrCreateEndDate = () => {
@@ -42,28 +43,29 @@ export default function TimerComponent({ className = "", endDate }) {
   }, [endDate]);
 
   return (
-    <div className={cn("flex justify-center items-center gap-5 text-center ", className)}>
-       {timeLeft.days>10?<span className={cn("countdown font-[700]", className)}>{new Date(endDate).toLocaleDateString()}</span>:<>
+    <div className={cn("flex justify-center items-center text-center ", className)}>
+      <Clock className="size-4"/>
+       {timeLeft.days>10000?<span className={cn("countdown font-[700]", className)}>{new Date(endDate).toLocaleDateString()}</span>:<>
        {timeLeft.days==0?'':
-      <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[700]", className)}>{timeLeft.days}</span>
-        <span className="text-xs font-normal">days</span>
+      <div className="flex items-center gap-1  ">
+        <span className={cn("countdown font-[500]", className)}>{timeLeft.days}</span>
+        <span className="text-xs items-center font-normal">d</span>
       </div>}
-      {timeLeft.days<2?<>
         {timeLeft.hours==0?'':
-        <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[700]", className)}>{timeLeft.hours}</span>
-        <span className="text-xs font-normal">hours</span>
+        <div className="flex items-center gap-1  ">
+        <span className={cn("countdown font-[500]", className)}>{timeLeft.hours}</span>
+        <span className="text-xs items-center font-normal">h</span>
       </div>}
+      {timeLeft.days<=0?<>
       {timeLeft.minutes==0?'':
-      <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[700]", className)}>{timeLeft.minutes}</span>
-        <span className="text-xs font-normal">min</span>
+      <div className="flex items-center gap-1  ">
+        <span className={cn("countdown font-[500]", className)}>{timeLeft.minutes}</span>
+        <span className="text-xs items-center font-normal">m</span>
       </div>}
       {timeLeft.seconds==0?'':
-      <div className="flex flex-col w-full">
-        <span className={cn("countdown font-[700]", className)}>{timeLeft.seconds}</span>
-        <span className="text-xs font-normal">sec</span>
+      <div className="flex items-center gap-1">
+        <span className={cn("countdown font-[500]", className)}>{timeLeft.seconds}</span>
+        <span className="text-xs items-center font-normal">s</span>
       </div>}</>:''}
       </>
 }

@@ -6,8 +6,8 @@ export default function TopBar() {
     const [visible, setvisible] = useState(true)
     return (
         <>{visible&&(
-        <div className="flex flex-col w-full relative">
-            <div className="absolute top-2 right-4">
+        <div className="flex flex-col w-full relative bg-white">
+            <div className="absolute top-1 right-4">
                 <X className="text-gray-300 hover:text-gray-100" onClick={()=>setvisible(!visible)}/>
             </div>
             <div className="p-1  md:p-2 bg-[#5a79c8]">
