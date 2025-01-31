@@ -70,7 +70,7 @@ export async function getAuctions() {
         "Content-Type": "application/json",
       },
     });
-    
+
     if (!response.ok) {
       throw new Error("Failed to fetch auctions");
     }
@@ -92,7 +92,7 @@ export async function getCarSubmissions() {
         "Content-Type": "application/json",
       },
     });
-    
+
     if (!response.ok) {
       throw new Error("Failed to fetch auctions");
     }
@@ -117,6 +117,22 @@ export async function updateAuction(data) {
         location: data.location,
         status: data.status,
       },
+      include: {
+        CarSubmission: {
+          include: {
+            User:true,
+            SubmissionImages: true,
+            Brand: true
+          }
+        },
+        Seller: {},
+        Bids: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        Watching: true
+      }
     })
     return { success: true, data: updatedAuction }
   } catch (error) {

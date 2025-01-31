@@ -54,9 +54,9 @@ export default function AuctionTable({initialAuctions }) {
           {auctions?.map((auction) => (
             <TableRow key={auction.id}>
               <TableCell>
-                {auction.CarSubmission.vehicleMake} {auction.CarSubmission.vehicleModel}
+                {auction.CarSubmission?.vehicleMake} {auction.CarSubmission?.vehicleModel}
               </TableCell>
-              <TableCell>{auction.CarSubmission.User.name}</TableCell>
+              <TableCell>{auction.CarSubmission?.User.name}</TableCell>
               <TableCell>{formatDate(auction.startDate)}</TableCell>
               <TableCell>{formatDate(auction.endDate)}</TableCell>
               <TableCell>{auction.status}</TableCell>
