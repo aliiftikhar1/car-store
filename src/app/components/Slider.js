@@ -57,12 +57,14 @@ const Carousel = ({ items, autoplayInterval = 5000 }) => {
           </div>
 
           {/* Preview Button */}
+          <a href={item.link}>
           <Button
             variant="secondary"
             className="absolute bottom-4 md:bottom-8 right-8 px-4 md:px-8 py-3 md:py-6 text-sm md:text-lg border font-medium tracking-wider"
           >
             PREVIEW
           </Button>
+          </a>
         </div>
       ))}
 

@@ -1,8 +1,9 @@
 'use client'
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import Auction from "./components/Auction"
 import Carousel from "./components/Slider"
+import { Loader } from "lucide-react"
 const carouselItems = [
   {
     year: "2019",
@@ -51,7 +52,7 @@ const carouselItems = [
     make: "SHELBY",
     model: "911 GT3 RS",
     image: "/banners/Shelby banner.jpg",
-  },{
+  }, {
     year: "2023",
     make: "G-WAGON",
     model: "911 GT3 RS",
@@ -61,8 +62,27 @@ const carouselItems = [
 
 export default function Home() {
   const [loading, setloading] = useState(false)
-    const [auctionItems, setAuctionItems] = useState([])
-    const [watch, setwatch] = useState([])
+  const [loading2, setisloading] = useState(false)
+  const [auctionItems, setAuctionItems] = useState([])
+  const [watch, setwatch] = useState([])
+  const [slides,setSlides]=useState([])
+  useEffect(() => {
+    fetchSlides()
+  }, [])
+
+  const fetchSlides = async () => {
+    setisloading(true)
+    try {
+      const response = await fetch(`/api/admin/slidermanagement`)
+      if (!response.ok) throw new Error("Failed to fetch slides")
+      const data = await response.json()
+      setSlides(data)
+    } catch (err) {
+      toast.error(err.message)
+    } finally {
+      setisloading(false)
+    }
+  }
   async function GetAuctions() {
     try {
       setloading(true)
@@ -87,13 +107,15 @@ export default function Home() {
       toast.error("Failed to fetch auctions")
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     GetAuctions()
-  },[])
+  }, [])
   return (
     <main className="min-h-screen ">
-      <Carousel items={carouselItems} />
-      <Auction items={auctionItems} watchdata={watch}/>
+      <Carousel items={slides} />
+      {loading ? <div className="flex w-full h-40 justify-center items-center"><Loader className="animate-spin" /></div> :
+        <Auction items={auctionItems} watchdata={watch} />
+      }
     </main>
   )
 }

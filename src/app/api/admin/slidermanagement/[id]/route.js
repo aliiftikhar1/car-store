@@ -1,72 +1,50 @@
-import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
+import prisma from "@/lib/prisma"
 
-export async function PUT(request,{params}){
-    const id = params.id
-    const data = await request.json();
-    try {
-        const updateslider = await prisma.Slider.update({
-            data:{
-                title:data.title,
-                description:data.description,
-                image:data.image,
-                link:data.link,
-                updatedAt: new Date()
-            }
-            ,
-            where:{
-                id
-            }
-        })
-
-        if(updateslider){
-            return NextResponse.json({
-                message:"Slider updated successfully",
-                status:200
-            })
-        }
-        
-    } catch (error) {
-        return NextResponse.json({
-            success:false,
-            message:"Slide update failed",
-            status:500
-        })
+export async function GET(request, { params }) {
+  try {
+    const slide = await prisma.slide.findUnique({
+      where: { id: params.id },
+    })
+    if (!slide) {
+      return NextResponse.json({ error: "Slide not found" }, { status: 404 })
     }
+    return NextResponse.json(slide)
+  } catch (error) {
+    console.error("Failed to fetch slide:", error)
+    return NextResponse.json({ error: "Failed to fetch slide" }, { status: 500 })
+  }
+}
+
+export async function PUT(request, { params }) {
+  try {
+    const data = await request.json()
+    const updatedSlide = await prisma.slide.update({
+      where: { id: params.id },
+      data: {
+        year: Number.parseInt(data.year),
+        model: data.model,
+        make: data.make,
+        image: data.image,
+        link: data.link,
+      },
+    })
+    return NextResponse.json(updatedSlide)
+  } catch (error) {
+    console.error("Failed to update slide:", error)
+    return NextResponse.json({ error: "Failed to update slide" }, { status: 500 })
+  }
 }
 
 export async function DELETE(request, { params }) {
-    const { id } = params;
-  
-    try {
-      if (!id) {
-        return NextResponse.json({
-          success: false,
-          message: "Slide ID is required",
-          status: 400,
-        });
-      }
-  
-      const deletedSlider = await prisma.Slider.delete({
-        where: {
-          id, 
-        },
-      });
-  
-      return NextResponse.json({
-        message: "Slide deleted successfully",
-        success: true,
-        status: 200,
-        data: deletedSlider, 
-      });
-    } catch (error) {
-
-      return NextResponse.json({
-        success: false,
-        message: "Slide delete failed",
-        status: 500,
-        error: error.message, 
-      });
-    }
+  try {
+    await prisma.slide.delete({
+      where: { id: params.id },
+    })
+    return NextResponse.json({ message: "Slide deleted successfully" })
+  } catch (error) {
+    console.error("Failed to delete slide:", error)
+    return NextResponse.json({ error: "Failed to delete slide" }, { status: 500 })
   }
-  
+}
+

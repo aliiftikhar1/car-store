@@ -167,3 +167,15 @@ model Sold{
   User          User        @relation(fields:[userId],references:[id],onDelete:Cascade)
 
 }
+
+model Slide {
+  id        String   @id @default(cuid())
+  year      Int
+  model     String
+  make      String
+  image     String
+  link      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

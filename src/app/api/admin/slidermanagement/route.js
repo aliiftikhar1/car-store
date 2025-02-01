@@ -1,52 +1,36 @@
-import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
+import prisma from "@/lib/prisma"
 
-export async function POST(request){
-    const data = await request.json();
-    console.log("Payload",data)
-    try {
-        const slider = await prisma.Slider.create({
-            data:{
-                title:data.title,
-                description:data.description,
-                image:data.image,
-                link:data.link,
-            }
-        })
-        if(slider){
-            return NextResponse.json({
-                success:true,
-                message:"Slide added succesfully",
-                status:200
-            })
-        }else{
-            return NextResponse.json({
-                success:false,
-                message:"failed to add slide",
-                status:500
-            })
-        }
-        
-    } catch (error) {
-        return NextResponse.json({success:false,message:"Error while adding slide",status:500})
-    }
+export async function GET() {
+  try {
+    const slides = await prisma.slide.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+    return NextResponse.json(slides)
+  } catch (error) {
+    console.error("Failed to fetch slides:", error)
+    return NextResponse.json({ error: "Failed to fetch slides" }, { status: 500 })
+  }
 }
 
-export async function GET(){
-    try {
-        const slider = await prisma.Slider.findMany()
-
-        if(slider){
-            return NextResponse.json(slider);
-        }else{
-            return NextResponse.json({
-                succes:false,
-                message:"Slider fetch failed",
-                status:500
-            })
-        }
-        
-    } catch (error) {
-        return NextResponse.json({success:false,message:"Error while fetching slide",status:500})
-    }
+export async function POST(request) {
+  try {
+    const data = await request.json()
+    const newSlide = await prisma.slide.create({
+      data: {
+        year: Number.parseInt(data.year),
+        model: data.model,
+        make: data.make,
+        image: data.image,
+        link: data.link,
+      },
+    })
+    return NextResponse.json(newSlide, { status: 201 })
+  } catch (error) {
+    console.error("Failed to create slide:", error)
+    return NextResponse.json({ error: "Failed to create slide" }, { status: 500 })
+  }
 }
+
