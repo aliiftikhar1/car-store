@@ -38,13 +38,14 @@ export default function Auction() {
     sortBy: "relevant",
   })
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false)
+  const [filteredItems, setFilteredItems] = useState([])
 
   function changeLoadingAction(value) {
     setloadingAction(value)
   }
   const fetchBrands = async () => {
     try {
-      setloading(true)
+      // setloading(true)
 
       // Define the API endpoints
       const endpoints = [
@@ -105,10 +106,58 @@ export default function Auction() {
       toast.error("Failed to fetch auctions")
     }
   }
+
   useEffect(() => {
-    GetAuctions()
-    fetchBrands()
+    const fetchData = async () => {
+      await GetAuctions()
+      await fetchBrands()
+    }
+    fetchData()
   }, [])
+
+  useEffect(() => {
+    applyFilters()
+  }, [auctionItems, filters])
+
+  const applyFilters = () => {
+    const filtered = auctionItems.filter((item) => {
+      const price = Number.parseFloat(item.CarSubmission.price)
+      if (filters.minPrice && price < Number.parseFloat(filters.minPrice)) return false
+      if (filters.maxPrice && price > Number.parseFloat(filters.maxPrice)) return false
+      if (
+        filters.brandIds.length > 0 &&
+        item.CarSubmission.Brand &&
+        !filters.brandIds.includes(item.CarSubmission.vehicleMake)
+      )
+        return false
+      if (filters.categories.length > 0 && !filters.categories.includes(item.CarSubmission.category)) return false
+      if (filters.bodyTypes.length > 0 && !filters.bodyTypes.includes(item.CarSubmission.bodyType)) return false
+      if (filters.transmissions.length > 0 && !filters.transmissions.includes(item.CarSubmission.transmission))
+        return false
+      if (filters.engineCapacities.length > 0 && !filters.engineCapacities.includes(item.CarSubmission.engineCapacity))
+        return false
+      if (filters.fuelTypes.length > 0 && !filters.fuelTypes.includes(item.CarSubmission.fuelType)) return false
+      if (filters.exteriorColors.length > 0 && !filters.exteriorColors.includes(item.CarSubmission.exteriorColor))
+        return false
+      if (filters.conditions.length > 0 && !filters.conditions.includes(item.CarSubmission.condition)) return false
+      return true
+    })
+
+    const sorted = [...filtered].sort((a, b) => {
+      switch (filters.sortBy) {
+        case "ending-soon":
+          return new Date(a.endDate).getTime() - new Date(b.endDate).getTime()
+        case "price-low":
+          return Number.parseFloat(a.CarSubmission.price) - Number.parseFloat(b.CarSubmission.price)
+        case "price-high":
+          return Number.parseFloat(b.CarSubmission.price) - Number.parseFloat(a.CarSubmission.price)
+        default:
+          return 0
+      }
+    })
+
+    setFilteredItems(sorted)
+  }
 
   const handleBrandFilter = (brandId) => {
     setFilters((prev) => ({
@@ -135,42 +184,7 @@ export default function Auction() {
     }))
   }
 
-  const filteredItems = auctionItems.filter((item) => {
-    console.log("Filters are", filters)
-    const price = Number.parseFloat(item.CarSubmission.price)
-    if (filters.minPrice && price < Number.parseFloat(filters.minPrice)) return false
-    if (filters.maxPrice && price > Number.parseFloat(filters.maxPrice)) return false
-    if (
-      filters.brandIds.length > 0 &&
-      item.CarSubmission.Brand &&
-      !filters.brandIds.includes(item.CarSubmission.vehicleMake)
-    )
-      return false
-    if (filters.categories.length > 0 && !filters.categories.includes(item.CarSubmission.category)) return false
-    if (filters.bodyTypes.length > 0 && !filters.bodyTypes.includes(item.CarSubmission.bodyType)) return false
-    if (filters.transmissions.length > 0 && !filters.transmissions.includes(item.CarSubmission.transmission))
-      return false
-    if (filters.engineCapacities.length > 0 && !filters.engineCapacities.includes(item.CarSubmission.engineCapacity))
-      return false
-    if (filters.fuelTypes.length > 0 && !filters.fuelTypes.includes(item.CarSubmission.fuelType)) return false
-    if (filters.exteriorColors.length > 0 && !filters.exteriorColors.includes(item.CarSubmission.exteriorColor))
-      return false
-    if (filters.conditions.length > 0 && !filters.conditions.includes(item.CarSubmission.condition)) return false
-    return true
-  })
-
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    switch (filters.sortBy) {
-      case "ending-soon":
-        return new Date(a.endDate).getTime() - new Date(b.endDate).getTime()
-      case "price-low":
-        return Number.parseFloat(a.CarSubmission.price) - Number.parseFloat(b.CarSubmission.price)
-      case "price-high":
-        return Number.parseFloat(b.CarSubmission.price) - Number.parseFloat(a.CarSubmission.price)
-      default:
-        return 0
-    }
-  })
+  const displayedItems = filteredItems.length > 0 ? filteredItems : auctionItems
 
   return (
     <div className="px-4 md:px-6 py-16 md:py-20 flex flex-col md:flex-row gap-6">
@@ -180,9 +194,7 @@ export default function Auction() {
         </Button>
       </div>
       {/* Filters Sidebar */}
-      <div
-        className={`${mobileFiltersVisible ? "block" : "hidden"} md:flex md:flex-col w-full md:w-64 space-y-4`}
-      >
+      <div className={`${mobileFiltersVisible ? "block" : "hidden"} md:flex md:flex-col w-full md:w-64 space-y-4`}>
         <Accordion type="single" collapsible className="w-full" defaultValue="">
           <AccordionItem value="price">
             <AccordionTrigger>Price Range</AccordionTrigger>
@@ -427,8 +439,8 @@ export default function Auction() {
 
       {/* Main Content */}
       <div className="flex-1 md:ml-4 ">
-        <div className="flex items-center justify-between mb-6  bg-white z-30 py-4">
-          <p className="text-sm text-muted-foreground">{filteredItems.length} results found</p>
+        <div className="flex items-center justify-between mb-6 bg-white z-30 py-4">
+          <p className="text-sm text-muted-foreground">{displayedItems.length} results found</p>
           <Select value={filters.sortBy} onValueChange={(value) => setFilters((prev) => ({ ...prev, sortBy: value }))}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
@@ -442,9 +454,9 @@ export default function Auction() {
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {loading && loadingAction === "default" && <Loader className="animate-spin" />}
-          {sortedItems.map((item) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 relative">
+          {loading && loadingAction === "default" && <div className="absolute w-full h-full bg-black/10 flex justify-center items-center"><Loader className=" animate-spin" /></div>}
+          {displayedItems.map((item) => (
             <AuctionCard
               key={item.id}
               item={item}

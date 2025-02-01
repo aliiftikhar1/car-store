@@ -7,16 +7,16 @@ export default function TabsSection({ data }) {
   return (
     <Tabs defaultValue="description" className="w-full">
       <div className="overflow-x-auto">
-        <TabsList className="h-auto p-0 bg-transparent border-b">
+        <TabsList className="h-auto p-0 bg-transparent space-x-1 ">
           <TabsTrigger
             value="description"
-            className="px-6 py-3 rounded-none data-[state=active]:bg-blue-800 data-[state=active]:text-white"
+            className="px-6 py-3 border rounded-xl data-[state=active]:bg-blue-800 data-[state=active]:text-white"
           >
             Description
           </TabsTrigger>
           <TabsTrigger
             value="hightlights"
-            className="px-6 py-3 rounded-none data-[state=active]:bg-blue-800 data-[state=active]:text-white"
+            className="px-6 py-3 border rounded-xl data-[state=active]:bg-blue-800 data-[state=active]:text-white"
           >
             Hightlights
           </TabsTrigger>

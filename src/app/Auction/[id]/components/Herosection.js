@@ -137,10 +137,11 @@ export default function HeroSection({ data, triggerfetch }) {
   }
 
   return (
-    <div className="w-full  px-4 md:px-8 lg:px-36 flex gap-8 py-8">
+    <div className="w-full px-4 md:px-8 lg:px-36 flex flex-col gap-8 md:py-8">
       {/* Left side - Image slider */}
-      <div className="space-y-4 w-3/5">
-        <div className="relative h-[75vh] aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100">
+      <div className="flex flex-col md:flex-row gap-8">
+      <div className="space-y-4 md:min-w-3/5">
+        <div className="relative md:h-[75vh] aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100">
           {images.length > 0 ? (
             <Image
               src={images[currentImage]?.data || "/placeholder.svg"}
@@ -173,7 +174,7 @@ export default function HeroSection({ data, triggerfetch }) {
         </div>
 
         {/* Thumbnails */}
-        <div className="flex gap-2 pb-2">
+        <div className="hidden md:flex gap-2 pb-2">
           {visibleThumbnails.slice().reverse().map((index) => (
             <button
               key={images[index].id}
@@ -190,20 +191,16 @@ export default function HeroSection({ data, triggerfetch }) {
             </button>
           ))}
         </div>
-        <div>
-          <OverviewSection data={data} />
-        </div>
-        <div>
-          <TabsSection data={data} />
-        </div>
+        
       </div>
 
+      
+
       {/* Right side - Details */}
-      <div className="space-y-3 w-2/5">
+      <div className="space-y-3 md:w-2/5">
         <div className="space-y-3">
           <h1 className="text-2xl md:text-3xl font-bold">
-            {data.CarSubmission.vehicleYear} {data.CarSubmission.vehicleMake} {data.CarSubmission.vehicleModel} Direct
-            Drive Hatchback
+            {data.CarSubmission.vehicleYear} {data.CarSubmission.vehicleMake} {data.CarSubmission.vehicleModel} 
             <br />
 
           </h1>
@@ -256,7 +253,7 @@ export default function HeroSection({ data, triggerfetch }) {
               </div>
             }
 
-            <div className="text-4xl font-bold">{data?.CarSubmission.currency} {data?.Bids.length > 0 ? parseInt(data.Bids[0].price) : parseInt(data?.CarSubmission?.price)}</div>
+            <div className="text-2xl md:text-4xl font-bold">{data?.CarSubmission.currency} {data?.Bids.length > 0 ? parseInt(data.Bids[0].price) : parseInt(data?.CarSubmission?.price)}</div>
 
             <div className="text-sm text-gray-600">
               <span className="text-blue-600">$690</span> buyers premium not included in the price. Excludes any Debit
@@ -307,7 +304,7 @@ export default function HeroSection({ data, triggerfetch }) {
               </Button>
             </div>
           </>
-            : <>{data.status === 'Ended' ? <p className="text-3xl text-red-500 text-center font-[800] tracking-tight">Sold Out</p> : ""}</>
+            : <>{data.status === 'Ended' ? <p className="text-3xl text-red-500 text-left md:text-center font-[800] tracking-tight">Sold Out</p> : ""}</>
           }
         </div>
 
@@ -379,6 +376,16 @@ export default function HeroSection({ data, triggerfetch }) {
             </div>
           </DialogContent>
         </Dialog>
+      </div>
+      </div>
+
+      <div className="md:w-3/5">
+      <div>
+          <OverviewSection data={data} />
+        </div>
+        <div>
+          <TabsSection data={data} />
+        </div>
       </div>
     </div>
   )
