@@ -275,7 +275,7 @@ export default function Auction({ items, watchdata }) {
                                                                     item.CarSubmission.price}
                                                             </p>
                                                         </div>
-                                                        <div className="text-right flex flex-col">
+                                                        <div className="text-right flex flex-col items-end w-full">
                                                             <p className="text-xs sm:text-sm text-gray-600">Time left</p>
                                                             <TimerComponent
                                                                 className="gap-1 text-sm w-auto "
