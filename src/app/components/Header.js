@@ -28,7 +28,7 @@ export default function Header() {
                         </MainNav>
                     </div>
                     <a href='/' className="flex flex-col justify-center items-center">
-                        <img src="/logo/1.png" className="h-16 md:h-20 w-[70vw] md:w-[40vw] object-cover"></img>
+                        <img src="/logo/1.png" className="h-16 md:h-20 w-[70vw] md:w-[30vw] object-cover"></img>
                         {/* <h1 className="font-xspace text-base md:text-3xl -tracking-[4px] md:tracking-tight">CAR BUY DIRECT</h1> */}
                         {/* <p className="uppercase font-[300] text-xs md:text-base">Supercar Blondie</p> */}
                     </a>

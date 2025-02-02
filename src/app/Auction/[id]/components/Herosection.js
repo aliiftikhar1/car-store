@@ -7,16 +7,19 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import OverviewSection from "./OverView"
 import TabsSection from "./TabsSection"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import BidRegistrationForm from "./BidRegisterationDialog"
 import { useSelector } from "react-redux"
 import { Loader } from "lucide-react"
 import TimerComponent from "@/app/Car/[id]/components/CountDownTimer"
+import { formatDistance } from "date-fns"
+
 
 
 export default function HeroSection({ data, triggerfetch }) {
   const images = data.CarSubmission.SubmissionImages || []
-
+  const [isBidDetailOpen,setIsBidDetailOpen]=useState(false)
   const [currentImage, setCurrentImage] = useState(0)
   const [visibleThumbnails, setVisibleThumbnails] = useState([])
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -244,7 +247,39 @@ export default function HeroSection({ data, triggerfetch }) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   Current Bid
-                  <span className="text-blue-600">{data?.Bids.length}</span>
+                  <Dialog open={isBidDetailOpen} onOpenChange={setIsBidDetailOpen}>
+      <DialogTrigger asChild>
+        <span className="text-blue-600 cursor-pointer hover:underline">{data?.Bids.length}</span>
+      </DialogTrigger>
+      <DialogContent className="m-2 md:m-0 md:max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>
+            Bid Details for {data?.CarSubmission.vehicleYear} {data?.CarSubmission.vehicleMake} {data?.CarSubmission.vehicleModel}
+          </DialogTitle>
+        </DialogHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Bidder</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Time</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data?.Bids.map((bid) => (
+              <TableRow key={bid.id}>
+                <TableCell>{bid.User.name}</TableCell>
+                <TableCell>
+                  {bid.currency} {bid.price.toLocaleString()}
+                </TableCell>
+                <TableCell>{formatDistance(new Date(bid.createdAt), new Date(), { addSuffix: true })}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+    </Dialog>
+                  {/* <span className="text-blue-600">{data?.Bids.length}</span> */}
                 </div>
                 <div className="flex items-center gap-1 text-green-600">
                   <span>No reserve</span>

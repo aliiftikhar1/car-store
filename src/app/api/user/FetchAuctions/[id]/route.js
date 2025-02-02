@@ -25,6 +25,9 @@ export async function GET(request,{params}){
                     orderBy: {
                       createdAt: "desc", 
                     },
+                    include:{
+                        User:true
+                    }
                   },
             }
         })

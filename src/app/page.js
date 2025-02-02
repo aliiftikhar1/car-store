@@ -4,59 +4,37 @@ import { toast } from "sonner"
 import Auction from "./components/Auction"
 import Carousel from "./components/Slider"
 import { Loader } from "lucide-react"
-const carouselItems = [
+import { Zap, Image, LayoutGrid, Gem, BarChart3 } from "lucide-react"
+import FlippingCard from "./components/FlipCard"
+import Reviews from "./components/Reviews"
+import CTASection from "./components/CTASection"
+import AboutUsSection from "./components/AboutUs"
+
+const features = [
   {
-    year: "2019",
-    make: "MCLAREN",
-    model: "SENNA XP - #1 OF 10",
-    image: "/banners/581A6472-Banner.jpg",
+    icon: <Zap className="w-12 h-12 text-red-500" />,
+    title: "Direct Saving",
+    description: "Partnering with Wholesalers and Distributers to get the best price",
   },
   {
-    year: "2023",
-    make: "FERRARI",
-    model: "SF90 STRADALE",
-    image: "/banners/Banner (1).jpg",
+    icon: <Image className="w-12 h-12 text-red-500" />,
+    title: "No Hidden Fee",
+    description: "Transparent Pricing every step of the way",
   },
   {
-    year: "2024",
-    make: "LAMBORGHINI",
-    model: "REVUELTO",
-    image: "/banners/Banner 1.jpg",
+    icon: <LayoutGrid className="w-12 h-12 text-red-500" />,
+    title: "All-in-One-Platform",
+    description: "Buy, Insure, Service, Finance & Transport – all in one place",
   },
   {
-    year: "2023",
-    make: "PORSCHE",
-    model: "911 GT3 RS",
-    image: "/banners/banner.jpg",
+    icon: <Gem className="w-12 h-12 text-red-500" />,
+    title: "User Friendly App",
+    description: "Seamlessly browse, compare, buy and book from your phone",
   },
   {
-    year: "2023",
-    make: "FORD",
-    model: "911 GT3 RS",
-    image: "/banners/ford banner.jpg",
-  },
-  {
-    year: "2023",
-    make: "BUGATTI",
-    model: "911 GT3 RS",
-    image: "/banners/Porsche Speedster banner.jpg",
-  },
-  {
-    year: "2023",
-    make: "SENNA",
-    model: "911 GT3 RS",
-    image: "/banners/Senna banner.jpg",
-  },
-  {
-    year: "2023",
-    make: "SHELBY",
-    model: "911 GT3 RS",
-    image: "/banners/Shelby banner.jpg",
-  }, {
-    year: "2023",
-    make: "G-WAGON",
-    model: "911 GT3 RS",
-    image: "/banners/G-wagon-1.jpg",
+    icon: <BarChart3 className="w-12 h-12 text-red-500" />,
+    title: "Buyer-Focused Approach",
+    description: "Designed to Prioritize your needs, not dealership Profits",
   },
 ]
 
@@ -113,9 +91,29 @@ export default function Home() {
   return (
     <main className="min-h-screen ">
       <Carousel items={slides} />
+      <h1 className="text-xl mt-8 md:mt-0 md:text-3xl font-bold text-center mb-4">WHY CHOOSE CARBUYDIRECT?</h1>
+      <div className="grid grid-cols-2 md:grid-cols-6 md:max-w-5xl mx-auto">
+        {features.map((feature, index) => (
+          <FlippingCard
+            key={index}
+            // className={index > 2 ? "md:col-span-3" : "md:col-span-2"}
+            frontContent={
+              <div className="space-y-4 justify-center flex flex-col items-center">
+                {feature.icon}
+                <h3 className="">{feature.title}</h3>
+              </div>
+            }
+            id={index}
+            backContent={feature.description}
+          />
+        ))}
+      </div>
       {loading ? <div className="flex w-full h-40 justify-center items-center"><Loader className="animate-spin" /></div> :
         <Auction items={auctionItems} watchdata={watch} />
       }
+      <Reviews/>
+      <AboutUsSection/>
+      <CTASection/>
     </main>
   )
 }
