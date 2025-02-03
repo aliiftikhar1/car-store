@@ -440,7 +440,7 @@ export default function Auction() {
       {/* Main Content */}
       <div className="flex-1 md:ml-4 ">
         <div className="flex items-center justify-between mb-6 bg-white z-30 py-4">
-          <p className="text-sm text-muted-foreground">{displayedItems.length} results found</p>
+          <p className="text-sm text-muted-foreground">{displayedItems.filter((item)=>item.status==='Live').length} results found</p>
           <Select value={filters.sortBy} onValueChange={(value) => setFilters((prev) => ({ ...prev, sortBy: value }))}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
@@ -456,7 +456,7 @@ export default function Auction() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 relative">
           {loading && loadingAction === "default" && <div className="absolute w-full h-full bg-black/10 flex justify-center items-center"><Loader className=" animate-spin" /></div>}
-          {displayedItems.map((item) => (
+          {displayedItems.filter((item)=>item.status==='Live').map((item) => (
             <AuctionCard
               key={item.id}
               item={item}

@@ -60,6 +60,8 @@ export default function AdminCarSubmissions() {
     fuelType: '',
     exteriorColor: '',
     condition: '',
+    reserved:'',
+    reservedPrice:''
   })
   const [imageLabels, setImageLabels] = useState({})
   const [loading, setloading] = useState(true)
@@ -166,7 +168,6 @@ export default function AdminCarSubmissions() {
       highlights: submission.highlights || "",
       notes: submission.notes || "",
       brand: submission.brand || "",
-
       category: submission.category || '',
       bodyType: submission.bodyType || '',
       transmission: submission.transmission || '',
@@ -174,6 +175,8 @@ export default function AdminCarSubmissions() {
       fuelType: submission.fuelType || '',
       exteriorColor: submission.exteriorColor || '',
       condition: submission.condition || '',
+      reserved:submission.reserved || '',
+    reservedPrice:submission.reservedPrice || ''
     })
     setIsUpdateDialogOpen(true)
   }
@@ -198,7 +201,7 @@ export default function AdminCarSubmissions() {
   const handledelete = async (submission) => {
     if (!submission) return
     try {
-      const response = await fetch(`$/admin/carsubmissions/${submission.id}`, {
+      const response = await fetch(`/api/admin/carsubmissions/${submission.id}`, {
         method: "DELETE",
       })
 
@@ -221,7 +224,7 @@ export default function AdminCarSubmissions() {
     if (!selectedSubmission) return
 
     try {
-      const response = await fetch(`$/admin/carsubmissions/${selectedSubmission.id}`, {
+      const response = await fetch(`/api/admin/carsubmissions/${selectedSubmission.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -490,7 +493,31 @@ export default function AdminCarSubmissions() {
                   />
                 </div>
               </div>
-
+              <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+            <label htmlFor="reserved" className="text-sm font-medium">
+              Reserved Price*
+            </label>
+            <div className="flex gap-2">
+              <Input id="reservedPrice" value={formData.reservedPrice} onChange={(e) => handleFormChange("reservedPrice", e.target.value)} placeholder='Enter Amount' name="reservedPrice" required className="flex-1" />
+              <Select name="reserved" defaultValue={formData.reserved==true?'True':'False'} onChange={(e) => handleFormChange("reserved", e.target.value)}>
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue placeholder="No" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='True'>Yes</SelectItem>
+                  <SelectItem value='False'>No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          {/* <div className="space-y-2">
+            <label htmlFor="vin" className="text-sm font-medium">
+              Reserved Price
+            </label>
+            <Input id="reservedPrice" name="reservedPrice" />
+          </div> */}
+        </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="vehicleYear">Vehicle year</Label>

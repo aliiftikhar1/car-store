@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma"
 
 export async function createAuction(formData) {
-  const { carSubmissionId, startDate, endDate, location, status } = formData
+  const { carSubmissionId, startDate, endDate, location, status,featured } = formData
 
   try {
     const carSubmission = await prisma.carSubmission.findUnique({
@@ -24,6 +24,7 @@ export async function createAuction(formData) {
         location,
         status,
         closingPrice: "0",
+        featured:featured==='true'?true:false,
       },
     })
 
@@ -116,6 +117,7 @@ export async function updateAuction(data) {
         endDate: new Date(data.endDate),
         location: data.location,
         status: data.status,
+        featured:data.featured==='true'?true:false,
       },
       include: {
         CarSubmission: {

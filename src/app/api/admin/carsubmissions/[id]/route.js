@@ -52,6 +52,8 @@ export async function PUT(request, { params }) {
         fuelType,
         exteriorColor,
         condition,
+        reserved,
+        reservedPrice,
         imageLabels,
     } = data;
 
@@ -97,6 +99,8 @@ export async function PUT(request, { params }) {
                     fuelType,
                     exteriorColor,
                     condition,
+                    reserved: reserved === 'True' ? true : false,
+                    reservedPrice: parseInt(reservedPrice),
                 },
             });
 
@@ -139,7 +143,16 @@ export async function PUT(request, { params }) {
                     highlights,
                     specs,
                     review,
+                    category,
+                    bodyType,
+                    transmission,
+                    engineCapacity,
+                    fuelType,
+                    exteriorColor,
+                    condition,
                     status,
+                    reserved: reserved === 'True' ? true : false,
+                    reservedPrice: parseInt(reservedPrice),
                 },
             });
 

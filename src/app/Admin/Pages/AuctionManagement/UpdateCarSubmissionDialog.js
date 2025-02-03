@@ -17,6 +17,7 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
     endDate: auction.endDate,
     location: auction.location,
     status: auction.status,
+    featured:auction.featured,
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,8 +25,8 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { carSubmissionId, startDate, endDate, location, status } = formData;
-    if (!carSubmissionId || !startDate || !endDate || !location || !status) {
+    const { carSubmissionId, startDate, endDate, location, status, featured } = formData;
+    if (!carSubmissionId || !startDate || !endDate || !location || !status || !featured) {
       setError("All fields are required.");
       return;
     }
@@ -127,6 +128,22 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
               <option value="Scheduled">Scheduled</option>
               <option value="Live">Live</option>
               <option value="Ended">Ended</option>
+            </select>
+          </div>
+             <div>
+            <Label htmlFor="status">Featured</Label>
+            <select
+              id="featured"
+              name="featured"
+              value={formData.featured}
+              onChange={(e) => setFormData((prev) => ({ ...prev, featured: e.target.value }))}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              <option value='true'>Yes</option>
+              <option value='false'>No</option>
             </select>
           </div>
           <Button type="submit" disabled={loading}>

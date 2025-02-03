@@ -15,6 +15,7 @@ export default function CreateAuctionDialog({ carSubmissions, fetchData }) {
     endDate: "",
     location: "",
     status: "",
+    featured:"",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,8 +23,8 @@ export default function CreateAuctionDialog({ carSubmissions, fetchData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { carSubmissionId, startDate, endDate, location, status } = formData;
-    if (!carSubmissionId || !startDate || !endDate || !location || !status) {
+    const { carSubmissionId, startDate, endDate, location, status,featured } = formData;
+    if (!carSubmissionId || !startDate || !endDate || !location || !status || !featured) {
       setError("All fields are required.");
       return;
     }
@@ -33,7 +34,7 @@ export default function CreateAuctionDialog({ carSubmissions, fetchData }) {
       const result = await createAuction(formData);
       if (result.success) {
         setError("");
-        setFormData({ carSubmissionId: "", startDate: "", endDate: "", location: "", status: "" });
+        setFormData({ carSubmissionId: "", startDate: "", endDate: "", location: "", status: "", featured: "" });
         setOpen(false);
         fetchData(); // Refresh data after successful submission
       } else {
@@ -127,6 +128,22 @@ export default function CreateAuctionDialog({ carSubmissions, fetchData }) {
               <option value="Scheduled">Scheduled</option>
               <option value="Live">Live</option>
               <option value="Ended">Ended</option>
+            </select>
+          </div>
+          <div>
+            <Label htmlFor="status">Featured</Label>
+            <select
+              id="status"
+              name="featured"
+              value={formData.featured}
+              onChange={(e) => setFormData((prev) => ({ ...prev, featured: e.target.value }))}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              <option value='true'>Yes</option>
+              <option value='false'>No</option>
             </select>
           </div>
           <Button type="submit" disabled={loading}>

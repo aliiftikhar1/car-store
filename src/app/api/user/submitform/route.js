@@ -34,6 +34,8 @@ export async function POST(request) {
             fuelType,
             exteriorColor,
             condition,
+            reserved,
+            reservedPrice,
             files,
         } = data;
 
@@ -67,6 +69,8 @@ export async function POST(request) {
                 condition,
                 status: "Pending",
                 sellerId: 1, // Replace with actual seller ID
+                reserved: reserved==='True'?true:false,
+                reservedPrice:parseInt(reservedPrice),
             },
         });
 

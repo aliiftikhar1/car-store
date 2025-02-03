@@ -217,6 +217,31 @@ export default function ContactForm() {
             <Input id="vehicleModel" name="vehicleModel" required />
           </div>
         </div>
+        <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+            <label htmlFor="reserved" className="text-sm font-medium">
+              Reserved Price*
+            </label>
+            <div className="flex gap-2">
+              <Input id="reservedPrice" placeholder='Enter Amount' name="reservedPrice" required className="flex-1" />
+              <Select name="reserved" defaultValue="False">
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue placeholder="No" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='True'>Yes</SelectItem>
+                  <SelectItem value='False'>No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          {/* <div className="space-y-2">
+            <label htmlFor="vin" className="text-sm font-medium">
+              Reserved Price
+            </label>
+            <Input id="reservedPrice" name="reservedPrice" />
+          </div> */}
+        </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
