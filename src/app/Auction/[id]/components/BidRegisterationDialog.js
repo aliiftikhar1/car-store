@@ -74,7 +74,7 @@ console.log("Response is",response)
             alt="SBX Cars"
             width={1200}
             height={1200}
-            className="mx-auto w-full h-24 object-cover "
+            className="mx-auto w-80 h-8 object-cover "
           />
         </div>
 

@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
   const pathname = usePathname();
 
   // Check if the current route is under `/Admin`
-  const isAdmin = pathname.startsWith('/Admin');
+  const isAdmin = pathname.startsWith('/Admin') || pathname.startsWith('/Seller');
 
   if (isAdmin) {
     return (

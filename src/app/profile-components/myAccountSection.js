@@ -89,19 +89,6 @@ export default function MyAccountSection() {
               Phone number
             </label>
             <div className="flex gap-2">
-              {/* <Select
-                defaultValue={countryCode}
-                onValueChange={(value) => setCountryCode(value)}
-              >
-                <SelectTrigger className="w-[100px]">
-                  <SelectValue placeholder="+1" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="+1">+1</SelectItem>
-                  <SelectItem value="+44">+44</SelectItem>
-                  <SelectItem value="+91">+91</SelectItem>
-                </SelectContent>
-              </Select> */}
               <Input
                 id="phone"
                 type="tel"
@@ -111,9 +98,6 @@ export default function MyAccountSection() {
                 className="flex-1"
               />
             </div>
-            {/* <Button variant="secondary" className="mt-2 bg-muted/60 hover:bg-muted">
-              Verify phone
-            </Button> */}
           </div>
         </div>
 

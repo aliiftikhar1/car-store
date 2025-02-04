@@ -1,6 +1,15 @@
-import Link from "next/link";
+"use client"
+
+import { useState } from "react"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import LoginForm from "./LoginForm"
+import SignupForm from "./SignupForm"
 
 export default function HowItWorksSection() {
+  const [open, setOpen] = useState(false)
+
   return (
     <section className="md:h-screen flex justify-center items-center px-6 md:px-36 bg-white mt-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -21,7 +30,7 @@ export default function HowItWorksSection() {
 
         {/* How It Works Content */}
         <div className="space-y-4 md:space-y-6 w-full">
-          <h2 className="text-4xl font-[100] text-center text-gray-800">
+        <h2 className="text-4xl font-[100] text-center text-gray-800">
             How <span className="text-yellow-600">it Works</span>
           </h2>
           <p className="text-gray-600 text-center">
@@ -60,12 +69,33 @@ export default function HowItWorksSection() {
             </div>
           </div>
           <div className="w-full flex justify-center items-center">
-          <Link href="/Sell/Form" className="bg-yellow-600 text-white px-8 py-4 w-[250px] mdw-[300px] mx-auto font-semibold">
-            SUBMIT YOUR CAR
-          </Link>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-yellow-600 text-white px-8 py-4 w-[250px] md:w-[300px] mx-auto font-semibold hover:bg-yellow-700">
+                  Become a Seller
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[800px] w-11/12">
+              <img src="/logo/1.png" className="w-80 mx-auto object-cover h-8"/>
+              <h1 className="text-2xl font-bold text-center">Seller Form</h1>
+                <Tabs defaultValue="login" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="login">Login</TabsTrigger>
+                    <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="login" >
+                    <LoginForm setOpen={setOpen}/>
+                  </TabsContent>
+                  <TabsContent value="signup" >
+                    <SignupForm setOpen={setOpen}/>
+                  </TabsContent>
+                </Tabs>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }
+

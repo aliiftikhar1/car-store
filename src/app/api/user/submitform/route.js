@@ -36,6 +36,7 @@ export async function POST(request) {
             condition,
             reserved,
             reservedPrice,
+            sellerId,
             files,
         } = data;
 
@@ -68,7 +69,7 @@ export async function POST(request) {
                 exteriorColor,
                 condition,
                 status: "Pending",
-                sellerId: 1, // Replace with actual seller ID
+                sellerId, // Replace with actual seller ID
                 reserved: reserved==='True'?true:false,
                 reservedPrice:parseInt(reservedPrice),
             },

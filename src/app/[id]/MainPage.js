@@ -12,7 +12,7 @@ import MybidsSection from "./Bids"
 import MyInvoicesSection from "./Invoices"
 import MyFavoritesSection from "./Favourites"
 import Link from "next/link"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { getUserDetails, getUserBids } from "../Actions"
 
 
@@ -23,12 +23,13 @@ export default function MyProfile() {
   const UserDetails = useSelector((data) => data.CarUser.userDetails)
   const [UserBids, setUserBids] = useState([])
   const userid = useSelector((data) => data.CarUser.userDetails?.id)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (userid) {
       console.log("User id is:", userid)
-      getUserDetails(userid).then((data) => {
-        sconsole.log("UserDetails is:", data)
+      getUserDetails(userid,dispatch).then((data) => {
+        console.log("UserDetails is:", data)
       })
       getUserBids(userid).then((data) => {
         setUserBids(data)
