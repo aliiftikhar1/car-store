@@ -67,7 +67,7 @@ const deleteUser = async (id) => {
 };
 
 export default function UserManagement() {
-  const CurrentUserDetails = localStorage.getItem("adminDetails")
+  // const CurrentUserDetails = localStorage.getItem("adminDetails")
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
