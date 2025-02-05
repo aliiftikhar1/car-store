@@ -23,7 +23,7 @@ export default function MyBiddingSection() {
     province: "",
     zipcode: "",
   })
-  const data = useSelector((state) => state.CarUser.userDetails)
+  const data = useSelector((state) => state.CarUser?.userDetails)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function MyBiddingSection() {
               Country
             </label>
             <Select
-              value={formdata.country||data.country}
+              value={formdata.country||data?.country}
               onValueChange={(value) => handleSelectChange("country", value)}
             >
               <SelectTrigger id="country">

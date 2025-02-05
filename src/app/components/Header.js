@@ -8,6 +8,7 @@ import Header2 from "./Header2"
 import { AuthDialogs } from "./LoginDialog"
 
 import {  useSelector } from "react-redux"
+import Link from "next/link"
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false)
@@ -33,6 +34,8 @@ export default function Header() {
                         {/* <p className="uppercase font-[300] text-xs md:text-base">Supercar Blondie</p> */}
                     </a>
                     <div className="flex gap-4 text-lg font-[400] tracking-wider justify-center items-center">
+                        
+                        {user?.type==='seller'&&<Link href='/Seller' className="px-4 py-1 rounded-full border-2 border-gray-600">Seller Panel</Link>}
                         <Search className="size-6" />
                        <AuthDialogs/>
                     </div>

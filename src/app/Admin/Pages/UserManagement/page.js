@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@radix-ui/react-label';
+import { uploadfiletoserver } from '@/app/Actions';
 
 // Fetch all users
 const fetchUsers = async () => {
@@ -40,9 +41,6 @@ const addUser = async (user) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
   });
-  if (!response.ok) {
-    throw new Error('Failed to add user');
-  }
   return response.json();
 };
 
@@ -53,9 +51,6 @@ const updateUser = async (user) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
   });
-  if (!response.ok) {
-    throw new Error('Failed to update user');
-  }
   return response.json();
 };
 
@@ -72,6 +67,7 @@ const deleteUser = async (id) => {
 };
 
 export default function UserManagement() {
+  const CurrentUserDetails = localStorage.getItem("adminDetails")
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,7 +78,7 @@ export default function UserManagement() {
   const [showPassword, setShowPassword] = useState(false);
   const [image, setimage] = useState()
 
- 
+
   useEffect(() => {
     fetchUsers()
       .then(setUsers)
@@ -126,52 +122,78 @@ export default function UserManagement() {
     }
   };
 
-// Image change handler with Base64 conversion
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setimage(reader.result); // Set the base64 string
+  // Image change handler with Base64 conversion
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setimage(reader.result); // Set the base64 string
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+  const handleImageChange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setLoadingAction('Image')
+        const result = await uploadfiletoserver(file)
+          setimage(result); 
+          setLoadingAction(null)
+      }
     };
-    reader.readAsDataURL(file);
-  }
-};
 
-// Submit handler with image as base64
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const userData = Object.fromEntries(formData.entries());
+  // Submit handler with image as base64
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData.entries());
 
-  // Include the base64 image in the userData object
-  if (image) {
-    userData.image = image;
-  }
-
-  setLoadingAction('form');
-  try {
-    if (currentUser) {
-      await updateUser({ ...currentUser, ...userData });
-      toast.success('User updated successfully');
-    } else {
-      await addUser(userData);
-      toast.success('User added successfully');
+    // Include the base64 image in the userData object
+    if (image) {
+      userData.image = image;
     }
-    const updatedUsers = await fetchUsers();
-    setUsers(updatedUsers);
-    setIsModalOpen(false);
-  } catch (err) {
-    toast.error(err.message);
-  } finally {
-    setLoadingAction(null);
-  }
-};
+
+    setLoadingAction('form');
+    // try {
+    if (currentUser) {
+      const response = await updateUser({ ...currentUser, ...userData });
+      const data = response
+      if (data.success) {
+        toast.success('User Updated successfully');
+        const updatedUsers = await fetchUsers();
+        setUsers(updatedUsers);
+        setIsModalOpen(false);
+      }
+      else {
+        toast.error(data.message);
+      }
+    } else {
+      const response = await addUser(userData);
+      const data = response
+      if (data.success) {
+        toast.success('User added successfully');
+        const updatedUsers = await fetchUsers();
+        setUsers(updatedUsers);
+        setIsModalOpen(false);
+      }
+      else {
+        toast.error(data.message);
+      }
+    }
+
+    setLoadingAction(null)
+    // } catch (err) {
+    //   toast.error(err.message);
+    // } finally {
+    //   setLoadingAction(null);
+    // }
+  };
 
 
   return (
     <div>
- 
+
       <div className="p-6">
         <div className="mb-6 flex justify-between items-center">
           <Input
@@ -194,8 +216,8 @@ const handleSubmit = async (e) => {
               </DialogHeader>
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-3 gap-4 mb-4">
-                 
-                  {['name','username', 'email', 'password','bio', 'phoneNo', 'country', 'province', 'city', 'zipcode', 'address'].map((field) => (
+
+                  {['name', 'username', 'email', 'password', 'bio', 'phoneNo', 'country', 'province', 'city', 'zipcode', 'address'].map((field) => (
                     <div key={field} className="relative">
                       <label htmlFor={field} className="block text-sm font-medium">
                         {field === 'province' ? 'State/Province' : field.charAt(0).toUpperCase() + field.slice(1)}
@@ -216,7 +238,7 @@ const handleSubmit = async (e) => {
                       )}
                     </div>
                   ))}
-                   <div className="col-span-1">
+                  <div className="col-span-1">
                     <Label htmlFor="type" className="block text-sm font-medium text-gray-800">
                       Select Role
                     </Label>
@@ -225,12 +247,15 @@ const handleSubmit = async (e) => {
                         <SelectValue placeholder="Select Role" />
                       </SelectTrigger>
                       <SelectContent>
+                      {currentUser?.type==='admin'?<SelectItem value="admin">Admin</SelectItem>:<>
                         <SelectItem value="customer">Customer</SelectItem>
                         <SelectItem value="seller">Seller</SelectItem>
+                      </>}
+                       
                       </SelectContent>
                     </Select>
                   </div>
-                   <div className='flex col-span-1 flex-col justify-end'>
+                  <div className='flex col-span-1 flex-col justify-end'>
                     <label htmlFor='image' className="block text-sm font-medium">Profile Image</label>
                     <Input
                       type='file'
@@ -239,20 +264,20 @@ const handleSubmit = async (e) => {
                       onChange={handleImageChange}
                       placeholder='Choose Profile Picture'
                     />
-                  
-                  <div className='size-40  border-2 border-dashed '>
-                    {image ? (
-                      <img
-                        src={image}
-                        alt="Profile Preview"
-                        className="w-full h-full object-cover "
-                      />
-                    ) : (
-                      <div className="flex w-full text-center h-full justify-center items-center text-gray-500">No image selected</div>
-                    )}
+
+                    <div className='size-40  border-2 border-dashed '>
+                      {loadingAction==='Image'?<>Uploading<Loader className='animate-spin ml-1'/></>:image ? (
+                        <img
+                          src={image}
+                          alt="Profile Preview"
+                          className="w-full h-full object-cover "
+                        />
+                      ) : (
+                        <div className="flex w-full text-center h-full justify-center items-center text-gray-500">No image selected</div>
+                      )}
+                    </div>
                   </div>
-                  </div>
-                 
+
                   <div className="col-span-1">
                     <Label htmlFor="status" className="block text-sm font-medium text-gray-800">
                       Select Status
@@ -285,7 +310,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                 </div>
-                <Button type="submit" className="w-full" disabled={loadingAction === 'form'}>
+                <Button type="submit" className="w-full" disabled={loadingAction === 'form'||loadingAction==='Image'}>
                   {loadingAction === 'form' && <Loader className="mr-2 animate-spin" />}
                   {currentUser ? 'Update' : 'Add'} User
                 </Button>
@@ -316,12 +341,12 @@ const handleSubmit = async (e) => {
                 {filteredUsers.map((user, index) => (
                   <TableRow key={user.id}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell><img src={user.image} className='h-12'/> </TableCell>
+                    <TableCell><img src={user.image} className='h-12' /> </TableCell>
                     <TableCell>{user.name} </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.type}</TableCell>
                     <TableCell>{user.status}</TableCell>
-                    <TableCell>{user.location}</TableCell>
+                    <TableCell>{user.address}</TableCell>
                     <TableCell>
                       <Button onClick={() => handleUpdateUser(user)} variant="ghost">
                         <PencilIcon className="h-4 w-4" />
@@ -335,7 +360,9 @@ const handleSubmit = async (e) => {
                         {loadingAction === user.id ? (
                           <Loader className="h-4 w-4 animate-spin" />
                         ) : (
-                          <TrashIcon className="h-4 w-4" />
+                          <>
+                          {user.type==='admin'?'':<TrashIcon className="h-4 w-4" />}
+                          </>                          
                         )}
                       </Button>
                     </TableCell>

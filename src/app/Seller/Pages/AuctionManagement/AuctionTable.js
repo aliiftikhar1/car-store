@@ -64,7 +64,7 @@ export default function AuctionTable({initialAuctions }) {
                 <Button variant="ghost" size="sm" onClick={() => setSelectedAuction(auction)}>
                   <Eye className="h-4 w-4" />
                 </Button>
-                <UpdateCarSubmissionDialog auction={auction} onUpdate={handleAuctionUpdate} />
+                {/* <UpdateCarSubmissionDialog auction={auction} onUpdate={handleAuctionUpdate} /> */}
               </TableCell>
             </TableRow>
           ))}

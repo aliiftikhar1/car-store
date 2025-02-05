@@ -41,7 +41,7 @@ export default function Header2() {
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
           </Link>
           <Link href="/Preview" className="relative group cursor-pointer">
-            <p>Preview</p>
+            <p>Upcoming</p>
             <div className="w-full absolute hidden group-hover:flex h-1 transform transition-all duration-500 bg-black"></div>
           </Link>
           <Link href="/Results" className="relative group cursor-pointer">

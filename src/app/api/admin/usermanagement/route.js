@@ -30,6 +30,19 @@ export async function POST(request) {
                 message: "This email is already registered.",
             }, { status: 409 }); // 409 Conflict
         }
+        const existingUsername = await prisma.user.findUnique({
+            where: {
+                username: data.username,
+            },
+        });
+
+        if (existingUsername) {
+            console.log("username already exists:", data.username);
+            return NextResponse.json({
+                success: false,
+                message: "This username is already registered.",
+            }, { status: 409 }); // 409 Conflict
+        }
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(data.password, 10);

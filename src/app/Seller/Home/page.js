@@ -15,12 +15,12 @@ export default function AdminHomePage() {
     return (
         <div className=" bg-white p-6 h-[70vh] flex justify-center items-center">
             <Head>
-                <title>Admin Panel - Home</title>
+                <title>Seller Panel - Home</title>
             </Head>
 
-            <header className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">Welcome to Admin Panel</h1>
-                <p className="text-gray-600">Manage your eCommerce website efficiently</p>
+            <header className="mb-8 text-center">
+                <h1 className="text-3xl font-bold text-gray-800">Welcome to Seller Panel</h1>
+                <p className="text-gray-600">Manage your Car Selling Effectively</p>
             </header>
 
             {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

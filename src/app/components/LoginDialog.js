@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Bell, Heart, User } from 'lucide-react'
+import { Bell, Heart, Loader, User } from 'lucide-react'
 import { RegistrationDialog } from "./RegisterationDialog"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
@@ -43,6 +43,7 @@ export function AuthDialogs() {
   const user = useSelector((data) => data.CarUser.userDetails) || []
   const userId = useSelector((data) => data.CarUser.userDetails?.id)
   const [watching, setWatching] = useState([])
+  const [loadingAction, setLoadingAction]=useState(null)
 
   if (!user) {
     setOpen(true)
@@ -86,6 +87,7 @@ export function AuthDialogs() {
 
   async function handleEmailCheck() {
     try {
+      setLoadingAction('checkEmail')
       const response = await fetch(`/api/checkEmail`, {
         method: 'POST',
         headers: {
@@ -103,12 +105,15 @@ export function AuthDialogs() {
         console.log('email is not registered')
         handleRegisterDialog()
       }
+      setLoadingAction(null)
     } catch (error) {
+      setLoadingAction(null)
       console.log("error checking email")
     }
   }
   async function handleLogin() {
     try {
+      setLoadingAction("login")
       const response = await fetch(`/api/user/login`, {
         method: 'POST',
         headers: {
@@ -128,8 +133,10 @@ export function AuthDialogs() {
         setOpen(false)
         setOpen2(false)
       }
+      setLoadingAction(null)
 
     } catch (error) {
+      setLoadingAction(null)
       console.log("error loggin in")
     }
   }
@@ -293,7 +300,8 @@ export function AuthDialogs() {
               className="w-full bg-[#B69C66] hover:bg-[#B69C66]/90 px-4 py-6"
               onClick={handleLogin}
             >
-              LOG IN
+              {loadingAction==='login'?<Loader className="animate-spin"/>:<>LOG IN</>}
+              {/* LOG IN */}
             </Button>
             <div className="text-center text-sm">
               {"Don't have an account? "}
@@ -398,7 +406,8 @@ export function AuthDialogs() {
               onChange={(e) => setemail(e.target.value)}
             />
             <Button onClick={handleEmailCheck} className="w-full bg-black hover:bg-black/90 text-white px-4 py-6">
-              CREATE ACCOUNT
+            {loadingAction==='checkEmail'?<Loader className="animate-spin"/>:<>CREATE ACCOUNT</>}
+              {/* CREATE ACCOUNT */}
             </Button>
           </div>
         </DialogContent>

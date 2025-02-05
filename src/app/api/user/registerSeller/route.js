@@ -41,7 +41,7 @@ export async function POST(request) {
         email: data.email,
         password: hashedPassword,
         type: "seller",
-        status: "Active",
+        status: "active",
         verified: false,
         username: null,
         bio: null,

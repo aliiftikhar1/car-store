@@ -17,7 +17,7 @@ export async function POST(request) {
                 type: 'customer',
                 password: hashedPassword,
                 address: data.address,
-                status: 'Active',
+                status: 'active',
                 verified: data.verified==='on'?true:false,
                 phoneNo: data.phoneNo,
             },

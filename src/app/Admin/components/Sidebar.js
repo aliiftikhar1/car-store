@@ -26,11 +26,11 @@ const items = [
     url: "/Admin/Pages/UserManagement",
     icon: Users,
   },
-  {
-    title: "Brand Management",
-    url: "/Admin/Pages/BrandManagement",
-    icon: Building2,
-  },
+  // {
+  //   title: "Brand Management",
+  //   url: "/Admin/Pages/BrandManagement",
+  //   icon: Building2,
+  // },
   {
     title: "Car Submissions",
     url: "/Admin/Pages/CarSubmission",
