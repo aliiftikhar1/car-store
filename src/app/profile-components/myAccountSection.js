@@ -1,33 +1,25 @@
-'use client';
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { updateUserDetails } from "../Actions";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { updateUserDetails } from "../Actions"
+import { toast } from "sonner"
 
 export default function MyAccountSection() {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [newpassword, setnewpassword] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [newpassword, setnewpassword] = useState("")
   const [formData, setFormData] = useState({
     name: "",
     phoneNo: "",
     email: "",
     password: "",
     id: "",
-  });
+  })
 
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.CarUser.userDetails);
+  const dispatch = useDispatch()
+  const data = useSelector((state) => state.CarUser.userDetails)
 
   useEffect(() => {
     if (data) {
@@ -35,31 +27,55 @@ export default function MyAccountSection() {
         name: data.name || "",
         phoneNo: data.phoneNo || "",
         email: data.email || "",
-        password: data.password || "", // Adjust this field based on actual data
+        password: data.password || "",
         id: data.id || "",
-      });
-      setPhoneNumber(data.phoneNo || "");
+      })
+      setPhoneNumber(data.phoneNo || "")
     }
-  }, [data]);
+  }, [data])
+
+  async function handleVerify(e) {
+    e.preventDefault() // Prevent form submission
+    try {
+      const response = await fetch("/api/user/sendVerificationEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.email }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast.success(data.message || "Verification email sent successfully!")
+      } else {
+        toast.error(data.message || "Failed to send verification email.")
+      }
+    } catch (error) {
+      console.error("Error:", error)
+      toast.error("Something went wrong. Please try again.")
+    }
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault()
 
     const updatedData = {
       ...formData,
       password: newpassword,
-      phoneNo: `${phoneNumber}`, // Combine country code and phone number
-    };
+      phoneNo: phoneNumber,
+    }
 
     try {
-      const response = await updateUserDetails(updatedData, dispatch);
-      console.log("Profile updated successfully:", response);
-      toast.success("Profile updated successfully!");
+      const response = await updateUserDetails(updatedData, dispatch)
+      console.log("Profile updated successfully:", response)
+      toast.success("Profile updated successfully!")
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile. Please try again.");
+      console.error("Error updating profile:", error)
+      toast.error("Failed to update profile. Please try again.")
     }
-  };
+  }
 
   return (
     <div className="w-full mt-8">
@@ -77,9 +93,7 @@ export default function MyAccountSection() {
             <Input
               id="Name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               className="w-full"
             />
           </div>
@@ -111,13 +125,21 @@ export default function MyAccountSection() {
               type="email"
               disabled
               value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
+              onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
             />
-            {/* <Button variant="ghost" className="shrink-0">
-              Verify
-            </Button> */}
+            {!data.verified && (
+              <Button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleVerify(e)
+                }}
+                variant="ghost"
+                className="shrink-0"
+              >
+                Verify
+              </Button>
+            )}
           </div>
         </div>
 
@@ -126,28 +148,18 @@ export default function MyAccountSection() {
             Password
           </label>
           <div className="flex max-w-[600px] gap-2">
-            <Input
-              id="password"
-              type="password"
-              // value={formData.password}
-              onChange={(e) =>
-                setnewpassword( e.target.value )
-              }
-            />
-            <Button variant="ghost" className="shrink-0">
+            <Input id="password" type="password" onChange={(e) => setnewpassword(e.target.value)} />
+            <Button type="button" variant="ghost" className="shrink-0">
               Change
             </Button>
           </div>
         </div>
 
-        <Button
-          type="submit"
-          variant="secondary"
-          className="bg-muted/60 hover:bg-muted"
-        >
+        <Button type="submit" variant="secondary" className="bg-muted/60 hover:bg-muted">
           Save changes
         </Button>
       </form>
     </div>
-  );
+  )
 }
+

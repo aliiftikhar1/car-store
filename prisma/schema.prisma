@@ -38,7 +38,9 @@ model User {
   password    String
   type        String
   status      String
-  verified    Boolean
+  verified    Boolean @default(false)
+  verificationToken String?  // Token for email verification
+  tokenExpiresAt   DateTime? // Token expiration time
   phoneNo     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
