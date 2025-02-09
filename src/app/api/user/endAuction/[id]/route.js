@@ -17,7 +17,7 @@ export async function POST(request, { params }) {
                 message: "Auction not found"
             })
         }
-        if (auction.status === "Ended") {
+        if (auction.status === "Ended"||auction.status==='Sold') {
             return NextResponse.error({
                 status: 400,
                 message: "Auction already ended"
@@ -33,14 +33,14 @@ export async function POST(request, { params }) {
                 }
             })
 
-            const soldout = await prisma.Sold.create({
-                data:{
-                    auctionId: auction.id,
-                    userId:data.userid,
-                    price:data.price,
-                    currency:data.currency,
-                }
-            })
+            // const soldout = await prisma.Sold.create({
+            //     data:{
+            //         auctionId: auction.id,
+            //         userId:data.userid,
+            //         price:data.price,
+            //         currency:data.currency,
+            //     }
+            // })
         }
         return NextResponse.json({
             success: true,

@@ -30,52 +30,52 @@ export default function Car() {
     }
   };
 
-  const endAuction = async (auctionId) => {
-    try {
-      const response = await fetch(`/api/user/endAuction/${auctionId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userid, price:auctionItem?.Bids[0]?.price, currency:auctionItem?.Bids[0]?.currency }), // Sending the userid as part of the body
-      });
+  // const endAuction = async (auctionId) => {
+  //   try {
+  //     const response = await fetch(`/api/user/endAuction/${auctionId}`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ userid, price:auctionItem?.Bids[0]?.price, currency:auctionItem?.Bids[0]?.currency }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Failed to end auction.");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to end auction.");
+  //     }
 
-      console.log(`Auction ${auctionId} ended successfully`);
-      setHandler((prev) => !prev); // Trigger a re-fetch after ending the auction
-    } catch (error) {
-      console.error(`Error ending auction ${auctionId}:`, error);
-    }
-  };
+  //     console.log(`Auction ${auctionId} ended successfully`);
+  //     setHandler((prev) => !prev); 
+  //   } catch (error) {
+  //     console.error(`Error ending auction ${auctionId}:`, error);
+  //   }
+  // };
 
   useEffect(() => {
     GetAuctions();
   }, [handler, id]); // Fetch auction data when handler or id changes
 
-  useEffect(() => {
-    if (!auctionItem) return;
+  // useEffect(() => {
+  //   if (!auctionItem) return;
 
-    const checkAuctionEnd = () => {
-      const currentDate = new Date();
-      const endDate = new Date(auctionItem.endDate);
+  //   const checkAuctionEnd = () => {
+  //     const currentDate = new Date();
+  //     const endDate = new Date(auctionItem.endDate);
 
-      if (currentDate >= endDate && auctionItem.status === "Live") {
-        endAuction(auctionItem.id);
-        return true; // Auction has ended
-      }
-      return false; // Auction is still ongoing
-    };
+  //     if (currentDate >= endDate && auctionItem.status === "Live") {
+  //       endAuction(auctionItem.id);
+  //       return true; // Auction has ended
+  //     }
+  //     return false; // Auction is still ongoing
+  //   };
 
-    const intervalId = setInterval(() => {
-      const hasEnded = checkAuctionEnd();
-      if (hasEnded) {
-        clearInterval(intervalId); // Stop checking if the auction has ended
-      }
-    }, 1000); // Check every second
+  //   const intervalId = setInterval(() => {
+  //     const hasEnded = checkAuctionEnd();
+  //     if (hasEnded) {
+  //       clearInterval(intervalId); // Stop checking if the auction has ended
+  //     }
+  //   }, 1000); // Check every second
 
-    return () => clearInterval(intervalId); // Clean up on unmount
-  }, [auctionItem]);
+  //   return () => clearInterval(intervalId); // Clean up on unmount
+  // }, [auctionItem]);
 
   if (loading) {
     return <div className="text-center mt-20">Loading auctions...</div>;

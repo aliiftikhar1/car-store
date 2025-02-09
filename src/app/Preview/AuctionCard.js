@@ -57,7 +57,7 @@ export default function Auction({ items, watchdata }) {
                                 />
                                 {item?.Watching?.length}
                             </div>)}
-                            <a href={`/Auction/${item.id}`} className="cursor-pointer">
+                            <a href={`/Auction/${item.CarSubmission?.webSlug}`} className="cursor-pointer">
                         <div className="bg-white h-[90%] group relative shadow-lg overflow-hidden ">
                             <img
                                 src={

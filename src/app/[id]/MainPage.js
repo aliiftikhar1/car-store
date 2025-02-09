@@ -14,6 +14,7 @@ import MyFavoritesSection from "./Favourites"
 import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import { getUserDetails, getUserBids } from "../Actions"
+import Settings from "./Settings"
 
 
 export default function MyProfile() {
@@ -45,7 +46,7 @@ export default function MyProfile() {
     { id: 'my-bids', label: 'Bids', component: <MybidsSection bids={UserBids} /> },
     { id: 'my-invoices', label: 'Invoices', component: <MyInvoicesSection /> },
     { id: 'my-favorites', label: 'Favorites', component: <MyFavoritesSection /> },
-    { id: 'my-settings', label: 'Settings', component: <div>Invoices Content</div> },
+    { id: 'my-settings', label: 'Settings', component: <Settings/> },
   ]
 
   return (

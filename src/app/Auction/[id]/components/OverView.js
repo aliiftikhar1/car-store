@@ -40,8 +40,8 @@ export default function OverviewSection({ data }) {
             <div className="grid grid-cols-2 md:grid-cols-4 border-b">
               <div className="p-4 bg-gray-100 font-medium">Model</div>
               <div className="p-4">{data.CarSubmission.vehicleModel}</div>
-              <div className="p-4 bg-gray-100 font-medium">Drivetrain</div>
-              <div className="p-4">-</div>
+              <div className="p-4 bg-gray-100 font-medium">Fuel Type</div>
+              <div className="p-4">{data.CarSubmission.fuelType}</div>
             </div>
   
             <div className="grid grid-cols-2 md:grid-cols-4 border-b">
@@ -70,8 +70,8 @@ export default function OverviewSection({ data }) {
             <div className="grid grid-cols-2 md:grid-cols-4 border-b">
               <div className="p-4 bg-gray-100 font-medium">Location</div>
               <div className="p-4">{data.location}</div>
-              <div className="p-4 bg-gray-100 font-medium">Interior Color</div>
-              <div className="p-4">-</div>
+              <div className="p-4 bg-gray-100 font-medium">Status</div>
+              <div className="p-4">{data.status}</div>
             </div>
   
             <div className="grid grid-cols-2 md:grid-cols-4">

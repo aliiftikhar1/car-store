@@ -55,6 +55,7 @@ export async function PUT(request, { params }) {
         reserved,
         reservedPrice,
         imageLabels,
+        webSlug
     } = data;
 
     try {
@@ -101,6 +102,7 @@ export async function PUT(request, { params }) {
                     condition,
                     reserved: reserved === 'True' ? true : false,
                     reservedPrice: parseInt(reservedPrice),
+                    webSlug
                 },
             });
 
@@ -153,6 +155,7 @@ export async function PUT(request, { params }) {
                     status,
                     reserved: reserved === 'True' ? true : false,
                     reservedPrice: parseInt(reservedPrice),
+                    webSlug
                 },
             });
 

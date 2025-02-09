@@ -49,9 +49,9 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
     }
   };
 
-  useEffect(() => {
-    console.log("Form Data:", formData);
-  }, [formData]);
+  // useEffect(() => {
+  //   console.log("Form Data:", formData);
+  // }, [formData]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -128,6 +128,7 @@ export default function UpdateCarSubmissionDialog({ auction, onUpdate }) {
               <option value="Scheduled">Scheduled</option>
               <option value="Live">Live</option>
               <option value="Ended">Ended</option>
+              <option value="Sold">Sold</option>
             </select>
           </div>
              <div>

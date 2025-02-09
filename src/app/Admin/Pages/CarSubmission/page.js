@@ -61,7 +61,8 @@ export default function AdminCarSubmissions() {
     exteriorColor: '',
     condition: '',
     reserved:'',
-    reservedPrice:''
+    reservedPrice:'',
+    webSlug:'',
   })
   const [imageLabels, setImageLabels] = useState({})
   const [loading, setloading] = useState(true)
@@ -176,7 +177,8 @@ export default function AdminCarSubmissions() {
       exteriorColor: submission.exteriorColor || '',
       condition: submission.condition || '',
       reserved:submission.reserved || '',
-    reservedPrice:submission.reservedPrice || ''
+    reservedPrice:submission.reservedPrice || '',
+    webSlug:submission.webSlug||'',
     })
     setIsUpdateDialogOpen(true)
   }
@@ -511,12 +513,13 @@ export default function AdminCarSubmissions() {
               </Select>
             </div>
           </div>
-          {/* <div className="space-y-2">
-            <label htmlFor="vin" className="text-sm font-medium">
-              Reserved Price
+          <div className="space-y-2">
+            <label htmlFor="webSlug" className="text-sm font-medium">
+              Web Slug
             </label>
-            <Input id="reservedPrice" name="reservedPrice" />
-          </div> */}
+            <Input id="webSlug" name="webSlug" value={formData.webSlug}
+                    onChange={(e) => handleFormChange("webSlug", e.target.value)} />
+          </div>
         </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">

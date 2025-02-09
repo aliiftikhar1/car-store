@@ -48,9 +48,9 @@ export default function CreateAuctionDialog({ carSubmissions, fetchData }) {
     }
   };
 
-  useEffect(() => {
-    console.log("Form Data:", formData);
-  }, [formData]);
+  // useEffect(() => {
+  //   console.log("Form Data:", formData);
+  // }, [formData]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

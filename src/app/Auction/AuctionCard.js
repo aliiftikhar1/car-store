@@ -71,7 +71,7 @@ export default function AuctionCard({ item, index, watchdata, OnWatch, setloadin
       )}
 
       <a
-        href={`/Auction/${item.id}`}
+        href={`/Auction/${item.CarSubmission?.webSlug}`}
         className="flex w-full group flex-row md:flex-col h-36 md:h-full bg-white rounded-lg shadow-sm overflow-hidden"
       >
         {/* Image Container */}
