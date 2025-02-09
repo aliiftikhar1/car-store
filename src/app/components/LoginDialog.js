@@ -236,23 +236,24 @@ export function AuthDialogs() {
             <a
               href="/my-profile"
               className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
-              onClick={() => console.log("Profile clicked")}
+              // onClick={() => console.log("Profile clicked")}
             >
               Profile
             </a>
             <a
               href="/my-listings"
               className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
-              onClick={() => console.log("Profile clicked")}
+              // onClick={() => console.log("Profile clicked")}
             >
               Listing
             </a>
-            <button
+            <a
+            href="my-settings"
               className="block w-full px-4 py-2 text-left text-black hover:bg-gray-100"
-              onClick={() => console.log("Profile clicked")}
+              // onClick={() => console.log("Profile clicked")}
             >
               Settings
-            </button>
+            </a>
             <button
               className="block w-full px-4 py-2 text-left text-black bg-red-300/50 hover:bg-gray-100"
               onClick={handleLogout}
