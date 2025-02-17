@@ -20,6 +20,7 @@ export default function ContactForm() {
   const editor = useRef(null)
   const user = useSelector((data) => data.CarUser.userDetails)
   const [loading, setloading] = useState(true)
+  const [reserved, setReserved] = useState("False");
   const [categories, setCategories] = useState(["SuperCar", "LuxuryCar"]);
   const [bodyTypes, setBodyTypes] = useState(["Metal", "Plastic"]);
   const [transmissions, setTransmissions] = useState(["Self", "Manual"]);
@@ -105,9 +106,9 @@ export default function ContactForm() {
       const formData = new FormData(e.currentTarget)
       const jsonData = Object.fromEntries(formData.entries())
 
-      jsonData.sellerId= user.id
-      jsonData.email= user.email
-      jsonData.phone= user.phoneNo
+      jsonData.sellerId = user.id
+      jsonData.email = user.email
+      jsonData.phone = user.phoneNo
       // Handle select fields
       jsonData.phoneCode = formData.get("phoneCode")
       jsonData.mileageUnit = formData.get("mileageUnit")
@@ -177,7 +178,7 @@ export default function ContactForm() {
             <label htmlFor="firstName" className="text-sm font-medium">
               First Name *
             </label>
-            <Input id="firstName"  name="firstName" required />
+            <Input id="firstName" name="firstName" required />
           </div>
           <div className="space-y-2">
             <label htmlFor="lastName" className="text-sm font-medium">
@@ -185,12 +186,12 @@ export default function ContactForm() {
             </label>
             <Input id="lastName" name="lastName" required />
           </div>
-        
+
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
               E-mail *
             </label>
-            <Input id="email" name="email" value={user.email} type="email" required disabled/>
+            <Input id="email" name="email" value={user.email} type="email" required disabled />
           </div>
           <div className="space-y-2">
             <label htmlFor="phone" className="text-sm font-medium">
@@ -219,22 +220,30 @@ export default function ContactForm() {
             </label>
             <Input id="vehicleModel" name="vehicleModel" required />
           </div>
-        
-        <div className="space-y-2 col-span-2">
+
+          <div className="space-y-2 col-span-2">
             <label htmlFor="reserved" className="text-sm font-medium">
               Reserved Price*
             </label>
             <div className="flex gap-2">
-              <Input id="reservedPrice" placeholder='Enter Amount' name="reservedPrice" required className="flex-1" />
-              <Select name="reserved" defaultValue="False">
+              <Select name="reserved" defaultValue="False" onValueChange={(value) => setReserved(value)}>
                 <SelectTrigger className="w-[80px]">
                   <SelectValue placeholder="No" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='True'>Yes</SelectItem>
-                  <SelectItem value='False'>No</SelectItem>
+                  <SelectItem value="True">Yes</SelectItem>
+                  <SelectItem value="False">No</SelectItem>
                 </SelectContent>
               </Select>
+              {reserved === "True" && (
+                <Input
+                  id="reservedPrice"
+                  placeholder="Enter Amount"
+                  name="reservedPrice"
+                  required
+                  className="flex-1"
+                />
+              )}
             </div>
           </div>
           {/* <div className="space-y-2">
@@ -258,7 +267,7 @@ export default function ContactForm() {
             </label>
             <Input id="vin" name="vin" />
           </div>
-        
+
           <AutocompleteInput options={categories} name="category" label="Category" required />
           <AutocompleteInput options={bodyTypes} name="bodyType" label="Body Type" required />
         </div>
@@ -266,14 +275,14 @@ export default function ContactForm() {
         <div className="grid md:grid-cols-4 gap-6">
           <AutocompleteInput options={transmissions} name="transmission" label="Transmission" required />
           <AutocompleteInput options={engineCapacities} name="engineCapacity" label="Engine Capacity" required />
-       
+
           <AutocompleteInput options={fuelTypes} name="fuelType" label="Fuel Type" required />
           <AutocompleteInput options={exteriorColors} name="exteriorColor" label="Exterior Color" required />
         </div>
 
         <div className="grid md:grid-cols-4 gap-6">
           <AutocompleteInput options={conditions} name="condition" label="Condition" required />
-        
+
           <div className="space-y-2">
             <label htmlFor="mileage" className="text-sm font-medium">
               Estimated Mileage *

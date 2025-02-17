@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Eye, EyeOff, Loader } from "lucide-react"
+import { useDispatch } from "react-redux"
+import { setUserDetails } from "@/store/UserSlice"
 
 export function RegistrationDialog({ open, onClose, email }) {
+  const dispatch = useDispatch()
   const [name, setName] = useState("")
   const [address, setAddress] = useState("")
   const [phoneNo, setPhoneNo] = useState("")
@@ -16,7 +19,7 @@ export function RegistrationDialog({ open, onClose, email }) {
   const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async () => {
-    if (!name || !address || !phoneNo || !password) {
+    if (!password) {
       toast.error("Please fill in all fields")
       return
     }
@@ -36,7 +39,10 @@ export function RegistrationDialog({ open, onClose, email }) {
       const result = await response.json()
       if (result.success) {
         toast.success("User registered successfully")
+        dispatch(setUserDetails(result.data));
+        console.log('Data saved to Redux');
         onClose()
+        window.location.replace('/');
       } else {
         toast.error(result.message)
       }
@@ -56,7 +62,7 @@ export function RegistrationDialog({ open, onClose, email }) {
         </DialogHeader>
         <div className="flex flex-col gap-4 text-xl">
           <Input type="email" value={email} disabled className="rounded-none p-4" placeholder="Email" />
-          <Input
+          {/* <Input
             type="text"
             placeholder="Name"
             value={name}
@@ -76,7 +82,7 @@ export function RegistrationDialog({ open, onClose, email }) {
             value={phoneNo}
             className="rounded-none p-4"
             onChange={(e) => setPhoneNo(e.target.value)}
-          />
+          /> */}
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}

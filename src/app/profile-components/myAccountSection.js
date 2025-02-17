@@ -19,7 +19,7 @@ export default function MyAccountSection() {
   })
 
   const dispatch = useDispatch()
-  const data = useSelector((state) => state.CarUser.userDetails)
+  const data = useSelector((state) => state.CarUser?.userDetails)
 
   useEffect(() => {
     if (data) {
@@ -127,7 +127,7 @@ export default function MyAccountSection() {
               value={formData.email}
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
             />
-            {!data.verified && (
+            {!data?.verified && (
               <Button
                 type="button"
                 onClick={(e) => {

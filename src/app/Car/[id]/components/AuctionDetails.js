@@ -39,7 +39,7 @@ export default function AuctionDetails({data}) {
           <div className="w-full md:w-1/2">
             <h3 className="text-xl font-bold">BID HISTORY</h3>
             <ul className="mt-4 space-y-3">
-              {bids.map((bid, index) => (
+              {bids?.map((bid, index) => (
                 <li
                   key={index}
                   className={`flex justify-between items-center ${index==0?'border text-yellow-600':''} border p-4`}

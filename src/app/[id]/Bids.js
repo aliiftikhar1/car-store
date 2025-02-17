@@ -47,7 +47,7 @@ export default function MybidsSection({ bids }) {
       </div>
 
       <div className="py-20">
-        {bids.length === 0 ? (
+        {bids?.length === 0 ? (
           <div className="text-center space-y-4">
             <h3 className="text-xl font-semibold">No bids found</h3>
             <p className="text-muted-foreground">You have no {activeTab} bids.</p>
@@ -57,7 +57,7 @@ export default function MybidsSection({ bids }) {
           </div>
         ) : (
           <div className="space-y-6">
-            {bids.map((bid) => (
+            {bids?.map((bid) => (
               <div key={bid.id} className="flex border rounded-lg overflow-hidden shadow-md">
                 <div className="w-1/3">
                   <Image
